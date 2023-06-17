@@ -1,0 +1,12 @@
+{  
+    "name": "TODO",
+    "display": "standalone",
+    "start_url": "/",
+    "short_name": "TODO",
+    "theme_color": "#FFFFFF",
+    "description": "",
+    "orientation": "any",
+    "background_color": "#FFFFFF",
+    "icons": []
+  }
+  
