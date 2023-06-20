@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>TODO</title>
+  <title>Conflict Resolver</title>
 
   <!-- <base href="/" /> -->
 
@@ -15,6 +15,9 @@
   <!-- TODO (should be same color as in manifest.json): -->
   <meta name="theme-color" content="#FFFFFF" />
 
+  <link href="/dist/output.css" rel="stylesheet">
+  <link rel="apple-touch-icon" href="icons/ios.png">
+
   <!-- TODO (replace with our icon): -->
   <!-- <link rel="icon" href="/assets/icons/icon_24.png" type="image/png" /> -->
 
@@ -23,6 +26,7 @@
 </head>
 
 <body>
+  <div id="root"></div>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js');
