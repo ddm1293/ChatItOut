@@ -1,86 +1,62 @@
-import { useState } from "react";
-import { Configuration, OpenAIApi } from "openai";
-
-const configuration = new Configuration({
-    organization: "org-OhLj9uWb4sLDBAcA8PXpx002",
-    apiKey: "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",
-});
-
-const openai = new OpenAIApi(configuration);
-
+import React, {useState} from 'react';
+import send from "../assets/icon_send.png";
 
 export default function Chatbot() {
-    const [message, setMessage] = useState("");
-    const [chats, setChats] = useState([]);
-    const [isTyping, setIsTyping] = useState(false);
+    const [messages, setMessages] = useState([]);
 
-    const chat = async (e, message) => {
-        e.preventDefault();
+    const generateResponse = () => {
+        let responses = ["Hello, how are you?", "That is a bad idea.", "You are very intelligent!", "I'm sorry to hear that.", "Do you feel like a human being today?"];
+        let i = Math.floor((Math.random() * 5) + 1);
+        return responses[i];
+    }
 
-        if (!message) return;
-        setIsTyping(true);
-        scrollTo(0, 1e10);
+    const handleUserInput = (content) => {
+        content.preventDefault();
+        const userInput = content.target.userInput.value;
+        const chatbotMessage = generateResponse();
 
-        let msgs = chats;
-        msgs.push({ role: "user", content: message });
-        setChats(msgs);
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { type: 'user', message:userInput },
+            { type: 'chatbot', message:chatbotMessage },
+        ]);
 
-        setMessage("");
+        content.target.userInput.value="";
 
-        fetch("http://localhost:8000/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            chats,
-        }),
-        })
-        .then((response) => response.json())
-        .then((data) => {
-            msgs.push(data.output);
-            setChats(msgs);
-            setIsTyping(false);
-            scrollTo(0, 1e10);
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-    };
+    }
 
     return (
-        <main>
-        <h1>FullStack Chat AI Tutorial</h1>
-
-        <section>
-            {chats && chats.length
-            ? chats.map((chat, index) => (
-                <p key={index} className={chat.role === "user" ? "user_msg" : ""}>
-                    <span>
-                    <b>{chat.role.toUpperCase()}</b>
-                    </span>
-                    <span>:</span>
-                    <span>{chat.content}</span>
-                </p>
-                ))
-            : ""}
-        </section>
-
-        <div className={isTyping ? "" : "hide"}>
-            <p>
-            <i>{isTyping ? "Typing" : ""}</i>
-            </p>
-         </div>
-
-        <form action="" onSubmit={(e) => chat(e, message)}>
+        <>
+        <div className="absolute top-28 w-2/3 right-24 vg-[#1e1e1e] rounded-lg">
+            <div className="mb-4 max-h-[600px] overflow-y-auto">
+            {messages.map((message, index) => (
+                <div
+                    key={index}
+                    className={`mb-4 p-4 ${
+                        message.type === 'user' ? 'bg-white text-black' : 'bg-[#e1e1e1] bg-opacity-10 text-white'
+                    } rounded-lg`}
+                >
+                {message.message}
+                </div>
+            ))}
+            </div>
+            <div className="absolute top-96 w-2/3 left-80">
+                <form onSubmit={handleUserInput}>
             <input
-            type="text"
-            name="message"
-            value={message}
-            placeholder="Type a message here and hit Enter..."
-            onChange={(e) => setMessage(e.target.value)}
+                type="text"
+                name="userInput"
+                className="absolute top-56 w-4/5 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:border-blue-500"
+                placeholder="Type your message..."
             />
-        </form>
-        </main>
-  );
+            <button
+                type="button"
+                onClick={handleUserInput}
+                className="absolute top-56 right-2 transform -translate-y-1/2 rounded-full p-2">
+                <img src={send} className="w-4 h-4"/>
+            </button>
+                </form>
+            </div>
+        </div>
+        </>
+    )
 }

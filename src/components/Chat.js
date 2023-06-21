@@ -1,4 +1,4 @@
-class Chat {
+export default class Chat {
     #id; // for ChatHistory dict
     #time;
     #date;
@@ -12,5 +12,9 @@ class Chat {
 
     addMessage(message) {
         this.messages.push(message);
+    }
+
+    get id() {
+        return this.#id;
     }
 }
