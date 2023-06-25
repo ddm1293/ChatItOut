@@ -31,9 +31,9 @@ export default function LeftSideBar() {
                     {/* New Chat Icon */}
                     <img src={newchat} className="absolute left-10 top-28 rounded-full" />
 
-                    {/* New Chat */}
+                    {/* New Chat */} {/* When the user clicks, a new instance of the chatnot component should be created*/}
                     <div className="absolute left-16 top-28 font-normal text-lg leading-5 text-white font-calibri">
-                        New Chat
+                        New Chat 
                     </div>
 
                     {/* Stage Explanation Icon */}
