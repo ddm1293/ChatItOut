@@ -27,7 +27,7 @@ self.addEventListener("fetch", event => {
     caches.match(event.request).then(response => {
       return response || fetch(event.request);
     }).catch(e => {
-      console.log('no internet') // offline handling
+      console.log('no internet') // TODO: offline handling
     })
   )
 });
@@ -54,15 +54,15 @@ self.addEventListener("fetch", event => {
 // });
 
 // Workbox 
-const pageStrategy = new workbox.strategies.StaleWhileRevalidate({
-  cacheName: 'pwa-assets',
-//    plugins: [
-//      // Only requests that return with a 200 status are cached
-//      new workbox.cacheableResponse.Plugin({
-//         statuses: [200],
-//       }),
-//    ],
-});
+// const pageStrategy = new workbox.strategies.StaleWhileRevalidate({
+//   cacheName: 'pwa-assets',
+// //    plugins: [
+// //      // Only requests that return with a 200 status are cached
+// //      new workbox.cacheableResponse.Plugin({
+// //         statuses: [200],
+// //       }),
+// //    ],
+// });
 
 //  const staticStrategy  = new workbox.strategies.CacheFirst({
 //   cacheName: 'pwa-assets',
@@ -70,18 +70,18 @@ const pageStrategy = new workbox.strategies.StaleWhileRevalidate({
 
 // workbox.routing.registerRoute(({url}) => url.pathname.includes('/static/'), staticStrategy);
 
-workbox.routing.registerRoute(({request}) => request.mode === 'navigate', pageStrategy);
+// workbox.routing.registerRoute(({request}) => request.mode === 'navigate', pageStrategy);
 
 // Offline handling for chatbot
-workbox.routing.setCatchHandler(async (options) => {
-    const destination = options.request.destination;
-    const cache = await self.caches.open('offline-fallbacks');
-    if (destination === 'document') { // depends on type of request to GPT API
-      return (await cache.match('/offline.html')) || Response.error();
-    }
-    console.log("No network, sadge");
-    return Response.error();
-  });
+// workbox.routing.setCatchHandler(async (options) => {
+//     const destination = options.request.destination;
+//     const cache = await self.caches.open('offline-fallbacks');
+//     if (destination === 'document') { // depends on type of request to GPT API
+//       return (await cache.match('/offline.html')) || Response.error();
+//     }
+//     console.log("No network, sadge");
+//     return Response.error();
+//   });
 
 
 
