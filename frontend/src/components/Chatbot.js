@@ -88,6 +88,8 @@ export default function Chatbot() {
                 nextStage = Stage.Complete;
         }
         transitionStage(nextStage);
+        console.log(stage);
+        console.log(messages[stage.name]);
         if (stage === Stage.Complete) {
             // move this chat to complete panel;
         }
@@ -105,12 +107,27 @@ export default function Chatbot() {
         });
       }, [messages])
 
+    // Allows user to download file to personal device
+    // const download = (data, filename) => {
+    //     const json = JSON.stringify(data, null, 2);
+    //     const link = document.createElement('a');
+    
+    //     link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(json));
+    //     link.setAttribute('download', filename || `${id}.json`);
+    //     link.style.display = 'none';
+    
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    // }  
+
     useEffect(() => {
         if (isInitialMount.current) {
             // loadFromDisk(); --> read file here?
             isInitialMount.current = false;
          } else {
-            saveToDisk();
+            // saveToDisk();
+            // download(messages);
          }
     }, [messages, saveToDisk]);
     
