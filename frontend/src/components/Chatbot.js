@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef, useCallback} from 'react';
 import send from "../assets/icon_send.png";
 import axios from 'axios';
+import stagearrow from "../assets/icon_stagearrow.png";
 
 const serverURL = "http://localhost:5000";
 
@@ -23,6 +24,12 @@ export default function Chatbot() {
     // const [messages, setMessages] = useState([]);
     const [messages, setMessages] = useState({invitation: [], connection: [], exchange: [], agreement: [], reflection: []});
     const [stage, transitionStage] = useState(Stage.Invitation);
+    const [invStage, setInvStage] = useState("notStarted", "inProgress", "completed");
+    const [conStage, setConStage] = useState("notStarted", "inProgress", "completed");
+    const [excStage, setExcStage] = useState("notStarted", "inProgress", "completed");
+    const [agrStage, setAgrStage] = useState("notStarted", "inProgress", "completed");
+    const [refStage, setRefStage] = useState("notStarted", "inProgress", "completed");
+
     const isInitialMount = useRef(true);
 
     const generateResponse = () => {
@@ -58,6 +65,9 @@ export default function Chatbot() {
         stageMessages.push({ type: 'user', message:userInput });
         stageMessages.push({ type: 'chatbot', message:chatbotMessage });
 
+        // just for testing
+        setInvStage("inProgress");
+
         setMessages({
             ...messages,
             [stage.name]: stageMessages
@@ -72,17 +82,28 @@ export default function Chatbot() {
         switch(stage) {
             case Stage.Invitation:
                 nextStage = Stage.Connection;
-                // create the line that separates stages
-                // update the stage bar
+                // TODO: draw a line between chat messages that another stage is starting
+                setInvStage("inProgress");
                 break;
             case Stage.Connection:
                 nextStage = Stage.Exchange;
+                setInvStage("completed");
+                setConStage("inProgress");
                 break;
             case Stage.Exchange:
                 nextStage = Stage.Agreement;
+                setConStage("completed");
+                setExcStage("inProgress");
                 break;
             case Stage.Agreement:
                 nextStage = Stage.Reflection;
+                setExcStage("completed");
+                setAgrStage("inProgress");
+                break;
+            case Stage.Reflection:
+                nextStage = Stage.Complete;
+                setAgrStage("completed");
+                setRefStage("inProgress");
                 break;
             default:
                 nextStage = Stage.Complete;
@@ -92,6 +113,7 @@ export default function Chatbot() {
         console.log(messages[stage.name]);
         if (stage === Stage.Complete) {
             // move this chat to complete panel;
+            setRefStage("completed");
         }
     }
 
@@ -130,7 +152,6 @@ export default function Chatbot() {
             // download(messages);
          }
     }, [messages, saveToDisk]);
-    
 
     return (
         <>
@@ -164,6 +185,67 @@ export default function Chatbot() {
                 </form>
             </div>
         </div>
+
+        {/* Left Status Bar */}
+        <div className="absolute w-4/5 h-20 bg-[#242424] flex right-0 top-0">
+            <div className={`flex absolute top-8 left-0 w-64 h-12 border-b-4 ${invStage === "inProgress" ? "border-[#9adbff]" : "border-none"}`}></div>
+            <div className="flex absolute top-8 left-20">
+                <span className="w-4 h-4 bg-white opacity-50 rounded-full"></span>
+                <span className="absolute left-1 -top-1 font-calibri font-normal text-14 leading-17 text-black">
+                    1
+                </span>
+                <span className="absolute left-8 -top-2 font-normal text-lg leading-22 text-white opacity-50 font-calibri">
+                    Invitation
+                </span>
+                <img src={stagearrow} className="absolute left-40 top-1 rounded-full" />
+            </div>
+
+            <div className={`flex absolute top-8 left-64 w-64 h-12 border-b-4 ${conStage === "inProgress" ? "border-[#9adbff]" : "border-none"}`}></div>
+            <div className="absolute w-4 h-4 top-8 left-80 bg-white opacity-50 rounded-full"> 
+                <span className="absolute inset-x-0 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 text-black">
+                    2
+                </span>
+                <span className="absolute left-8 -top-2 font-normal text-lg leading-22 text-white font-calibri">
+                    Connection
+                </span>
+                <img src={stagearrow} className="absolute left-44 top-1 rounded-full" />
+            </div>
+
+            <div className={`flex absolute top-8 left-[500px] w-64 h-12 border-b-4 ${excStage === "inProgress" ? "border-[#9adbff]" : "border-none"}`}></div>
+            <span style={{ left: '560px' }}
+                  className="absolute w-4 h-4 top-8 bg-white opacity-50 rounded-full">
+                  <span className="absolute inset-x-0 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 text-black">
+                    3
+                    </span>
+                    <span className="absolute left-8 -top-2 font-normal text-lg leading-22 text-white font-calibri">
+                        Exchange
+                    </span>
+                    <img src={stagearrow} className="absolute left-44 top-1 rounded-full" />
+            </span>
+
+            <div className={`flex absolute top-8 left-[750px] w-60 h-12 border-b-4 ${agrStage === "inProgress" ? "border-[#9adbff]" : "border-none"}`}></div>
+            <span style={{ left: '800px' }}
+                  className="absolute w-4 h-4 top-8 bg-white opacity-50 rounded-full">
+                  <span className="absolute inset-x-0 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 text-black">
+                    4
+                    </span>
+                    <span className="absolute left-8 -top-2 font-normal text-lg leading-22 text-white font-calibri">
+                        Agreement
+                    </span>
+                    <img src={stagearrow} className="absolute left-44 top-1 rounded-full" />
+            </span>
+
+            <div className={`flex absolute top-8 left-[990px] w-64 h-12 border-b-4 ${refStage === "inProgress" ? "border-[#9adbff]" : "border-none"}`}></div>
+            <span style={{ left: '1040px' }}
+                  className="absolute w-4 h-4 top-8 bg-white opacity-50 rounded-full">
+                  <span className="absolute inset-x-0 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 text-black">
+                    5
+                    </span>
+                    <span className="absolute left-8 -top-2 font-normal text-lg leading-22 text-white font-calibri">
+                        Reflection
+                    </span>
+            </span>
+            </div>
         </>
     )
 }

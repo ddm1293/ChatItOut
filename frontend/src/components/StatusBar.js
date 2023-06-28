@@ -4,6 +4,14 @@ import { useState } from "react";
 import stagearrow from "../assets/icon_stagearrow.png";
 
 export default function StatusBar() {
+    const [isPrevCompleted, setIsPrevCompleted] = useState(false);
+    const [isCurrInProgress, setIsCurrInProgress] = useState(false);
+    
+    const stageTransfer = () => {
+        setIsPrevCompleted(true);
+        setIsCurrInProgress(true);
+    };
+
 
     return (
         <>

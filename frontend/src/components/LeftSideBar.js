@@ -7,15 +7,6 @@ import chathist from "../assets/icon_chathist.png";
 import chatcurr from "../assets/icon_chatcurr.png";
 
 export default function LeftSideBar() {
-    const [activeMenu, setActiveMenu] = useState(null);
-    
-    const handleMenuClick = (menu) => {
-        setActiveMenu(menu);
-    };
-
-    const closeMenu = () => {
-        setActiveMenu(null);
-    };
 
     return (
         <>
@@ -37,7 +28,7 @@ export default function LeftSideBar() {
                     </div>
 
                     {/* Stage Explanation Icon */}
-                    <img src={stageexp} className="absolute left-10 top-40 rounded-full" />
+                    <img src={stageexp} className="absolute left-10 top-40 square-full" />
 
                     {/* What are 5 stages? */}
                     <div className="absolute left-16 top-40 font-normal text-lg leading-5 text-white font-calibri">
@@ -55,15 +46,12 @@ export default function LeftSideBar() {
                     </div>
 
                     {/* Divider */}
-                    <div className="absolute bottom-40 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
+                    <div className="absolute bottom-28 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
 
                     {/* Menu items */}
-                    <div className="absolute left-10 bottom-28 font-normal text-lg leading-5 text-white font-calibri">
-                        Terms of use
-                    </div>
 
                     <div className="absolute left-10 bottom-16 font-normal text-lg leading-5 text-white font-calibri">
-                        Privacy policy
+                        Terms of use
                     </div>
 
             </div>

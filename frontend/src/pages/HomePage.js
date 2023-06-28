@@ -13,7 +13,6 @@ export default function HomePage() {
 
                 <div>
                     <LeftSideBar/>
-                    <StatusBar/>
                     <Chatbot />
                 </div>
 
