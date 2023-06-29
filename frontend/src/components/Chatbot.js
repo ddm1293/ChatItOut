@@ -24,7 +24,7 @@ export default function Chatbot() {
     // const [messages, setMessages] = useState([]);
     const [messages, setMessages] = useState({invitation: [], connection: [], exchange: [], agreement: [], reflection: []});
     const [stage, transitionStage] = useState(Stage.Invitation);
-    const [invStage, setInvStage] = useState("notStarted", "inProgress", "completed");
+    const [invStage, setInvStage] = useState("inProgress");
     const [conStage, setConStage] = useState("notStarted", "inProgress", "completed");
     const [excStage, setExcStage] = useState("notStarted", "inProgress", "completed");
     const [agrStage, setAgrStage] = useState("notStarted", "inProgress", "completed");
@@ -61,17 +61,16 @@ export default function Chatbot() {
         const userInput = content.target.userInput.value;
         const chatbotMessage = generateResponse();
 
-        let stageMessages = messages[stage.name];
-        stageMessages.push({ type: 'user', message:userInput });
-        stageMessages.push({ type: 'chatbot', message:chatbotMessage });
+        if (stage.name !== "complete") {
+            let stageMessages = messages[stage.name];
+            stageMessages.push({ type: 'user', message:userInput });
+            stageMessages.push({ type: 'chatbot', message:chatbotMessage });
 
-        // just for testing
-        setInvStage("inProgress");
-
-        setMessages({
-            ...messages,
-            [stage.name]: stageMessages
-        });
+            setMessages({
+                ...messages,
+                [stage.name]: stageMessages
+            });
+        }         
         
         content.target.userInput.value="";
 
@@ -79,42 +78,37 @@ export default function Chatbot() {
 
     const advanceStage = () => {
         let nextStage;
+        // TODO: draw a line between chat messages that another stage is starting
         switch(stage) {
             case Stage.Invitation:
                 nextStage = Stage.Connection;
-                // TODO: draw a line between chat messages that another stage is starting
-                setInvStage("inProgress");
-                break;
-            case Stage.Connection:
-                nextStage = Stage.Exchange;
                 setInvStage("completed");
                 setConStage("inProgress");
                 break;
-            case Stage.Exchange:
-                nextStage = Stage.Agreement;
+            case Stage.Connection:
+                nextStage = Stage.Exchange;
                 setConStage("completed");
                 setExcStage("inProgress");
                 break;
-            case Stage.Agreement:
-                nextStage = Stage.Reflection;
+            case Stage.Exchange:
+                nextStage = Stage.Agreement;
                 setExcStage("completed");
                 setAgrStage("inProgress");
                 break;
-            case Stage.Reflection:
-                nextStage = Stage.Complete;
+            case Stage.Agreement:
+                nextStage = Stage.Reflection;
                 setAgrStage("completed");
                 setRefStage("inProgress");
                 break;
-            default:
+            case Stage.Reflection:
                 nextStage = Stage.Complete;
+                setRefStage("completed");
+                // move this chat to complete panel;
+                break;
+            default:
+                nextStage = Stage.NotStarted;
         }
         transitionStage(nextStage);
-        console.log(stage);
-        console.log(messages[stage.name]);
-        if (stage === Stage.Complete) {
-            // move this chat to complete panel;
-            setRefStage("completed");
-        }
     }
 
     const saveToDisk = useCallback(() => {
@@ -153,11 +147,17 @@ export default function Chatbot() {
          }
     }, [messages, saveToDisk]);
 
+    const getAllMessages = () => {
+        let arr = [];
+        let results = arr.concat(Object.values(messages));
+        return results.flat();
+    }
+
     return (
         <>
         <div className="absolute top-28 w-2/3 right-24 vg-[#1e1e1e] rounded-lg">
             <div className="mb-4 max-h-[600px] overflow-y-auto">
-            {messages[stage.name].map((message, index) => ( // TODO: it currently erases previous stages msgs
+            {getAllMessages().map((message, index) => (
                 <div
                     key={index}
                     className={`mb-4 p-4 ${
