@@ -27,13 +27,18 @@ export default function LeftSideBar() {
                         New Chat 
                     </div>
 
-                    {/* Stage Explanation Icon */}
-                    <img src={stageexp} className="absolute left-10 top-40 square-full" />
+                    {/* Stage Explanation Icon
+                    <img src={stageexp} className="absolute left-10 top-40 square-full" /> */}
 
                     {/* What are 5 stages? */}
-                    <div className="absolute left-16 top-40 font-normal text-lg leading-5 text-white font-calibri">
-                        What are 5 stages?
+                    <Link to= {"/stageexp"}>
+                    <div className= "flex absolute left-1 top-40 w-80 h-10 hover:bg-[#1e1e1e]">
+                        <img src={stageexp} className="absolute left-9 top-2 square-full" />
+                        <button className="absolute left-16 top-1 font-normal text-lg leading-5 text-white font-calibri">
+                            What are 5 stages?
+                        </button>
                     </div>
+                    </Link>
 
                     {/* In Progress */}
                     <div className="absolute left-10 top-56 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
