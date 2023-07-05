@@ -1,14 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
 import chathist from "../assets/icon_chathist.png";
-import Stage from '../Stage';
 import { HistoryContext, HistoryContextProvider } from '../HistoryContext';
 
 export default function ChatHistory(props) {
     const [startState, setStartState] = useState(props.startState);
     const time = props.startState.time;
     const {currChatHist, setCurrChatHist} = useContext(HistoryContext);
-
-    const dbReq = indexedDB.open("chathistory", 1);
     
     const getTime = (today) => {
         let hours = today.getHours();
@@ -36,25 +33,6 @@ export default function ChatHistory(props) {
 
         setCurrChatHist(startState);
     }, []);
-
-    const updateStartState = () => {
-        console.log('here');
-        dbReq.onsuccess = function(evt) {
-            console.log('hi');
-            let db = dbReq.result;
-            const tx = db.transaction('current', 'readonly');
-            const store = tx.objectStore('current');
-            const updatedState = store.get([time]);
-            console.log(updatedState);
-            setCurrChatHist(updatedState);
-        }
-        dbReq.onerror = function(err) {
-            console.log('fu');
-            //console.log(err);
-        }
-        dbReq.onerror = console.log('why the fuck');
-        //setCurrChatHist(startState);
-    }
 
     return (
         <>

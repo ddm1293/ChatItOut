@@ -3,12 +3,11 @@ import LeftSideBar from "../components/LeftSideBar"
 import Chatbot from '../components/Chatbot'
 import { openDB } from 'idb';
 import { HistoryContext, HistoryContextProvider } from '../HistoryContext';
-import Stage from '../Stage';
+import ChatStage from '../ChatStage';
 
 
 export default function HomePage() {
-
-    const [currChatHist, setCurrChatHist] = useState({messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new Stage()});
+    const [currChatHist, setCurrChatHist] = useState({messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new ChatStage()});
     const value = {currChatHist, setCurrChatHist};
 
     // Open DB

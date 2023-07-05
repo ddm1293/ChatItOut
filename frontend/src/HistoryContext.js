@@ -1,5 +1,5 @@
 import { createContext, useMemo, useState } from "react";
-import Stage from './Stage';
+import ChatStage from "./ChatStage";
 
 // const [currChatHist, setCurrChatHist] = useState({})
 
@@ -36,7 +36,7 @@ import Stage from './Stage';
 //   export { HistoryContext, HistoryContextProvider };
 
 const HistoryContext = createContext({
-  currChatHist: {messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: Stage.Invitation},
+  currChatHist: {messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new ChatStage()},
   setCurrChatHist: () => {}
 });
 
