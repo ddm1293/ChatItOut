@@ -1,29 +1,17 @@
-import React, {useState, useEffect, useRef, useCallback} from 'react';
+import React, {useState, useEffect, useRef, useCallback, useContext} from 'react';
 import send from "../assets/icon_send.png";
 import axios from 'axios';
 import stagearrow from "../assets/icon_stagearrow.png";
+import { HistoryContext, HistoryContextProvider } from '../HistoryContext';
 
 const serverURL = "http://localhost:5000";
 
-class Stage{
-    static Invitation = new Stage("invitation");
-    static Connection = new Stage("connection");
-    static Exchange = new Stage("exchange");
-    static Agreement = new Stage("agreement");
-    static Reflection = new Stage("reflection");
-    static Complete = new Stage("complete");
-  
-    constructor(name) {
-      this.name = name;
-    }
-  }
 
 export default function Chatbot() {
-    const id = 818230623; // create an id from the date and time that chat was initialized? this id can be used as the filename for chat history.
+    const {currChatHist, setCurrChatHist} = useContext(HistoryContext);
 
-    // const [messages, setMessages] = useState([]);
-    const [messages, setMessages] = useState({invitation: [], connection: [], exchange: [], agreement: [], reflection: []});
-    const [stage, transitionStage] = useState(Stage.Invitation);
+    const [messages, setMessages] = useState(currChatHist.messages);
+    const [stage, setStage] = useState(currChatHist.stage);
     const [invStage, setInvStage] = useState("inProgress");
     const [conStage, setConStage] = useState("notStarted", "inProgress", "completed");
     const [excStage, setExcStage] = useState("notStarted", "inProgress", "completed");
@@ -31,6 +19,7 @@ export default function Chatbot() {
     const [refStage, setRefStage] = useState("notStarted", "inProgress", "completed");
 
     const isInitialMount = useRef(true);
+    const dbReq = indexedDB.open("chathistory", 1);
 
     const generateResponse = () => {
         let responses = ["Hello, how are you?", "That is a bad idea.", "You are very intelligent!", "I'm sorry to hear that.", "Do you feel like a human being today?"];
@@ -41,20 +30,11 @@ export default function Chatbot() {
         return responses[i];
     }
 
-    // const handleUserInput = (content) => {
-    //     content.preventDefault();
-    //     const userInput = content.target.userInput.value;
-    //     const chatbotMessage = generateResponse();
-
-    //     setMessages((prevMessages) => [
-    //         ...prevMessages,
-    //         { type: 'user', stage: stage, message:userInput },
-    //         { type: 'chatbot', stage: stage, message:chatbotMessage },
-    //     ]);
-
-    //     content.target.userInput.value="";
-
-    // }
+    useEffect(() => {
+        setMessages(currChatHist.messages);
+        setStage(currChatHist.stage);
+        setStageProgress(currChatHist.stage);
+    }, [currChatHist])
 
     const handleUserInput = (content) => {
         content.preventDefault();
@@ -77,51 +57,91 @@ export default function Chatbot() {
     }
 
     const advanceStage = () => {
-        let nextStage;
-        // TODO: draw a line between chat messages that another stage is starting
-        switch(stage) {
-            case Stage.Invitation:
-                nextStage = Stage.Connection;
+        switch(stage.name) {
+            case "invitation":
+                stage.setConnection();
                 setInvStage("completed");
                 setConStage("inProgress");
                 break;
-            case Stage.Connection:
-                nextStage = Stage.Exchange;
+            case "connection":
+                stage.setExchange();
                 setConStage("completed");
                 setExcStage("inProgress");
                 break;
-            case Stage.Exchange:
-                nextStage = Stage.Agreement;
+            case "exchange":
+                stage.setAgreement();
                 setExcStage("completed");
                 setAgrStage("inProgress");
                 break;
-            case Stage.Agreement:
-                nextStage = Stage.Reflection;
+            case "agreement":
+                stage.setReflection();
                 setAgrStage("completed");
                 setRefStage("inProgress");
                 break;
-            case Stage.Reflection:
-                nextStage = Stage.Complete;
+            case "reflection":
+                stage.setComplete();
                 setRefStage("completed");
-                // move this chat to complete panel;
+                // move this chat to doneChats in LeftSideBar (via useContext to alert it?);
                 break;
             default:
-                nextStage = Stage.NotStarted;
+                console.log('something bad happened advanceStage')
         }
-        transitionStage(nextStage);
+        setStage(stage);
     }
 
-    const saveToDisk = useCallback(() => {
-        let info = {id: id, messages: messages}; 
-        axios.post(`${serverURL}/home/chat/${id}`, info, {
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-      }, [messages])
+    const setStageProgress = (stage) => {
+        switch(stage.name) {
+            case "invitation":
+                setInvStage("inProgress");
+                setConStage("notStarted");
+                setExcStage("notStarted");
+                setAgrStage("notStarted");
+                setRefStage("notStarted");
+                break;
+            case "connection":
+                setInvStage("completed");
+                setConStage("inProgress");
+                setExcStage("notStarted");
+                setAgrStage("notStarted");
+                setRefStage("notStarted");
+                break;
+            case "exchange":
+                setInvStage("completed");
+                setConStage("completed");
+                setExcStage("inProgress");
+                setAgrStage("notStarted");
+                setRefStage("notStarted");
+                break;
+            case "agreement":
+                setInvStage("completed");
+                setConStage("completed");
+                setExcStage("completed");
+                setAgrStage("inProgress");
+                setRefStage("notStarted");
+                break;
+            case "reflection":
+                setInvStage("completed");
+                setConStage("completed");
+                setExcStage("completed");
+                setAgrStage("completed");
+                setRefStage("inProgress");
+            default:
+                console.log('something bad happened in setStageProgress');
+        }
+    }
+
+    // Server solution
+    // const saveToDisk = useCallback(() => {
+    //     let info = {id: id, messages: messages}; 
+    //     axios.post(`${serverURL}/home/chat/${id}`, info, {
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         }
+    //     })
+    //     .catch(function (error) {
+    //         console.log(error);
+    //     });
+    //   }, [messages])
 
     // Allows user to download file to personal device
     // const download = (data, filename) => {
@@ -139,13 +159,24 @@ export default function Chatbot() {
 
     useEffect(() => {
         if (isInitialMount.current) {
-            // loadFromDisk(); --> read file here?
             isInitialMount.current = false;
-         } else {
-            // saveToDisk();
-            // download(messages);
-         }
-    }, [messages, saveToDisk]);
+            return;
+        }
+        let updatedContext = {messages: messages, time: currChatHist.time, stage: stage}
+        dbReq.onsuccess = function(evt) {
+            let db = dbReq.result;
+            if (!db.objectStoreNames.contains('current') || currChatHist.time === undefined) {
+                return;
+            }
+            const tx = db.transaction('current', 'readwrite');
+            const store = tx.objectStore('current');
+            store.put(updatedContext);
+            //tx.complete;
+            // tx.done.then((e) => {
+            //     console.log(e);
+            // });
+        }
+    }, [messages]);
 
     const getAllMessages = () => {
         let arr = [];
