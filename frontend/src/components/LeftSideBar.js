@@ -1,16 +1,23 @@
 import { useContext, useEffect, useState } from "react";
 import React from 'react';
+import { Link , useLocation } from "react-router-dom";
 import newchat from "../assets/icon_newchat.png";
 import stageexp from "../assets/icon_stageexp.png";
 import ChatHistory from "../components/ChatHistory";
 import { HistoryContext, HistoryContextProvider } from '../HistoryContext';
-import Stage from '../Stage';
+import ChatStage from "../ChatStage";
 
 export default function LeftSideBar() {
     const [currChats, setCurrChats] = useState([]);
     const [doneChats, setDoneChats] = useState([]);
     const {currChatHist, setCurrChatHist} = useContext(HistoryContext);
     const value = {currChatHist, setCurrChatHist};
+
+    const [clickedButton, setClickedButton] = useState(false);
+
+    const handleButtonClick = () => {
+        setClickedButton(true);
+    };
 
     const dbReq = indexedDB.open("chathistory", 1);
 
@@ -55,7 +62,7 @@ export default function LeftSideBar() {
 
     const newChat = () => {
         let today = new Date();
-        let emptyStart = {messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new Stage()};
+        let emptyStart = {messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new ChatStage()};
         emptyStart.time = today;
         setCurrChats(currChats.concat([<ChatHistory key={today} startState={emptyStart} />]));
         // switch welcome page to Chatbot pg with a blank startState
@@ -69,28 +76,39 @@ export default function LeftSideBar() {
         <>
             <div className="fixed flex h-screen bg-[#333333] inset-y-0 left-0 w-1/5">
                     {/* Title */}
-                    <div className="absolute inset-x-0 top-6 h-29 left-6 font-bold text-2xl text-white font-calibri">
-                    CONFLICT RESOLVER
-                    </div>
+                    <Link to={"/home"}>
+                    <button className="absolute inset-x-0 top-6 h-29 left-6 font-bold text-2xl text-white font-calibri">
+                    Chat IT Out
+                    </button>
+                    </Link>
 
                     {/* Divider */}
                     <div className="absolute top-20 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
 
                     {/* New Chat Icon */}
-                    <img src={newchat} className="absolute left-10 top-28 rounded-full" />
+                    <img src={newchat} className="absolute left-7 top-28 rounded-full" />
 
                     {/* New Chat */} {/* When the user clicks, a new instance of the chathistory component should be created*/}
                     <button onClick={newChat} className="absolute left-16 top-28 font-normal text-lg leading-5 text-white font-calibri">
                         New Chat 
                     </button>
 
-                    {/* Stage Explanation Icon */}
-                    <img src={stageexp} className="absolute left-10 top-40 square-full" />
+                    {/* Stage Explanation Icon
+                    <img src={stageexp} className="absolute left-10 top-40 square-full" /> */}
 
                     {/* What are 5 stages? */}
-                    <div className="absolute left-16 top-40 font-normal text-lg leading-5 text-white font-calibri">
-                        What are 5 stages?
+                    <Link to= {"/stageexp"}>
+                    <div
+                        className={`flex absolute left-1 top-40 w-80 h-10 ${
+                        (useLocation().pathname === "/stageexp") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
+                        }`}
+                    >
+                        <button className="flex items-center absolute left-4 font-normal text-lg text-white font-calibri">
+                        <img src={stageexp} className="left-2 top-2 square-full mx-3" alt="Stage Icon" />
+                        <span>What are 5 stages?</span>
+                        </button>
                     </div>
+                    </Link>
 
                     <HistoryContext.Provider value={value}>
                         {/* In Progress */}
@@ -111,10 +129,17 @@ export default function LeftSideBar() {
                     <div className="absolute bottom-28 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
 
                     {/* Menu items */}
-
-                    <div className="absolute left-10 bottom-16 font-normal text-lg leading-5 text-white font-calibri">
+                    <Link to={'/useragreement'}>
+                    <div
+                        className={`flex absolute left-1 bottom-12 w-80 h-10 ${
+                        (useLocation().pathname === "/useragreement") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
+                        }`}
+                    >
+                    <button className="absolute left-6 font-normal text-lg leading-5 text-white font-calibri">
                         Terms of use
+                    </button>
                     </div>
+                    </Link>
 
             </div>
         </>

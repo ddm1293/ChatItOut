@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
 import LeftSideBar from "../components/LeftSideBar"
-import StatusBar from "../components/StatusBar"
 import Chatbot from '../components/Chatbot'
 import { openDB } from 'idb';
 import { HistoryContext, HistoryContextProvider } from '../HistoryContext';
