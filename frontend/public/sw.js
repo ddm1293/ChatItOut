@@ -64,11 +64,11 @@ self.addEventListener("fetch", event => {
 // //    ],
 // });
 
-//  const staticStrategy  = new workbox.strategies.CacheFirst({
-//   cacheName: 'pwa-assets',
-// });
+ const staticStrategy  = new workbox.strategies.CacheFirst({
+  cacheName: 'pwa-assets',
+});
 
-// workbox.routing.registerRoute(({url}) => url.pathname.includes('/static/'), staticStrategy);
+workbox.routing.registerRoute(({url}) => url.pathname.includes('/static/'), staticStrategy);
 
 // workbox.routing.registerRoute(({request}) => request.mode === 'navigate', pageStrategy);
 

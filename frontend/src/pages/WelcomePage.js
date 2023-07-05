@@ -5,7 +5,7 @@ export default function WelcomePage() {
     return (
         <>
 
-            <div class="bg-white flex h-screen">
+            <div className="bg-white flex h-screen">
             </div>
 
         </>
