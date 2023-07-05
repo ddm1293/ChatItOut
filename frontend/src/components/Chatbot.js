@@ -57,8 +57,6 @@ export default function Chatbot() {
     }
 
     const advanceStage = () => {
-        //console.log(instanceof stage);
-        console.log(stage)
         switch(stage.name) {
             case "invitation":
                 stage.setConnection();
@@ -89,7 +87,6 @@ export default function Chatbot() {
             default:
                 console.log('something bad happened advanceStage')
         }
-        console.log(typeof stage);
         setStage(stage);
     }
 

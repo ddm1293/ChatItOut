@@ -15,7 +15,7 @@ export default function ChatHistory(props) {
         hours = hours % 12 || 12;
 
         let month = today.toLocaleString('default', {month: 'short'});
-        let day = today.getDay();
+        let day = today.getDate();
         let year = today.getFullYear();
 
         return `${hours}:${minsString}${timeOfDay} ${month} ${day}, ${year}`;
@@ -26,6 +26,9 @@ export default function ChatHistory(props) {
 
         dbReq.onsuccess = function(evt) {
             let db = dbReq.result;
+            if (!db.objectStoreNames.contains('current')) {
+                return;
+            }
             const tx = db.transaction('current', 'readwrite');
             const store = tx.objectStore('current');
             store.add(startState);
