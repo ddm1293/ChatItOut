@@ -4,6 +4,7 @@ import axios from 'axios';
 import stagearrow from "../assets/icon_stagearrow.png";
 import { HistoryContext, HistoryContextProvider } from '../HistoryContext';
 import stagecomplete from "../assets/icon_stagecomplete.png";
+import ailogo from "../assets/icon_ailogo.png";
 
 const serverURL = "http://localhost:5000";
 
@@ -18,6 +19,7 @@ export default function Chatbot() {
     const [excStage, setExcStage] = useState("notStarted");
     const [agrStage, setAgrStage] = useState("notStarted");
     const [refStage, setRefStage] = useState("notStarted");
+    const containerRef = useRef(null);
 
     const isInitialMount = useRef(true);
     const dbReq = indexedDB.open("chathistory", 1);
@@ -147,8 +149,10 @@ export default function Chatbot() {
     useEffect(() => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
             return;
         }
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
         let updatedContext = {messages: messages, time: currChatHist.time, stage: stage}
         dbReq.onsuccess = function(evt) {
             let db = dbReq.result;
@@ -184,32 +188,43 @@ export default function Chatbot() {
     return (
         <>
         <div className="absolute top-28 w-2/3 right-24 vg-[#1e1e1e] rounded-lg">
-            <div className="mb-4 max-h-[600px] overflow-y-auto">
+            <div className="mb-4 max-h-[600px] overflow-y-auto" ref={containerRef}>
             { getAllMessages().map((message, index) =>  ( 
-                <div
+                <div className={`flex flex-col basis-3/5" ${
+                    message.type === 'user' ? "items-end" : "items-start"}`}>
+
+                <div className='flex'>
+                <img src={ailogo} alt="Chatbot Logo" className={`items-start w-12 h-12 mt-1" ${
+                    message.type === 'user' ? "hidden" : ""}`} />
+                
+                <span
                     key={index}
-                    className={`mb-4 p-4 ${
-                        message.type === 'user' ? 'bg-white text-black' : 'bg-[#e1e1e1] bg-opacity-10 text-white'
-                    } rounded-lg`}
-                >
+                    className={`ml-10 mb-4 p-4 font-calibri text-base text-center whitespace-pre-wrap max-w-fit' ${
+                        message.type === 'user' ? 'bg-white text-black rounded-tl-xl rounded-tr-xl rounded-bl-xl' : 'bg-[#e1e1e1] bg-opacity-10 text-white rounded-tl-xl rounded-tr-xl rounded-br-xl'
+                    }`}
+                    style={{ display:'inline-block'}}>
+                        
                 {message.message}
+                </span>
+                </div>
                 </div>
             ))}
             </div>
-            <div className="absolute top-96 w-2/3 left-80">
+            <div className="absolute top-96 w-3/4 left-28">
                 <form onSubmit={handleUserInput}>
             <input
                 type="text"
                 name="userInput"
-                className="absolute top-56 w-4/5 px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring focus:border-blue-500"
-                placeholder="Type your message..."
+                className="absolute font-calibri font-sm justify-center top-56 w-full px-4 py-2 rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
+                placeholder="Send your message here"
             />
+            <span>
             <button
-                type="button"
-                onClick={handleUserInput}
-                className="absolute top-56 right-2 transform -translate-y-1/2 rounded-full p-2">
+                type="submit"
+                className="absolute top-60 right-2 transform -translate-y-1/2 rounded-full p-2">
                 <img src={send} className="w-4 h-4"/>
             </button>
+            </span>
                 </form>
             </div>
         </div>

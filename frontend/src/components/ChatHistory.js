@@ -27,7 +27,7 @@ export default function ChatHistory(props) {
     const getStageMessages = (stageMsgs) => {
         let output = '';
         if (stageMsgs.length === 0) {
-            return '*not started*\n'
+            return '*not started*\n\n'
         }
         for (let msg of stageMsgs) {
             msg.type === 'user' ? output += 'You: ' : output += 'Coach: ';
