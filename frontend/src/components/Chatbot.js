@@ -144,20 +144,6 @@ export default function Chatbot() {
     //     });
     //   }, [messages])
 
-    // Allows user to download file to personal device
-    // const download = (data, filename) => {
-    //     const json = JSON.stringify(data, null, 2);
-    //     const link = document.createElement('a');
-    
-    //     link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(json));
-    //     link.setAttribute('download', filename || `${id}.json`);
-    //     link.style.display = 'none';
-    
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    // }  
-
     useEffect(() => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
