@@ -27,7 +27,7 @@ self.addEventListener("fetch", event => {
     caches.match(event.request).then(response => {
       return response || fetch(event.request);
     }).catch(e => {
-      console.log('no internet') // TODO: offline handling
+      console.log('no internet') // TODO: offline handling --> show offline pg
     })
   )
 });
