@@ -10,7 +10,7 @@ from llama_index import (
     load_index_from_storage,
     StorageContext,
     SimpleDirectoryReader,
-    VectorStoreIndex,
+    GPTVectorStoreIndex,
     LLMPredictor,
     PromptHelper,
     ServiceContext
@@ -87,7 +87,7 @@ def construct_index(directory_path):
     # load data
     documents = SimpleDirectoryReader(directory_path).load_data()
     # build index
-    index = VectorStoreIndex.from_documents(documents, service_context=service_context)
+    index = GPTVectorStoreIndex.from_documents(documents, service_context=service_context)
     index.set_index_id("vector_index")
     index.storage_context.persist(persist_dir="./storage")
     return index
