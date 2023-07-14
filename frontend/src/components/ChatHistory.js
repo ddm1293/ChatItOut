@@ -2,13 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import chathist from "../assets/icon_chathist.png";
 import email from "../assets/icon_sendemail.png";
 import download from "../assets/icon_download.png";
-import { HistoryContext, HistoryContextProvider } from '../HistoryContext';
+import trash from "../assets/icon_trashchat.png";
+import chatdone from "../assets/icon_chatdone.png";
+import { ChatDeleteContext, HistoryContext } from '../ChatContexts';
 import {jsPDF} from 'jspdf'; 
 
 export default function ChatHistory(props) {
     const [startState, setStartState] = useState(props.startState);
     const time = props.startState.time;
     const {currChatHist, setCurrChatHist} = useContext(HistoryContext);
+    const {chatToDelete, setChatToDelete} = useContext(ChatDeleteContext);
     
     const getTime = (today) => {
         let hours = today.getHours();
@@ -58,7 +61,7 @@ export default function ChatHistory(props) {
         const shareData = {
             text: chat
         }
-        try {
+        try { // TODO: check if canShare first? 
             await navigator.share(shareData);
             console.log('Chat shared succesfully');
         } catch (err) {
@@ -104,26 +107,35 @@ export default function ChatHistory(props) {
         document.body.removeChild(link);
     }
 
+    const deleteChat = () => {
+        setChatToDelete({stage: startState.stage, time: time});
+        if (time.getTime() == currChatHist.time.getTime()) {
+            // TODO: if this chat is currently open, switch back to welcome page
+            console.log('close');
+        }
+    }
+
     useEffect(() => {
         let dbReq = indexedDB.open("chathistory", 1);
 
         dbReq.onsuccess = function(evt) {
             let db = dbReq.result;
-            if (!db.objectStoreNames.contains('current')) {
+            if (!db.objectStoreNames.contains('chats')) {
                 return;
             }
-            const tx = db.transaction('current', 'readwrite');
-            const store = tx.objectStore('current');
+            const tx = db.transaction('chats', 'readwrite');
+            const store = tx.objectStore('chats');
             store.add(startState);
         }
 
         setCurrChatHist(startState);
     }, []);
 
+
     return (
         <>
             <button onClick={() => setCurrChatHist(startState)} className='font-normal text-lg leading-5 text-white font-calibri'>
-                <img src={chathist}/>
+                <img src={startState.stage.name === 'complete' ? chatdone: chathist}/>
                 {getTime(time)}
             </button>
             <button onClick={() => downloadChatPDF()}>
@@ -131,6 +143,9 @@ export default function ChatHistory(props) {
             </button>
             <button onClick={() => sendEmail()}>
                 <img src={email}/>
+            </button>
+            <button onClick={() => deleteChat()}>
+                <img src={trash}/>
             </button>
         </>
     ) 
