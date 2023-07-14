@@ -9,7 +9,7 @@ export default function HomePage() {
     const [currChatHist, setCurrChatHist] = useState({messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new ChatStage()});
     const historyContextValue = {currChatHist, setCurrChatHist};
 
-    const [chatToDelete, setChatToDelete] = useState(new Date());
+    const [chatToDelete, setChatToDelete] = useState({stage: new ChatStage(), time: new Date()});
     const chatToDeleteValue = {chatToDelete, setChatToDelete};
 
     const [chatToComplete, setChatToComplete] = useState(new Date());

@@ -21,7 +21,7 @@ function App() {
     }
 
     // Open DB
-    async function createDB() { // CHECK IF BROWSER SUPPORTS INDEXEDDB
+    async function createDB() { // TODO: CHECK IF BROWSER SUPPORTS INDEXEDDB
 
       // const dbRequest = indexedDB.open('chathistory', 1);
 

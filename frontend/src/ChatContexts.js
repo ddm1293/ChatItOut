@@ -12,7 +12,7 @@ const ChatDeleteContext = createContext({
 });
 
 const ChatCompleteContext = createContext({
-  currChatHist: new Date(),
+  currChatHist: {stage: new ChatStage(), time: new Date()},
   setChatToComplete: () => {}
 });
 

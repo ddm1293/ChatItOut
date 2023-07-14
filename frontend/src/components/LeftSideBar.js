@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import React from 'react';
 import { Link , useLocation } from "react-router-dom";
 import newchat from "../assets/icon_newchat.png";
 import stageexp from "../assets/icon_stageexp.png";
 import ChatHistory from "../components/ChatHistory";
-import { HistoryContext, ChatCompleteContext } from '../ChatContexts';
+import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatContexts';
 import ChatStage from "../ChatStage";
 
 export default function LeftSideBar() {
@@ -14,6 +14,9 @@ export default function LeftSideBar() {
     const value = {currChatHist, setCurrChatHist};
 
     const {chatToComplete, setChatToComplete} = useContext(ChatCompleteContext);
+    const {chatToDelete, setChatToDelete} = useContext(ChatDeleteContext);
+
+    let isInitialMount = useRef(true);
 
     const [clickedButton, setClickedButton] = useState(false);
 
@@ -21,11 +24,12 @@ export default function LeftSideBar() {
         setClickedButton(true);
     };
 
-    const dbReq = indexedDB.open("chathistory", 1);
+    const loadDbReq = indexedDB.open("chathistory", 1);
+    const delDbReq = indexedDB.open("chathistory", 1);
 
     const loadChats = () => {
-        dbReq.onsuccess = async function(evt) {
-            let db = dbReq.result;
+        loadDbReq.onsuccess = async function(evt) {
+            let db = loadDbReq.result;
             if (!db.objectStoreNames.contains('chats')) {
                 return;
             }
@@ -42,14 +46,20 @@ export default function LeftSideBar() {
                     let stage = new ChatStage(dbChat.stage.name);
                     dbChat.stage = stage;
                     if (stage.name === 'complete') {
-                        doneChatHistories.push(<ChatHistory key={dbChat.time} startState={dbChat} />);
+                        doneChatHistories.push(<ChatHistory key={dbChat.time.getTime()} startState={dbChat} />);
                     } else {
-                        currChatHistories.push(<ChatHistory key={dbChat.time} startState={dbChat} />);
+                        currChatHistories.push(<ChatHistory key={dbChat.time.getTime()} startState={dbChat} />);
                     }
                 }
                 setCurrChats(currChats.concat(currChatHistories));
                 setDoneChats(doneChats.concat(doneChatHistories));
             }
+            tx.oncomplete = () => {
+                db.close();
+            }
+        }
+        loadDbReq.onerror = (err) => {
+            console.log(err);
         }
         // read from db
         // for each object, add a new ChatHistory to the correct array
@@ -59,7 +69,6 @@ export default function LeftSideBar() {
 
     const newChat = () => {
         let today = new Date();
-        //console.log(today);
         let emptyStart = {messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new ChatStage()};
         emptyStart.time = today;
         setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
@@ -67,6 +76,11 @@ export default function LeftSideBar() {
     }
 
     const completeChat = () => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+
         let chatToCompleteTime = chatToComplete.getTime();
         let completedChat;
         let newCurrChats = [];
@@ -83,13 +97,60 @@ export default function LeftSideBar() {
         setDoneChats(doneChats.concat([completedChat]));
     }
 
+    const deleteChat = () => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+
+        let chatToDeleteTime = chatToDelete.time.getTime();
+        console.log(chatToDeleteTime);
+
+        // Update UI
+        let newChats = [];
+        console.log(chatToDelete);
+        if (chatToDelete.stage.name === 'complete') {
+            console.log('delete a complete');
+            for (let doneChat of doneChats) {
+                console.log(doneChat.key);
+                if (doneChat.key != chatToDeleteTime) {
+                    newChats.push(doneChat);
+                }
+            }
+            setDoneChats(newChats);
+        } else {
+            for (let currChat of currChats) {
+                console.log(currChat.key);
+                if (currChat.key != chatToDeleteTime) {
+                    newChats.push(currChat);
+                }
+            }
+            setCurrChats(newChats);
+        }
+
+        // Update DB
+        delDbReq.onsuccess = async function(evt) {
+            let db = delDbReq.result;
+            if (!db.objectStoreNames.contains('chats')) {
+                return;
+            }
+            const tx = await db.transaction('chats', 'readwrite');
+            const store = tx.objectStore('chats');
+            store.delete(chatToDelete.time);
+        }
+    }
+
     useEffect(() => {
         loadChats();
     }, []);
 
     useEffect(() => {
         completeChat();
-    }, [chatToComplete])
+    }, [chatToComplete]);
+
+    useEffect(() => {
+        deleteChat();
+    }, [chatToDelete]);
 
     return (
         <>

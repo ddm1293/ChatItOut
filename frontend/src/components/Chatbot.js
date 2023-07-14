@@ -16,7 +16,7 @@ export default function Chatbot() {
 
     const [messages, setMessages] = useState(currChatHist.messages);
     const globalStage = currChatHist.stage;
-    const [locslStage, setLocalStage] = useState(globalStage);
+    const [localStage, setLocalStage] = useState(globalStage);
 
     const [invStage, setInvStage] = useState("inProgress");
     const [conStage, setConStage] = useState("notStarted");
@@ -87,7 +87,6 @@ export default function Chatbot() {
             case "reflection":
                 globalStage.setComplete();
                 setRefStage("completed");
-                console.log('done');
                 // move this chat to doneChats in LeftSideBar
                 setChatToComplete(currChatHist.time);
                 break;
@@ -180,7 +179,7 @@ export default function Chatbot() {
             //     console.log(e);
             // });
         }
-    }, [messages, locslStage]);
+    }, [messages, localStage]);
 
     const getAllMessages = () => {
         let arr = [];

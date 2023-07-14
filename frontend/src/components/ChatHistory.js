@@ -4,13 +4,14 @@ import email from "../assets/icon_sendemail.png";
 import download from "../assets/icon_download.png";
 import trash from "../assets/icon_trashchat.png";
 import chatdone from "../assets/icon_chatdone.png";
-import { HistoryContext } from '../ChatContexts';
+import { ChatDeleteContext, HistoryContext } from '../ChatContexts';
 import {jsPDF} from 'jspdf'; 
 
 export default function ChatHistory(props) {
     const [startState, setStartState] = useState(props.startState);
     const time = props.startState.time;
     const {currChatHist, setCurrChatHist} = useContext(HistoryContext);
+    const {chatToDelete, setChatToDelete} = useContext(ChatDeleteContext);
     
     const getTime = (today) => {
         let hours = today.getHours();
@@ -60,7 +61,7 @@ export default function ChatHistory(props) {
         const shareData = {
             text: chat
         }
-        try { // check if canShare first? 
+        try { // TODO: check if canShare first? 
             await navigator.share(shareData);
             console.log('Chat shared succesfully');
         } catch (err) {
@@ -107,8 +108,11 @@ export default function ChatHistory(props) {
     }
 
     const deleteChat = () => {
-
-        // if this chat is currently open, switch back to welcome page
+        setChatToDelete({stage: startState.stage, time: time});
+        if (time.getTime() == currChatHist.time.getTime()) {
+            // TODO: if this chat is currently open, switch back to welcome page
+            console.log('close');
+        }
     }
 
     useEffect(() => {
