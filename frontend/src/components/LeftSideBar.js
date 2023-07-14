@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import React from 'react';
 import { Link , useLocation } from "react-router-dom";
 import newchat from "../assets/icon_newchat.png";
 import stageexp from "../assets/icon_stageexp.png";
 import ChatHistory from "../components/ChatHistory";
-import { HistoryContext, HistoryContextProvider } from '../HistoryContext';
+import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatContexts';
 import ChatStage from "../ChatStage";
 
 export default function LeftSideBar() {
@@ -13,46 +13,53 @@ export default function LeftSideBar() {
     const {currChatHist, setCurrChatHist} = useContext(HistoryContext);
     const value = {currChatHist, setCurrChatHist};
 
+    const {chatToComplete, setChatToComplete} = useContext(ChatCompleteContext);
+    const {chatToDelete, setChatToDelete} = useContext(ChatDeleteContext);
+
+    let isInitialMount = useRef(true);
+
     const [clickedButton, setClickedButton] = useState(false);
 
     const handleButtonClick = () => {
         setClickedButton(true);
     };
 
-    const dbReq = indexedDB.open("chathistory", 1);
+    const loadDbReq = indexedDB.open("chathistory", 1);
+    const delDbReq = indexedDB.open("chathistory", 1);
 
     const loadChats = () => {
-        dbReq.onsuccess = async function(evt) {
-            let db = dbReq.result;
-            if (!db.objectStoreNames.contains('current')) {
+        loadDbReq.onsuccess = async function(evt) {
+            let db = loadDbReq.result;
+            if (!db.objectStoreNames.contains('chats')) {
                 return;
             }
 
-            // load current chats
-            const currTx = await db.transaction('current', 'readonly');
-            const currStore = currTx.objectStore('current');
-            let currDBChatsObj = await currStore.getAll();
-            currDBChatsObj.onsuccess = () => {
-                let currDBChats = currDBChatsObj.result;
-                let chatHistories = []
-                for (let dbChat of currDBChats) {
-                    chatHistories.push(<ChatHistory key={dbChat.time} startState={dbChat} />);
+            // load chats
+            const tx = await db.transaction('chats', 'readonly');
+            const store = tx.objectStore('chats');
+            let dbChatsObj = await store.getAll();
+            dbChatsObj.onsuccess = () => {
+                let dbChats = dbChatsObj.result;
+                let currChatHistories = []
+                let doneChatHistories = []
+                for (let dbChat of dbChats) {
+                    let stage = new ChatStage(dbChat.stage.name);
+                    dbChat.stage = stage;
+                    if (stage.name === 'complete') {
+                        doneChatHistories.push(<ChatHistory key={dbChat.time.getTime()} startState={dbChat} />);
+                    } else {
+                        currChatHistories.push(<ChatHistory key={dbChat.time.getTime()} startState={dbChat} />);
+                    }
                 }
-                setCurrChats(currChats.concat(chatHistories));
+                setCurrChats(currChats.concat(currChatHistories));
+                setDoneChats(doneChats.concat(doneChatHistories));
             }
-
-            // load completed chats
-            const doneTx = await db.transaction('completed', 'readonly');
-            const doneStore = doneTx.objectStore('completed');
-            let doneDBChatsObj = await doneStore.getAll();
-            doneDBChatsObj.onsuccess = () => {
-                let doneDBChats = doneDBChatsObj.result;
-                let chatHistories = []
-                for (let dbChat of doneDBChats) {
-                    chatHistories.push(<ChatHistory key={dbChat.time} startState={dbChat} />);
-                }
-                setDoneChats(doneChats.concat(chatHistories));
+            tx.oncomplete = () => {
+                db.close();
             }
+        }
+        loadDbReq.onerror = (err) => {
+            console.log(err);
         }
         // read from db
         // for each object, add a new ChatHistory to the correct array
@@ -64,13 +71,86 @@ export default function LeftSideBar() {
         let today = new Date();
         let emptyStart = {messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new ChatStage()};
         emptyStart.time = today;
-        setCurrChats(currChats.concat([<ChatHistory key={today} startState={emptyStart} />]));
+        setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
         // switch welcome page to Chatbot pg with a blank startState
+    }
+
+    const completeChat = () => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+
+        let chatToCompleteTime = chatToComplete.getTime();
+        let completedChat;
+        let newCurrChats = [];
+
+        for (let currChat of currChats) {
+            if (currChat.key != chatToCompleteTime) {
+                newCurrChats.push(currChat);
+            } else {
+                completedChat = currChat;
+            }
+        }
+
+        setCurrChats(newCurrChats);
+        setDoneChats(doneChats.concat([completedChat]));
+    }
+
+    const deleteChat = () => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+
+        let chatToDeleteTime = chatToDelete.time.getTime();
+        console.log(chatToDeleteTime);
+
+        // Update UI
+        let newChats = [];
+        console.log(chatToDelete);
+        if (chatToDelete.stage.name === 'complete') {
+            console.log('delete a complete');
+            for (let doneChat of doneChats) {
+                console.log(doneChat.key);
+                if (doneChat.key != chatToDeleteTime) {
+                    newChats.push(doneChat);
+                }
+            }
+            setDoneChats(newChats);
+        } else {
+            for (let currChat of currChats) {
+                console.log(currChat.key);
+                if (currChat.key != chatToDeleteTime) {
+                    newChats.push(currChat);
+                }
+            }
+            setCurrChats(newChats);
+        }
+
+        // Update DB
+        delDbReq.onsuccess = async function(evt) {
+            let db = delDbReq.result;
+            if (!db.objectStoreNames.contains('chats')) {
+                return;
+            }
+            const tx = await db.transaction('chats', 'readwrite');
+            const store = tx.objectStore('chats');
+            store.delete(chatToDelete.time);
+        }
     }
 
     useEffect(() => {
         loadChats();
     }, []);
+
+    useEffect(() => {
+        completeChat();
+    }, [chatToComplete]);
+
+    useEffect(() => {
+        deleteChat();
+    }, [chatToDelete]);
 
     return (
         <>
@@ -92,9 +172,6 @@ export default function LeftSideBar() {
                     <button onClick={newChat} className="absolute left-14 top-28 font-normal text-lg leading-5 text-white font-calibri">
                         New Chat 
                     </button>
-
-                    {/* Stage Explanation Icon
-                    <img src={stageexp} className="absolute left-10 top-40 square-full" /> */}
 
                     {/* What are 5 stages? */}
                     <Link to= {"/stageexp"}>
