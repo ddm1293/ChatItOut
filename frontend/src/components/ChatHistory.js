@@ -122,15 +122,17 @@ export default function ChatHistory(props) {
 
     return (
         <>
-            <button onClick={() => setCurrChatHist(startState)} className='font-normal text-lg leading-5 text-white font-calibri'>
-                <img src={chathist}/>
-                {getTime(time)}
+            <button onClick={() => setCurrChatHist(startState)} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
+                <div className = "flex"> 
+                    <img className= "px-1" src={chathist} alt="Chat History" />
+                    <span className= "px-1"> {getTime(time)} </span>
+                </div>
             </button>
             <button onClick={() => downloadChatPDF()}>
-                <img src={download}/>
+                <img className= "px-1" src={download}/>
             </button>
             <button onClick={() => sendEmail()}>
-                <img src={email}/>
+                <img className= "px-1" src={email}/>
             </button>
         </>
     ) 

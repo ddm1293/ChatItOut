@@ -77,7 +77,7 @@ export default function LeftSideBar() {
             <div className="fixed flex h-screen bg-[#333333] inset-y-0 left-0 w-1/5">
                     {/* Title */}
                     <Link to={"/home"}>
-                    <button className="absolute inset-x-0 top-6 h-29 left-6 font-bold text-2xl text-white font-calibri">
+                    <button className="absolute top-6 h-29 left-7 font-bold text-2xl text-white font-calibri">
                     Chat IT Out
                     </button>
                     </Link>
@@ -86,10 +86,10 @@ export default function LeftSideBar() {
                     <div className="absolute top-20 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
 
                     {/* New Chat Icon */}
-                    <img src={newchat} className="absolute left-7 top-28 rounded-full" />
+                    <img src={newchat} className="absolute left-8 top-28 rounded-full" />
 
                     {/* New Chat */} {/* When the user clicks, a new instance of the chathistory component should be created*/}
-                    <button onClick={newChat} className="absolute left-16 top-28 font-normal text-lg leading-5 text-white font-calibri">
+                    <button onClick={newChat} className="absolute left-14 top-28 font-normal text-lg leading-5 text-white font-calibri">
                         New Chat 
                     </button>
 
