@@ -2,18 +2,22 @@ import React, {useState, useEffect, useRef, useCallback, useContext} from 'react
 import send from "../assets/icon_send.png";
 import axios from 'axios';
 import stagearrow from "../assets/icon_stagearrow.png";
-import { HistoryContext, HistoryContextProvider } from '../HistoryContext';
+import { ChatCompleteContext, HistoryContext, HistoryContextProvider } from '../ChatContexts';
 import stagecomplete from "../assets/icon_stagecomplete.png";
 import ailogo from "../assets/icon_ailogo.png";
+import ChatStage from '../ChatStage';
 
 const serverURL = "http://localhost:5000";
 
 
 export default function Chatbot() {
     const {currChatHist, setCurrChatHist} = useContext(HistoryContext);
+    const {chatToComplete, setChatToComplete} = useContext(ChatCompleteContext);
 
     const [messages, setMessages] = useState(currChatHist.messages);
-    const [stage, setStage] = useState(currChatHist.stage);
+    const globalStage = currChatHist.stage;
+    const [locslStage, setLocalStage] = useState(globalStage);
+
     const [invStage, setInvStage] = useState("inProgress");
     const [conStage, setConStage] = useState("notStarted");
     const [excStage, setExcStage] = useState("notStarted");
@@ -35,7 +39,7 @@ export default function Chatbot() {
 
     useEffect(() => {
         setMessages(currChatHist.messages);
-        setStage(currChatHist.stage);
+        setLocalStage(currChatHist.stage);
         setStageProgress(currChatHist.stage);
     }, [currChatHist])
 
@@ -44,14 +48,14 @@ export default function Chatbot() {
         const userInput = content.target.userInput.value;
         const chatbotMessage = generateResponse();
 
-        if (stage.name !== "complete") {
-            let stageMessages = messages[stage.name];
+        if (globalStage.name !== "complete") {
+            let stageMessages = messages[globalStage.name];
             stageMessages.push({ type: 'user', message:userInput });
             stageMessages.push({ type: 'chatbot', message:chatbotMessage });
 
             setMessages({
                 ...messages,
-                [stage.name]: stageMessages
+                [globalStage.name]: stageMessages
             });
         }       
         
@@ -59,37 +63,38 @@ export default function Chatbot() {
     }
 
     const advanceStage = () => {
-        switch(stage.name) {
+        switch(globalStage.name) {
             case "invitation":
-                stage.setConnection();
-                //stage.setConnection();
+                globalStage.setConnection();
                 setInvStage("completed");
                 setConStage("inProgress");
                 break;
             case "connection":
-                stage.setExchange();
+                globalStage.setExchange();
                 setConStage("completed");
                 setExcStage("inProgress");
                 break;
             case "exchange":
-                stage.setAgreement();
+                globalStage.setAgreement();
                 setExcStage("completed");
                 setAgrStage("inProgress");
                 break;
             case "agreement":
-                stage.setReflection();
+                globalStage.setReflection();
                 setAgrStage("completed");
                 setRefStage("inProgress");
                 break;
             case "reflection":
-                stage.setComplete();
+                globalStage.setComplete();
                 setRefStage("completed");
-                // move this chat to doneChats in LeftSideBar (via useContext to alert it?);
+                console.log('done');
+                // move this chat to doneChats in LeftSideBar
+                setChatToComplete(currChatHist.time);
                 break;
             default:
-                console.log('something bad happened advanceStage')
+                console.log('something bad happened in advanceStage')
         }
-        setStage(stage);
+        setLocalStage(new ChatStage(globalStage.name));
     }
 
     const setStageProgress = (stage) => {
@@ -128,6 +133,14 @@ export default function Chatbot() {
                 setExcStage("completed");
                 setAgrStage("completed");
                 setRefStage("inProgress");
+                break;
+            case "complete":
+                setInvStage("completed");
+                setConStage("completed");
+                setExcStage("completed");
+                setAgrStage("completed");
+                setRefStage("completed");
+                break;
             default:
                 console.log('something bad happened in setStageProgress');
         }
@@ -147,27 +160,27 @@ export default function Chatbot() {
     //   }, [messages])
 
     useEffect(() => {
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+
         if (isInitialMount.current) {
             isInitialMount.current = false;
-            containerRef.current.scrollTop = containerRef.current.scrollHeight;
             return;
         }
-        containerRef.current.scrollTop = containerRef.current.scrollHeight;
-        let updatedContext = {messages: messages, time: currChatHist.time, stage: stage}
+        let updatedContext = {messages: messages, time: currChatHist.time, stage: globalStage}
         dbReq.onsuccess = function(evt) {
             let db = dbReq.result;
-            if (!db.objectStoreNames.contains('current') || currChatHist.time === undefined) {
+            if (!db.objectStoreNames.contains('chats') || currChatHist.time === undefined) {
                 return;
             }
-            const tx = db.transaction('current', 'readwrite');
-            const store = tx.objectStore('current');
+            const tx = db.transaction('chats', 'readwrite');
+            const store = tx.objectStore('chats');
             store.put(updatedContext);
             //tx.complete;
             // tx.done.then((e) => {
             //     console.log(e);
             // });
         }
-    }, [messages]);
+    }, [messages, locslStage]);
 
     const getAllMessages = () => {
         let arr = [];

@@ -1,10 +1,6 @@
 class ChatStage {
-    constructor() {
-      this.name = "invitation";
-    }
-  
-    doSomething() {
-      console.log("wtf");
+    constructor(name) {
+      this.name = name || "invitation";
     }
   
     setInvitation() {
