@@ -156,7 +156,7 @@ export default function LeftSideBar() {
         <>
             <div className="fixed flex h-screen bg-[#333333] inset-y-0 left-0 w-1/5">
                     {/* Title */}
-                    <Link to={"/home"}>
+                    <Link to={"/welcome"}>
                     <button className="absolute top-6 h-29 left-7 font-bold text-2xl text-white font-calibri">
                     Chat IT Out
                     </button>
