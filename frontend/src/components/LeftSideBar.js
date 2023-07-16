@@ -104,15 +104,11 @@ export default function LeftSideBar() {
         }
 
         let chatToDeleteTime = chatToDelete.time.getTime();
-        console.log(chatToDeleteTime);
 
         // Update UI
         let newChats = [];
-        console.log(chatToDelete);
         if (chatToDelete.stage.name === 'complete') {
-            console.log('delete a complete');
             for (let doneChat of doneChats) {
-                console.log(doneChat.key);
                 if (doneChat.key != chatToDeleteTime) {
                     newChats.push(doneChat);
                 }
@@ -120,7 +116,6 @@ export default function LeftSideBar() {
             setDoneChats(newChats);
         } else {
             for (let currChat of currChats) {
-                console.log(currChat.key);
                 if (currChat.key != chatToDeleteTime) {
                     newChats.push(currChat);
                 }
