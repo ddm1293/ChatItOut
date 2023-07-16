@@ -180,6 +180,10 @@ export default function Chatbot() {
     //     });
     //   }, [messages])
 
+    const scrollToStage = () => {
+        // TODO
+    }
+
     useEffect(() => {
         if (isOnline) containerRef.current.scrollTop = containerRef.current.scrollHeight;
 
@@ -190,7 +194,7 @@ export default function Chatbot() {
         let updatedContext = { messages: messages, time: currChatHist.time, stage: globalStage }
         dbReq.onsuccess = function (evt) {
             let db = dbReq.result;
-            if (!db.objectStoreNames.contains('chats') || currChatHist.time === undefined) {
+            if (!db.objectStoreNames.contains('chats') || (messages === currChatHist.messages && localStage === currChatHist.stage)) {
                 return;
             }
             const tx = db.transaction('chats', 'readwrite');
@@ -223,7 +227,7 @@ export default function Chatbot() {
                     <p>You are offline *sadge*</p>
                 ) : (
                     <div>
-                        
+
                         <div className="absolute top-28 w-2/3 right-24 vg-[#1e1e1e] rounded-lg">
                             <div className="mb-4 max-h-[600px] overflow-y-auto" ref={containerRef}>
                                 {getAllMessages().map((message, index) => (
@@ -265,7 +269,8 @@ export default function Chatbot() {
 
                         {/* Left Status Bar */}
                         <div className="absolute w-4/5 h-20 bg-[#242424] flex right-0 top-0">
-                            <span className={`flex absolute top-8 left-0 w-64 h-12 border-b-4 ${invStage === "inProgress" ? "border-[#1993D6]" : "border-none"}`}></span>
+                        <button onClick={() => scrollToStage()} className='group'>
+                            <span className={`flex absolute top-8 left-0 w-64 h-12 ${invStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} group-hover:border-b-4 group-hover:border-[#1993D6]`}></span>
                             <div className="flex absolute top-8 left-20">
                                 <span className={`w-4 h-4 rounded-full ${invStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}> </span>
                                 <span className={`absolute left-1 -top-1 font-calibri text-14 leading-17 ${invStage === "completed" ? "opacity-0" : "text-black"}`}> 1 </span>
@@ -275,8 +280,10 @@ export default function Chatbot() {
                                 </span>
                                 <img src={stagearrow} className="absolute left-40 top-1 rounded-full" alt="Stage Arrow" />
                             </div>
+                            </button>
 
-                            <span className={`flex absolute top-8 left-64 w-64 h-12 border-b-4 ${conStage === "inProgress" ? "border-[#1993D6]" : "border-none"}`}></span>
+                            <button onClick={() => scrollToStage()} className='group' disabled={conStage === "notStarted"}>
+                            <span className={`flex absolute top-8 left-64 w-64 h-12 ${conStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${conStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></span>
                             <div className="flex absolute top-8 left-80">
                                 <span className={`w-4 h-4 rounded-full ${conStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}> </span>
                                 <span className={`absolute left-1 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 ${conStage === "completed" ? "opacity-0" : "text-black"}`}>2</span>
@@ -286,8 +293,10 @@ export default function Chatbot() {
                                 </span>
                                 <img src={stagearrow} className="absolute left-44 top-1 rounded-full" alt="Stage Arrow" />
                             </div>
+                            </button>
 
-                            <span className={`flex absolute top-8 left-[500px] w-64 h-12 border-b-4 ${excStage === "inProgress" ? "border-[#1993D6]" : "border-none"}`}></span>
+                            <button onClick={() => scrollToStage()} className='group' disabled={excStage === "notStarted"}>
+                            <span className={`flex absolute top-8 left-[500px] w-64 h-12 ${excStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${excStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></span>
                             <div className="flex absolute top-8" style={{ left: '560px' }}>
                                 <span className={`w-4 h-4 rounded-full ${excStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}> </span>
                                 <span className={`absolute left-1 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 ${excStage === "completed" ? "opacity-0" : "text-black"}`}>3</span>
@@ -297,8 +306,10 @@ export default function Chatbot() {
                                 </span>
                                 <img src={stagearrow} className="absolute left-44 top-1 rounded-full" alt="Stage Arrow" />
                             </div>
+                            </button>
 
-                            <div className={`flex absolute top-8 left-[750px] w-60 h-12 border-b-4 ${agrStage === "inProgress" ? "border-[#1993D6]" : "border-none"}`}></div>
+                            <button onClick={() => scrollToStage()} className='group' disabled={agrStage === "notStarted"}>
+                            <div className={`flex absolute top-8 left-[750px] w-60 h-12 ${agrStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${agrStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></div>
                             <div className="flex absolute top-8" style={{ left: '800px' }}>
                                 <span className={`w-4 h-4 rounded-full ${agrStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}> </span>
                                 <span className={`absolute left-1 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 ${agrStage === "completed" ? "opacity-0" : "text-black"}`}>4</span>
@@ -308,8 +319,10 @@ export default function Chatbot() {
                                 </span>
                                 <img className="absolute left-44 top-1 rounded-full" src={stagearrow} alt="Stage Arrow" />
                             </div>
+                            </button>
 
-                            <div className={`flex absolute top-8 left-[990px] w-64 h-12 border-b-4 ${refStage === "inProgress" ? "border-[#1993D6]" : "border-none"}`}></div>
+                            <button onClick={() => scrollToStage()} className='group' disabled={refStage === "notStarted"}>
+                            <div className={`flex absolute top-8 left-[990px] w-64 h-12 ${refStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${refStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></div>
                             <div className="flex absolute top-8" style={{ left: '1040px' }}>
                                 <span className={`w-4 h-4 rounded-full ${refStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}> </span>
                                 <span className={`absolute left-1 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 ${refStage === "completed" ? "opacity-0" : "text-black"}`}>5</span>
@@ -318,6 +331,7 @@ export default function Chatbot() {
                                     Reflection
                                 </span>
                             </div>
+                            </button>
                         </div>
 
                     </div>

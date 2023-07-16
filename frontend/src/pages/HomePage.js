@@ -6,7 +6,7 @@ import ChatStage from '../ChatStage';
 
 
 export default function HomePage() {
-    const [currChatHist, setCurrChatHist] = useState({messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new ChatStage()});
+    const [currChatHist, setCurrChatHist] = useState({messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, time: new Date(), stage: new ChatStage()});
     const historyContextValue = {currChatHist, setCurrChatHist};
 
     const [chatToDelete, setChatToDelete] = useState({stage: new ChatStage(), time: new Date()});
