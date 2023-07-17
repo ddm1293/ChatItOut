@@ -1,18 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import chathist from "../assets/icon_chathist.png";
 import email from "../assets/icon_sendemail.png";
 import download from "../assets/icon_download.png";
 import trash from "../assets/icon_trashchat.png";
 import chatdone from "../assets/icon_chatdone.png";
 import { ChatDeleteContext, HistoryContext } from '../ChatContexts';
-import {jsPDF} from 'jspdf'; 
+import { jsPDF } from 'jspdf';
 
 export default function ChatHistory(props) {
     const [startState, setStartState] = useState(props.startState);
     const time = props.startState.time;
-    const {currChatHist, setCurrChatHist} = useContext(HistoryContext);
-    const {chatToDelete, setChatToDelete} = useContext(ChatDeleteContext);
-    
+    const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
+    const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
+    const navigate = useNavigate();
+
     const getTime = (today) => {
         let hours = today.getHours();
         let mins = today.getMinutes();
@@ -20,7 +22,7 @@ export default function ChatHistory(props) {
         let timeOfDay = hours < 12 ? 'am' : 'pm';
         hours = hours % 12 || 12;
 
-        let month = today.toLocaleString('default', {month: 'short'});
+        let month = today.toLocaleString('default', { month: 'short' });
         let day = today.getDate();
         let year = today.getFullYear();
 
@@ -56,7 +58,7 @@ export default function ChatHistory(props) {
 
     }
 
-    const sendEmail = async() => {
+    const sendEmail = async () => {
         let chat = formatData();
         const shareData = {
             text: chat
@@ -80,7 +82,7 @@ export default function ChatHistory(props) {
         let iterations = 1;
         const margin = 15; //top and botton margin in mm
         const defaultYJump = 5; // default space btw lines
-    
+
         wrappedText.forEach((line) => {
             let posY = margin + defaultYJump * iterations++;
             if (posY > pageHeight - margin) {
@@ -101,24 +103,24 @@ export default function ChatHistory(props) {
         link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(chat));
         link.setAttribute('download', `chat.txt`);
         link.style.display = 'none';
-    
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     }
 
     const deleteChat = () => {
-        setChatToDelete({stage: startState.stage, time: time});
+        setChatToDelete({ stage: startState.stage, time: time });
         if (time.getTime() == currChatHist.time.getTime()) {
             // TODO: if this chat is currently open, switch back to welcome page
-            console.log('close');
+            //navigate('/welcome');
         }
     }
 
     useEffect(() => {
         let dbReq = indexedDB.open("chathistory", 1);
 
-        dbReq.onsuccess = function(evt) {
+        dbReq.onsuccess = function (evt) {
             let db = dbReq.result;
             if (!db.objectStoreNames.contains('chats')) {
                 return;
@@ -134,23 +136,25 @@ export default function ChatHistory(props) {
 
     return (
         <>
-            <button onClick={() => setCurrChatHist(startState)} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
-                <div className = "flex"> 
-                    <img className= "px-1" src={startState.stage.name === 'complete' ? chatdone: chathist} alt="Chat History" />
-                    <span className= "px-1"> {getTime(time)} </span>
-                </div>
-            </button>
-            <button onClick={() => downloadChatPDF()}>
-                <img className= "px-1" src={download}/>
-            </button>
-            <button onClick={() => sendEmail()}>
-                <img className= "px-1" src={email}/>
-            </button>
-            <button onClick={() => deleteChat()}>
-                <img src={trash}/>
-            </button>
+            <div className={`group hover:bg-[#1e1e1e] rounded-lg ${time.getTime() == currChatHist.time.getTime() ? 'bg-[#1e1e1e]' : ''}`}>
+                <button onClick={() => setCurrChatHist(startState)} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
+                    <div className="flex">
+                        <img className="px-1" src={startState.stage.name === 'complete' ? chatdone : chathist} alt="Chat History" />
+                        <span className="px-1"> {getTime(time)} </span>
+                    </div>
+                </button>
+                <button onClick={() => downloadChatPDF()}>
+                    <img className={`group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={download} />
+                </button>
+                <button onClick={() => sendEmail()}>
+                    <img className={`group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={email} />
+                </button>
+                <button onClick={() => deleteChat()}>
+                    <img className={`group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={trash} />
+                </button>
+            </div>
         </>
-    ) 
+    )
 }
 
 

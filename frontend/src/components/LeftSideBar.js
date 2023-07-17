@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import React from 'react';
-import { Link , useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import newchat from "../assets/icon_newchat.png";
 import stageexp from "../assets/icon_stageexp.png";
 import ChatHistory from "../components/ChatHistory";
@@ -10,11 +10,11 @@ import ChatStage from "../ChatStage";
 export default function LeftSideBar() {
     const [currChats, setCurrChats] = useState([]);
     const [doneChats, setDoneChats] = useState([]);
-    const {currChatHist, setCurrChatHist} = useContext(HistoryContext);
-    const value = {currChatHist, setCurrChatHist};
+    const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
+    const value = { currChatHist, setCurrChatHist };
 
-    const {chatToComplete, setChatToComplete} = useContext(ChatCompleteContext);
-    const {chatToDelete, setChatToDelete} = useContext(ChatDeleteContext);
+    const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
+    const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
 
     let isInitialMount = useRef(true);
 
@@ -28,7 +28,7 @@ export default function LeftSideBar() {
     const delDbReq = indexedDB.open("chathistory", 1);
 
     const loadChats = () => {
-        loadDbReq.onsuccess = async function(evt) {
+        loadDbReq.onsuccess = async function (evt) {
             let db = loadDbReq.result;
             if (!db.objectStoreNames.contains('chats')) {
                 return;
@@ -69,7 +69,7 @@ export default function LeftSideBar() {
 
     const newChat = () => {
         let today = new Date();
-        let emptyStart = {messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new ChatStage()};
+        let emptyStart = { messages: { invitation: [], connection: [], exchange: [], agreement: [], reflection: [] }, stage: new ChatStage() };
         emptyStart.time = today;
         setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
         // switch welcome page to Chatbot pg with a blank startState
@@ -124,7 +124,7 @@ export default function LeftSideBar() {
         }
 
         // Update DB
-        delDbReq.onsuccess = async function(evt) {
+        delDbReq.onsuccess = async function (evt) {
             let db = delDbReq.result;
             if (!db.objectStoreNames.contains('chats')) {
                 return;
@@ -150,68 +150,67 @@ export default function LeftSideBar() {
     return (
         <>
             <div className="fixed flex h-screen bg-[#333333] inset-y-0 left-0 w-1/5">
-                    {/* Title */}
-                    <Link to={"/welcome"}>
+                {/* Title */}
+                <Link to={"/welcome"}>
                     <button className="absolute top-6 h-29 left-7 font-bold text-2xl text-white font-calibri">
-                    Chat IT Out
+                        Chat IT Out
                     </button>
-                    </Link>
+                </Link>
 
-                    {/* Divider */}
-                    <div className="absolute top-20 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
+                {/* Divider */}
+                <div className="absolute top-20 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
 
-                    {/* New Chat Icon */}
-                    <img src={newchat} className="absolute left-8 top-28 rounded-full" />
-
-                    {/* New Chat */} {/* When the user clicks, a new instance of the chathistory component should be created*/}
-                    <button onClick={newChat} className="absolute left-14 top-28 font-normal text-lg leading-5 text-white font-calibri">
-                        New Chat 
+                {/* New Chat */}
+                <div className='flex absolute left-1 top-28 w-80 h-10 hover:bg-[#1e1e1e] rounded-lg'>
+                    <button onClick={() => newChat()} className="flex items-center absolute left-4 font-normal text-lg text-white font-calibri">
+                        <img src={newchat} className="left-2 top-2 square-full mx-3" alt="New Chat Icon" />
+                        <span>New Chat</span>
                     </button>
+                </div>
 
-                    {/* What are 5 stages? */}
-                    <Link to= {"/stageexp"}>
+
+                {/* What are 5 stages? */}
+                <Link to={"/stageexp"}>
                     <div
-                        className={`flex absolute left-1 top-40 w-80 h-10 ${
-                        (useLocation().pathname === "/stageexp") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
-                        }`}
+                        className={`flex absolute left-1 top-40 w-80 h-10 hover:bg-[#1e1e1e] rounded-lg ${(useLocation().pathname === "/stageexp") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
+                            }`}
                     >
                         <button className="flex items-center absolute left-4 font-normal text-lg text-white font-calibri">
-                        <img src={stageexp} className="left-2 top-2 square-full mx-3" alt="Stage Icon" />
-                        <span>What are 5 stages?</span>
+                            <img src={stageexp} className="left-2 top-2 square-full mx-3" alt="Stage Icon" />
+                            <span>What are the 5 stages?</span>
                         </button>
                     </div>
-                    </Link>
+                </Link>
 
-                    <HistoryContext.Provider value={value}>
-                        {/* In Progress */}
-                        <div className="absolute left-10 top-56 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
-                            In Progress
-                            <div>{currChats}</div>
-                        </div>
-
-                        {/* Completed */}
-                        <div className="absolute left-10 top-1/2 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
-                            Completed
-                            <div>{doneChats}</div>
-                        </div>
-                    </HistoryContext.Provider>
-                    
-
-                    {/* Divider */}
-                    <div className="absolute bottom-28 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
-
-                    {/* Menu items */}
-                    <Link to={'/useragreement'}>
-                    <div
-                        className={`flex absolute left-1 bottom-12 w-80 h-10 ${
-                        (useLocation().pathname === "/useragreement") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
-                        }`}
-                    >
-                    <button className="absolute left-6 font-normal text-lg leading-5 text-white font-calibri">
-                        Terms of use
-                    </button>
+                <HistoryContext.Provider value={value}>
+                    {/* In Progress */}
+                    <div className="absolute left-10 top-56 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
+                        In Progress
+                        <div className="max-h-[180px] overflow-y-auto">{currChats}</div>
                     </div>
-                    </Link>
+
+                    {/* Completed */}
+                    <div className="absolute left-10 top-1/2 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
+                        Completed
+                        <div className="max-h-[200px] overflow-y-auto">{doneChats}</div>
+                    </div>
+                </HistoryContext.Provider>
+
+
+                {/* Divider */}
+                <div className="absolute bottom-28 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
+
+                {/* Menu items */}
+                <Link to={'/useragreement'}>
+                    <div
+                        className={`flex absolute left-1 bottom-12 w-80 h-10 hover:bg-[#1e1e1e] rounded-lg ${(useLocation().pathname === "/useragreement") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
+                            }`}
+                    >
+                        <button className="absolute left-6 font-normal text-lg leading-5 text-white font-calibri">
+                            Terms of use
+                        </button>
+                    </div>
+                </Link>
 
             </div>
         </>
