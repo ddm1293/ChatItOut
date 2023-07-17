@@ -1,0 +1,43 @@
+{"text":"I don't think I can do this","cats":{"DOUBT":1.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I think I'll make a mess of it","cats":{"DOUBT":1.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'll lose my train of thought","cats":{"DOUBT":1.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm really stressed out","cats":{"DOUBT":0.0,"FEAR":1.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm so freaked out","cats":{"DOUBT":0.0,"FEAR":1.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm worried","cats":{"DOUBT":0.0,"FEAR":1.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"What if they hit me?","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":1.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I don't feel safe","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":1.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I think they could hurt me","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":1.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Hi there","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":1.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Hi","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":1.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Hello","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":1.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Is anyone there?","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":1.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Bye","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":1.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"See you later","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":1.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Goodbye","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":1.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Thanks","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":1.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Thank you so much","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":1.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Thank you very much","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":1.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Thanks so much","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":1.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Thanks very much","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":1.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Thanks a lot","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":1.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm angry","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm frustrated","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm just so frustrated","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm mad","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm so mad","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm still upset","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm still mad","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm still angry","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm still frustrated","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm confused","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I'm still confused","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I don't get it","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I don't understand","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I don't know","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I still don't understand","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I still don't know","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I'm still unsure","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I think that's it","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":1.0}}
+{"text":"I think that's all","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":1.0}}
+{"text":"I'm ready'","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":1.0}}
+{"text":"I'm ready to move on'","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":1.0}}
