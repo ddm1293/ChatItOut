@@ -3,6 +3,7 @@ import LeftSideBar from "../components/LeftSideBar"
 import Chatbot from '../components/Chatbot'
 import { ChatDeleteContext, HistoryContext, ChatCompleteContext } from '../ChatContexts';
 import ChatStage from '../ChatStage';
+import ham from '../assets/icon_hamburgermenu.png';
 
 
 export default function HomePage() {
@@ -23,7 +24,15 @@ export default function HomePage() {
                     <ChatCompleteContext.Provider value={chatToCompleteValue}>
                         <div className="bg-[#1e1e1e] flex h-screen">
                             <div>
-                                <LeftSideBar />
+                                <div className="hidden sm:block">
+                                    <LeftSideBar />
+                                </div>
+
+                                <div className="sm:hidden">
+                                    <button>
+                                        <img src={ham} className="absolute top-0 right-0 m-8" alt="Hamburger menu bar"/>
+                                    </button>
+                                </div>
                                 <Chatbot />
                             </div>
                         </div>

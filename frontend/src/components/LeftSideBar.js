@@ -149,39 +149,42 @@ export default function LeftSideBar() {
 
     return (
         <>
-            <div className="fixed flex h-screen bg-[#333333] inset-y-0 left-0 w-1/5">
+            <div className="fixed flex h-screen bg-[#333333] inset-y-0 w-1/5">
                     {/* Title */}
-                    <Link to={"/welcome"}>
-                    <button className="absolute top-6 h-29 left-7 font-bold text-2xl text-white font-calibri">
-                    Chat IT Out
-                    </button>
+                    <Link to={"/home"}>
+                        <button className="absolute top-6 h-29 left-7 font-bold md:text-lg lg:text-2xl text-white font-calibri">
+                            Chat IT Out
+                        </button>
                     </Link>
 
                     {/* Divider */}
                     <div className="absolute top-20 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
 
-                    {/* New Chat Icon */}
-                    <img src={newchat} className="absolute left-8 top-28 rounded-full" />
-
-                    {/* New Chat */} {/* When the user clicks, a new instance of the chathistory component should be created*/}
-                    <button onClick={newChat} className="absolute left-14 top-28 font-normal text-lg leading-5 text-white font-calibri">
-                        New Chat 
-                    </button>
-
-                    {/* What are 5 stages? */}
-                    <Link to= {"/stageexp"}>
-                    <div
-                        className={`flex absolute left-1 top-40 w-80 h-10 ${
-                        (useLocation().pathname === "/stageexp") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
-                        }`}
-                    >
-                        <button className="flex items-center absolute left-4 font-normal text-lg text-white font-calibri">
-                        <img src={stageexp} className="left-2 top-2 square-full mx-3" alt="Stage Icon" />
-                        <span>What are 5 stages?</span>
-                        </button>
+                    {/* New Chat */} {/* When the user clicks, a new instance of the chathistory component should be created*/}  
+                    <div className="flex absolute top-28">
+                        <img src={newchat} className="w-4 h-4 md:mx-4 lg:mx-8 my-2 rounded-full" alt="New Chat Icon" />
+                        <span>
+                            <button onClick={newChat} className="md:text-base lg:text-lg leading-5 text-white font-calibri px-2">
+                                New Chat 
+                            </button>
+                        </span>
                     </div>
-                    </Link>
 
+                    {/* Stage Explanation */} {/* When the user clicks, explanations of 5 stages should load*/} 
+                    <div
+                        className={`flex absolute top-40 align-center ${
+                        (useLocation().pathname === "/stageexp") ? 'flex bg-[#1e1e1e] rounded-lg w-full h-12 items-center' : ''
+                        }`}
+                        >
+                        <img src={stageexp} className="w-4 h-4 md:mx-4 lg:mx-8 my-2 square-full" alt="Stage Icon" />
+                        <span>
+                            <a href="/stageexp" className="md:text-base lg:text-lg leading-5 text-white font-calibri px-2">
+                                What are 5 stages?
+                            </a>
+                        </span>
+                    </div>
+
+                    {/* Chat History */}
                     <HistoryContext.Provider value={value}>
                         {/* In Progress */}
                         <div className="absolute left-10 top-56 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
@@ -198,20 +201,20 @@ export default function LeftSideBar() {
                     
 
                     {/* Divider */}
-                    <div className="absolute bottom-28 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
+                    <div className="absolute bottom-28 left-0 h-px bg-[#eeeeee] opacity-20 w-full" />
 
-                    {/* Menu items */}
-                    <Link to={'/useragreement'}>
+                    {/* Terms of use */}
                     <div
-                        className={`flex absolute left-1 bottom-12 w-80 h-10 ${
-                        (useLocation().pathname === "/useragreement") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
+                        className={`flex absolute left-0 bottom-12 align-center ${
+                        (useLocation().pathname === "/useragreement") ? 'flex bg-[#1e1e1e] rounded-lg w-full h-10' : ''
                         }`}
                     >
-                    <button className="absolute left-6 font-normal text-lg leading-5 text-white font-calibri">
-                        Terms of use
-                    </button>
+                        <span>
+                            <a href="/useragreement" className="md:text-base lg:text-lg leading-5 text-white font-calibri px-3">
+                                Terms of use
+                            </a>
+                        </span>
                     </div>
-                    </Link>
 
             </div>
         </>

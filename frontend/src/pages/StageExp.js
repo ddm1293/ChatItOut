@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import LeftSideBar from '../components/LeftSideBar';
+import ham from '../assets/icon_hamburgermenu.png';
 
 // TODO: Make a page that explains all the stages in detail
 export default function StageExp() {
@@ -19,37 +20,47 @@ export default function StageExp() {
 
     return (
         <>
-                <LeftSideBar />
 
-                <div className= "grid grid-rows-10 fixed h-screen top-0 right-0 w-4/5 bg-[#0E0E10] justify-center overflow-y-scroll">
-                    <div className="mt-6 mx-64">
-                        <ul className="fixed grid grid-cols-5 bg-gray-700 justify-items-center items-center rounded-xl w-[800px] h-14">
+                <div className="flex h-screen bg-[#0E0E10]">
+                <div className="hidden sm:block">
+                    <LeftSideBar />
+                </div>
+
+                <div className="sm:hidden">
+                    <button>
+                        <img src={ham} className="absolute top-0 right-0 m-8" alt="Hamburger menu bar"/>
+                    </button>
+                </div>
+
+                <div className= "grid grid-rows-10 fixed h-screen top-0 right-0 w-full sm:w-4/5 justify-center overflow-y-scroll">
+                    <div className="mt-6 mx-2 sm:mx-12 md:mx-24 lg:mx-36">
+                        <ul className="fixed grid grid-cols-5 bg-gray-700 justify-items-center items-center rounded-xl w-11/12 sm:w-3/5 top-16 h-14">
                         <li>
-                        <button className={`text-lg ${clickedButton === 'stage1' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-8 py-2' : 'text-[#c6c6c6]'}`}
+                        <button className={`text-base sm:text-base sm:text-lg ${clickedButton === 'stage1' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage1')}>
                                 Invitation
                         </button>
                         </li>
                         <li>
-                        <button className={`text-lg ${clickedButton === 'stage2' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-8 py-2' : 'text-[#c6c6c6]'}`}
+                        <button className={`text-base sm:text-lg ${clickedButton === 'stage2' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage2')}>
                                 Connection
                         </button>
                         </li>
                         <li>
-                        <button className={`text-lg ${clickedButton === 'stage3' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-8 py-2' : 'text-[#c6c6c6]'}`}
+                        <button className={`text-base sm:text-lg ${clickedButton === 'stage3' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage3')}>
                                 Exchange
                         </button>
                         </li>
                         <li>
-                        <button className={`text-lg ${clickedButton === 'stage4' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-8 py-2' : 'text-[#c6c6c6]'}`}
+                        <button className={`text-base sm:text-lg ${clickedButton === 'stage4' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage4')}>
                                 Agreement
                         </button>
                         </li>
                         <li>
-                        <button className={`text-lg ${clickedButton === 'stage5' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-8 py-2' : 'text-[#c6c6c6]'}`}
+                        <button className={`text-base sm:text-lg ${clickedButton === 'stage5' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage5')}>
                                 Reflection
                         </button>
@@ -62,7 +73,7 @@ export default function StageExp() {
                             Stage 1: Invitation
                         </div>
                         
-                        <div className= "mt-12 mx-64 text-medium text-white font-calibri whitespace-pre-line">
+                        <div className= "mt-12 mx-24 sm:mx-36 text-medium text-white font-calibri whitespace-pre-line">
                             Creating a collaborative environment begins by assessing the relationship between you and the other person. Tension, fear, and other uncomfortable feelings are often present at the beginning of the conversation. To establish and maintain a collaborative environment, we need to create rapport and reduce tension before delving into the issues of the conflict. It is important to continue to monitor the relationship throughout the conversation. <br /> <br />
 
                             Mindfulness / preparation questions: <br />
@@ -98,7 +109,7 @@ export default function StageExp() {
                             Stage 2: Connection
                         </div>
                     
-                        <div className= "mt-12 mx-64 text-medium text-white font-calibri whitespace-pre-line">
+                        <div className= "mt-12 mx-24 sm:mx-36 text-medium text-white font-calibri whitespace-pre-line">
                             It is important to create a connection with the other party and lay the groundwork for an open, collaborative conversation. This begins by valuing the other person’s physical, emotional, and spiritual state. <br /> <br />
                             
                             Creating connection also means taking care of your own well-being and being able to share how you feel with the other person.  Connection creates an atmosphere of openness where both sides feel comfortable to share and disclose.  Establishing connection helps us to recognize that worldviews, cultural differences, and beliefs influence how people show up in a conflict conversation, and it encourages us to respect and express our differences in a collaborative, open way. <br /> <br />
@@ -123,7 +134,7 @@ export default function StageExp() {
                             Stage 3: Exchange
                         </div>
                         
-                        <div className= "mt-12 mx-64 text-medium text-white font-calibri whitespace-pre-line">
+                        <div className= "mt-12 mx-24 sm:mx-36 text-medium text-white font-calibri whitespace-pre-line">
                             Focus of EXCHANGE <br /> 
                             Exchanging information may include talking about some aspects of the conflict that have occurred in the past.  Exploring the history of the conflict may help each person to understand what is important to them and why it is important.  <br /> 
                             Exploring the other person’s motivations and disclosing your own motivations helps both parties to understand the conflict better. Motivations include our goals, beliefs, and hopes, as well as our concerns and fears. This part of the conversation involves asking questions, listening attentively, and asserting our voice. It is important to maintain a mindset of curiosity rather than judgment as we try to understand different points of view. <br /> 
@@ -148,7 +159,7 @@ export default function StageExp() {
                             Stage 4: Agreement
                         </div>
                         
-                        <div className= "mt-12 mx-64 text-medium text-white font-calibri whitespace-pre-line">
+                        <div className= "mt-12 mx-24 sm:mx-36 text-medium text-white font-calibri whitespace-pre-line">
                         In reaching an agreement, the parties either decide on a resolution or agree to end the conversation without a resolution. A satisfactory outcome usually includes a resolution of some or all the issues in dispute, and it may even include a change in the relationship between the parties. Resolutions might include decision-making, apologizing, creating a plan, providing restitution, reconciling negative feelings and demonstrations of friendship. <br /> <br />
 
                         Focus of AGREEMENT <br />
@@ -173,7 +184,7 @@ export default function StageExp() {
                             Stage 5: Reflection
                         </div>
                         
-                        <div className= "mt-12 mx-64 text-medium text-white font-calibri whitespace-pre-line">
+                        <div className= "mt-12 mx-24 sm:mx-36 text-medium text-white font-calibri whitespace-pre-line">
                             Check to see how satisfied you both are about the outcomes and the relationship; set follow-up action steps and future check-back opportunities: <br /> <br />
                             
                             Questions that help to reflect on the relationship aspects of the conversation: <br />
@@ -188,6 +199,7 @@ export default function StageExp() {
                             <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br />
                         </div>
                     </div>
+                </div>
                 </div>
 
 
