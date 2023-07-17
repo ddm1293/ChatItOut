@@ -1,23 +1,20 @@
 # Imports
 import openai 
-import panel as pn
+# import panel as pn
 
 # set API key
 openai.api_key="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"
 
+# def generate_response(messages):
+#     response = openai.ChatCompletion.create(
+#         model="gpt-3.5-turbo",
+#         messages=messages,
+#         temperature=0
+#     )
 
-# generate response
-def generate_response(messages):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        temperature=0
-    )
+#     return response.choices[0].message["content"]
 
-    return response.choices[0].message["content"]
-
-
-messages = [
+systemContext = [
     {'role': 'system', 'content': 'You are an AI counselor. You will provide advice and ask questions to help resolve conflicts.'},
     {'role': 'system', 'content': 'First try to understand the user emotion and empathize. Then, ask follow-up questions based on that to resolve the conflict.'},
     {'role': 'system', 'content': 'Paraphrase what the user is saying in a positive way'},
@@ -43,15 +40,39 @@ messages = [
     {'role': 'system', 'content': 'Possible questions for this stage on outcome aspects of the conflict include: How satisfied are you with the outcomes or agreements you made in this conversation? How satisfied is the other party with the outcomes or agreements you made in this conversation? What would you do differently in the next conversation when you have a disagreement?'}
 ]
 
-print("Coach: Hey, how are you doing?")
+# generate response
+def generate_response(input):
+    messages = systemContext
+    for msg in input.get('context'):
+        if msg.get('type') == 'user':
+            messages.append({'role':'user', 'content':f"{msg.get('message')}"})
+        else:
+            messages.append({'role':'assistant', 'content':f"{msg.get('message')}"})
 
-while True:
-    user_input = input("User: ")
-    if user_input.lower() == 'exit':
-        break
-    messages.append({'role':'user', 'content':f"{user_input}"})
-    response = generate_response(messages)
-    messages.append({'role':'assistant', 'content':f"{response}"})
-    print("Coach:", response)
+
+    messages.append({'role':'user', 'content':f"{input.get('newMsg')}"})
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages,
+        temperature=0
+    )
+
+    ai_resp = response.choices[0].message["content"]
+    messages.append({'role':'assistant', 'content':f"{ai_resp}"})
+
+    return ai_resp
+
+
+# print("Coach: Hey, how are you doing?")
+
+# while True:
+#     user_input = input("User: ")
+#     if user_input.lower() == 'exit':
+#         break
+#     messages.append({'role':'user', 'content':f"{user_input}"})
+#     response = generate_response(messages)
+#     messages.append({'role':'assistant', 'content':f"{response}"})
+#     print("Coach:", response)
 
 

@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useRef } from "react";
 import React from 'react';
-import { Link , useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import newchat from "../assets/icon_newchat.png";
 import stageexp from "../assets/icon_stageexp.png";
 import ChatHistory from "../components/ChatHistory";
@@ -10,11 +10,11 @@ import ChatStage from "../ChatStage";
 export default function LeftSideBar() {
     const [currChats, setCurrChats] = useState([]);
     const [doneChats, setDoneChats] = useState([]);
-    const {currChatHist, setCurrChatHist} = useContext(HistoryContext);
-    const value = {currChatHist, setCurrChatHist};
+    const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
+    const value = { currChatHist, setCurrChatHist };
 
-    const {chatToComplete, setChatToComplete} = useContext(ChatCompleteContext);
-    const {chatToDelete, setChatToDelete} = useContext(ChatDeleteContext);
+    const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
+    const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
 
     let isInitialMount = useRef(true);
 
@@ -28,7 +28,7 @@ export default function LeftSideBar() {
     const delDbReq = indexedDB.open("chathistory", 1);
 
     const loadChats = () => {
-        loadDbReq.onsuccess = async function(evt) {
+        loadDbReq.onsuccess = async function (evt) {
             let db = loadDbReq.result;
             if (!db.objectStoreNames.contains('chats')) {
                 return;
@@ -69,7 +69,7 @@ export default function LeftSideBar() {
 
     const newChat = () => {
         let today = new Date();
-        let emptyStart = {messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, stage: new ChatStage()};
+        let emptyStart = { messages: { invitation: [], connection: [], exchange: [], agreement: [], reflection: [] }, stage: new ChatStage() };
         emptyStart.time = today;
         setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
         // switch welcome page to Chatbot pg with a blank startState
@@ -124,7 +124,7 @@ export default function LeftSideBar() {
         }
 
         // Update DB
-        delDbReq.onsuccess = async function(evt) {
+        delDbReq.onsuccess = async function (evt) {
             let db = delDbReq.result;
             if (!db.objectStoreNames.contains('chats')) {
                 return;
@@ -157,8 +157,8 @@ export default function LeftSideBar() {
                         </button>
                     </Link>
 
-                    {/* Divider */}
-                    <div className="absolute top-20 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
+                {/* Divider */}
+                <div className="absolute top-20 left-0 h-px bg-[#eeeeee] opacity-20 w-full"></div>
 
                     {/* New Chat */} {/* When the user clicks, a new instance of the chathistory component should be created*/}  
                     <div className="flex absolute top-28">
