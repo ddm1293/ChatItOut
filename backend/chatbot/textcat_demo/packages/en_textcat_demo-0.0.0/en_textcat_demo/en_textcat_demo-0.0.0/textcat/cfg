@@ -1,0 +1,15 @@
+{
+  "labels":[
+    "DOUBT",
+    "FEAR",
+    "VIOLENCE",
+    "GREETING",
+    "GOODBYE",
+    "THANKS",
+    "ANGER",
+    "CONFUSION",
+    "TRANSITION"
+  ],
+  "threshold":0.5,
+  "positive_label":null
+}
