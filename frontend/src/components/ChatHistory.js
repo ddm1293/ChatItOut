@@ -118,7 +118,6 @@ export default function ChatHistory(props) {
     }
 
     useEffect(() => {
-        console.log('hi');
         let dbReq = indexedDB.open("chathistory", 1);
 
         dbReq.onsuccess = function (evt) {
