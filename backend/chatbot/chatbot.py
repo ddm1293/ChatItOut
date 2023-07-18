@@ -9,7 +9,7 @@ openai.api_key="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"
 nlp = en_textcat_demo.load()
 
 # stage tracker
-stage = 1
+# stage = 1
 
 # context
 #messages = []
@@ -53,7 +53,7 @@ def intent_classify(input):
         return False
 
 # get prompt to tell AI what stage it's in
-def get_stage():
+def get_stage(stage):
     if stage == 1:
         return "You are in the first stage."
     elif stage == 2:
@@ -84,31 +84,40 @@ def get_stage():
 #     return ai_resp
 
 def generate_response(input):
-    global stage
     # Add previous context
     messages = systemContext
     for msg in input.get('context'):
         if msg.get('type') == 'user':
             messages.append({'role':'user', 'content':f"{msg.get('message')}"})
-        else:
+        elif msg.get('type') == 'chatbot':
             messages.append({'role':'assistant', 'content':f"{msg.get('message')}"})
+        else:
+            continue
+    print(messages)
 
     # Determine stage transition
+    stage = input.get('stage')
     user_input = input.get('newMsg')
     messages.append({'role':'user', 'content':f"{user_input}"})
     trans = intent_classify(user_input) # classify user input
     if trans: # if the classification returned true...
         stage += 1 # go to next stage
-        pos = get_stage()
+        pos = get_stage(stage)
         messages.append({'role': 'system', 'content': f"{pos}"}) # tell the AI that it is in the next stage now
 
     # Generate AI response
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        temperature=0
-    )
-    ai_resp = response.choices[0].message["content"]
+    ai_resp = None
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=0
+        )
+        ai_resp = response.choices[0].message["content"]
+    except Exception as e:
+        print(e)
+        ai_resp = "An error occured with OpenAI. Please try again later."; 
+    
     messages.append({'role':'assistant', 'content':f"{ai_resp}"})
 
     return {'ai': ai_resp, 'stage': stage}

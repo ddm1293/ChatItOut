@@ -35,6 +35,9 @@ export default function ChatHistory(props) {
             return '*not started*\n\n'
         }
         for (let msg of stageMsgs) {
+            if (msg.type === 'newStage') {
+                continue;
+            }
             msg.type === 'user' ? output += 'You: ' : output += 'Coach: ';
             output += `${msg.message}\n\n`;
         }
@@ -77,7 +80,7 @@ export default function ChatHistory(props) {
         const doc = new jsPDF();
         const pageHeight = doc.internal.pageSize.height;
 
-        const wrappedText = doc.splitTextToSize(chat, 180);
+        const wrappedText = doc.splitTextToSize(chat, 235);
         doc.setFontSize(12);
         let iterations = 1;
         const margin = 15; //top and botton margin in mm

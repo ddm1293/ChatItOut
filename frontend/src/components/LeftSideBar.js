@@ -69,8 +69,7 @@ export default function LeftSideBar() {
 
     const newChat = () => {
         let today = new Date();
-        let emptyStart = { messages: { invitation: [{type: 'chatbot', message: 'Hey, how are you doing?'}], connection: [], exchange: [], agreement: [], reflection: [] }, stage: new ChatStage() };
-        emptyStart.time = today;
+        let emptyStart = { messages: { invitation: [{type: 'chatbot', message: 'Hey, how are you doing?'}], connection: [], exchange: [], agreement: [], reflection: [] }, time: today, stage: new ChatStage(), atStartRef: false };
         setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
         // switch welcome page to Chatbot pg with a blank startState
     }

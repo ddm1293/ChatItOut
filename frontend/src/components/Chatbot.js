@@ -7,6 +7,7 @@ import stagecomplete from "../assets/icon_stagecomplete.png";
 import ailogo from "../assets/icon_ailogo.png";
 import ChatStage from '../ChatStage';
 import Loading from './Loading';
+import StageLine from './StageLine';
 
 const serverURL = "http://localhost:5000";
 
@@ -18,6 +19,7 @@ export default function Chatbot() {
     const [messages, setMessages] = useState(currChatHist.messages);
     const globalStage = currChatHist.stage;
     const [localStage, setLocalStage] = useState(globalStage);
+    const [atStartRef, setAtStartRef] = useState(currChatHist.atStartRef);
 
     const [invStage, setInvStage] = useState("inProgress");
     const [conStage, setConStage] = useState("notStarted");
@@ -62,7 +64,7 @@ export default function Chatbot() {
         // return responses[i];
 
         let context = getAllMessages();
-        let input = { context: context, newMsg: msg };
+        let input = { context: context, newMsg: msg, stage: getStageNum()};
 
         try {
             let resp = await axios.post(`${serverURL}/home/chat`, input, {
@@ -70,26 +72,19 @@ export default function Chatbot() {
                     'Content-Type': 'application/json',
                 }
             });
+            console.log(resp.data);
             return resp.data;
         } catch (err) {
             console.log(err);
             return "An error occured. Please try again later."
         }
-
-        // axios.post(`${serverURL}/home/chat`, input)
-        // .then(function (response) {
-        //     console.log(response.data);
-        //     return response.data;
-        // })
-        // .catch(function (error) {
-        //     console.log(error);
-        // });
     }
 
     useEffect(() => {
         setMessages(currChatHist.messages);
+        setAtStartRef(currChatHist.atStartRef);
+        setStageProgress(currChatHist.stage)
         setLocalStage(currChatHist.stage);
-        setStageProgress(currChatHist.stage);
     }, [currChatHist])
 
     const handleUserInput = async (content) => {
@@ -110,16 +105,45 @@ export default function Chatbot() {
         });
 
         generateResponse(userInput).then((chatbotResp) => {
+            console.log(globalStage);
+            console.log(stageMessages);
             setChatbotLoading(false);
+            let chatbotStage = getStage(chatbotResp.stage);
+            let addLine = false;
+
+            // Transition stage
+            if (chatbotStage !== localStage.name) {
+                console.log(chatbotStage);
+                addLine = true;
+                if (chatbotStage === 'reflection') {
+                    setAtStartRef(true);
+                    stageMessages.push({ type: 'newStage', message: 'The chat is over for now. Please come back and start reflection once you are ready!' });
+                    addLine = false;
+                }
+                if (chatbotStage !== 'complete') {
+                    stageMessages = messages[chatbotStage];
+                    advanceStage();
+                }
+            }
+
+            // Add stage line break
             let msg = chatbotResp.ai;
-            stageMessages.push({ type: 'chatbot', message: msg });
+            console.log(stageMessages);
+            if (addLine && chatbotStage === 'complete') { // add msg before line
+                stageMessages.push({ type: 'chatbot', message: msg });
+                stageMessages.push({ type: 'newStage', message: chatbotStage });
+                advanceStage();
+            } else if (addLine) { // add line before msg
+                stageMessages.push({ type: 'newStage', message: chatbotStage });
+                stageMessages.push({ type: 'chatbot', message: msg });
+            } else { // no line
+                stageMessages.push({ type: 'chatbot', message: msg });
+            }
+    
             setMessages({
                 ...messages,
-                [globalStage.name]: stageMessages
+                [globalStage.name === "complete" ? "reflection" : globalStage.name]: stageMessages
             });
-            if (getStage(chatbotResp.stage) !== localStage.name) {
-                advanceStage();
-            }
         })
     }
 
@@ -135,8 +159,29 @@ export default function Chatbot() {
                 return "agreement";
             case 5:
                 return "reflection";
+            case 6:
+                return "complete";
             default:
                 return "";
+        }
+    }
+
+    const getStageNum = () => {
+        switch (globalStage.name) {
+            case "invitation":
+                return 1;
+            case "connection":
+                return 2;
+            case "exchange":
+                return 3;
+            case "agreement":
+                return 4;
+            case "reflection":
+                return 5;
+            case "complete":
+                return 6;
+            default:
+                return -1;
         }
     }
 
@@ -160,7 +205,7 @@ export default function Chatbot() {
             case "agreement":
                 globalStage.setReflection();
                 setAgrStage("completed");
-                setRefStage("inProgress");
+                //setRefStage("inProgress");
                 break;
             case "reflection":
                 globalStage.setComplete();
@@ -209,7 +254,7 @@ export default function Chatbot() {
                 setConStage("completed");
                 setExcStage("completed");
                 setAgrStage("completed");
-                setRefStage("inProgress");
+                currChatHist.atStartRef ? setRefStage("notStarted") : setRefStage("inProgress");
                 break;
             case "complete":
                 setInvStage("completed");
@@ -223,18 +268,25 @@ export default function Chatbot() {
         }
     }
 
-    const scrollToStage = () => {
-        // TODO
+    const scrollToStage = (stage) => {
+        // just scroll to top for Invitation stage?
+        // unless we have a not started and then the chatbot transitions into the invitation stage...
+        if (stage === "invitation") {
+            containerRef.current.scrollTop = 0;
+            return;
+        }
+        document.getElementById(`stageLine-${stage}`).scrollIntoView({behavior: 'smooth'});
     }
 
     useEffect(() => {
+        console.log(messages);
         if (isOnline) containerRef.current.scrollTop = containerRef.current.scrollHeight;
 
         if (isInitialMount.current) {
             isInitialMount.current = false;
             return;
         }
-        let updatedContext = { messages: messages, time: currChatHist.time, stage: globalStage }
+        let updatedContext = { messages: messages, time: currChatHist.time, stage: globalStage, atStartRef: atStartRef }
         dbReq.onsuccess = function (evt) {
             let db = dbReq.result;
             if (!db.objectStoreNames.contains('chats') || (messages === currChatHist.messages && localStage === currChatHist.stage)) {
@@ -274,25 +326,28 @@ export default function Chatbot() {
                         <div className="absolute top-28 w-2/3 right-24 vg-[#1e1e1e] rounded-lg">
                             <div className="mb-4 max-h-[600px] overflow-y-auto" ref={containerRef}>
                                 {getAllMessages().map((message, index) => (
-                                    <div className={`flex flex-col basis-3/5" ${message.type === 'user' ? "items-end" : "items-start"}`}>
+                                    <div>{message.type === 'newStage' ? <StageLine key={globalStage} text={message.message}/> :
+                                        <div className={`flex flex-col basis-3/5" ${message.type === 'user' ? "items-end" : "items-start"}`}>
 
-                                        <div className='flex'>
-                                            <img src={ailogo} alt="Chatbot Logo" className={`items-start w-12 h-12 mt-1" ${message.type === 'user' ? "hidden" : ""}`} />
+                                            <div className='flex'>
+                                                <img src={ailogo} alt="Chatbot Logo" className={`items-start w-12 h-12 mt-1" ${message.type === 'user' ? "hidden" : ""}`} />
 
-                                            <span
-                                                key={index}
-                                                className={`ml-10 mb-4 p-4 font-calibri text-base whitespace-pre-wrap max-w-fit' ${message.type === 'user' ? 'bg-white text-black rounded-tl-xl rounded-tr-xl rounded-bl-xl' : 'bg-[#e1e1e1] bg-opacity-10 text-white rounded-tl-xl rounded-tr-xl rounded-br-xl'
-                                                    }`}
-                                                style={{ display: 'inline-block' }}>
+                                                <span
+                                                    key={index}
+                                                    className={`ml-10 mb-4 p-4 font-calibri text-base whitespace-pre-wrap max-w-fit' ${message.type === 'user' ? 'bg-white text-black rounded-tl-xl rounded-tr-xl rounded-bl-xl' : 'bg-[#e1e1e1] bg-opacity-10 text-white rounded-tl-xl rounded-tr-xl rounded-br-xl'
+                                                        }`}
+                                                    style={{ display: 'inline-block' }}>
 
-                                                {message.message}
-                                            </span>
+                                                    {message.message}
+                                                </span>
+                                            </div>
                                         </div>
+                                    }
                                     </div>
                                 ))}
                                 {chatbotLoading ? <Loading /> : <></>}
                             </div>
-                            <div className="absolute top-96 w-3/4 left-28">
+                            <div className={`absolute top-96 w-3/4 left-28 ${ globalStage.name === "complete" ? 'hidden' : ''}`}>
                                 <form onSubmit={handleUserInput}>
                                     <input
                                         type="text"
@@ -313,7 +368,7 @@ export default function Chatbot() {
 
                         {/* Left Status Bar */}
                         <div className="absolute w-4/5 h-20 bg-[#242424] flex right-0 top-0">
-                            <button onClick={() => scrollToStage()} className='group'>
+                            <button onClick={() => scrollToStage('invitation')} className='group'>
                                 <span className={`flex absolute top-8 left-0 w-64 h-12 ${invStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} group-hover:border-b-4 group-hover:border-[#1993D6]`}></span>
                                 <div className="flex absolute top-8 left-20">
                                     <span className={`w-4 h-4 rounded-full ${invStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}> </span>
@@ -326,7 +381,7 @@ export default function Chatbot() {
                                 </div>
                             </button>
 
-                            <button onClick={() => scrollToStage()} className='group' disabled={conStage === "notStarted"}>
+                            <button onClick={() => scrollToStage('connection')} className='group' disabled={conStage === "notStarted"}>
                                 <span className={`flex absolute top-8 left-64 w-64 h-12 ${conStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${conStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></span>
                                 <div className="flex absolute top-8 left-80">
                                     <span className={`w-4 h-4 rounded-full ${conStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}> </span>
@@ -339,7 +394,7 @@ export default function Chatbot() {
                                 </div>
                             </button>
 
-                            <button onClick={() => scrollToStage()} className='group' disabled={excStage === "notStarted"}>
+                            <button onClick={() => scrollToStage('exchange')} className='group' disabled={excStage === "notStarted"}>
                                 <span className={`flex absolute top-8 left-[500px] w-64 h-12 ${excStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${excStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></span>
                                 <div className="flex absolute top-8" style={{ left: '560px' }}>
                                     <span className={`w-4 h-4 rounded-full ${excStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}> </span>
@@ -352,7 +407,7 @@ export default function Chatbot() {
                                 </div>
                             </button>
 
-                            <button onClick={() => scrollToStage()} className='group' disabled={agrStage === "notStarted"}>
+                            <button onClick={() => scrollToStage('agreement')} className='group' disabled={agrStage === "notStarted"}>
                                 <div className={`flex absolute top-8 left-[750px] w-60 h-12 ${agrStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${agrStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></div>
                                 <div className="flex absolute top-8" style={{ left: '800px' }}>
                                     <span className={`w-4 h-4 rounded-full ${agrStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}> </span>
@@ -365,7 +420,7 @@ export default function Chatbot() {
                                 </div>
                             </button>
 
-                            <button onClick={() => scrollToStage()} className='group' disabled={refStage === "notStarted"}>
+                            <button onClick={() => scrollToStage('reflection')} className='group' disabled={refStage === "notStarted"}>
                                 <div className={`flex absolute top-8 left-[990px] w-64 h-12 ${refStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${refStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></div>
                                 <div className="flex absolute top-8" style={{ left: '1040px' }}>
                                     <span className={`w-4 h-4 rounded-full ${refStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}> </span>

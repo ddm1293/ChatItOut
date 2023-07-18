@@ -2,7 +2,7 @@ import { createContext, useMemo, useState } from "react";
 import ChatStage from "./ChatStage";
 
 const HistoryContext = createContext({
-  currChatHist: {messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, time: new Date(), stage: new ChatStage()},
+  currChatHist: {messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, time: new Date(), stage: new ChatStage(), atStartRef: false},
   setCurrChatHist: () => {}
 });
 
