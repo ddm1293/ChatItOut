@@ -1,5 +1,5 @@
 import React from 'react';
-import LeftSideBar from '../components/LeftSideBar';
+import SideBar from '../components/SideBar';
 import { Link } from "react-router-dom";
 import pic from '../assets/icon_welcomepage.png';
 import ham from '../assets/icon_hamburgermenu.png';
@@ -19,7 +19,7 @@ export default function WelcomePage() {
 
             <div class="bg-[#1e1e1e] flex h-screen">
                 <div className="hidden sm:block">
-                    <LeftSideBar />
+                    <SideBar />
                 </div>
 
                 <div className= "bg-[#0E0E10] grid grid-rows-8 fixed h-screen lg:w-4/5 sm:w-full top-0 right-0 justify-center">

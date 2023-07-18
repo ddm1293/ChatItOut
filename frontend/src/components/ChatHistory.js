@@ -139,18 +139,18 @@ export default function ChatHistory(props) {
             <div className={`group hover:bg-[#1e1e1e] rounded-lg ${time.getTime() == currChatHist.time.getTime() ? 'bg-[#1e1e1e]' : ''}`}>
                 <button onClick={() => setCurrChatHist(startState)} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
                     <div className="flex">
-                        <img className="px-1" src={startState.stage.name === 'complete' ? chatdone : chathist} alt="Chat History" />
+                        <img className="px-1 w-7 h-5" src={startState.stage.name === 'complete' ? chatdone : chathist} alt="Chat History" />
                         <span className="px-1"> {getTime(time)} </span>
                     </div>
                 </button>
                 <button onClick={() => downloadChatPDF()}>
-                    <img className={`group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={download} />
+                    <img className={`px-1 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={download} />
                 </button>
                 <button onClick={() => sendEmail()}>
                     <img className={`group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={email} />
                 </button>
                 <button onClick={() => deleteChat()}>
-                    <img className={`group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={trash} />
+                    <img className={`px-1 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={trash} />
                 </button>
             </div>
         </>

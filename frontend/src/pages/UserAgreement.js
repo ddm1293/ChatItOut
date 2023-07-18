@@ -1,5 +1,5 @@
 import React from 'react';
-import LeftSideBar from '../components/LeftSideBar';
+import SideBar from '../components/SideBar';
 import ham from '../assets/icon_hamburgermenu.png';
 
 // TODO: Make a page that shows privacy policy and user agreement, goes to home page upon user's agreement
@@ -15,7 +15,7 @@ export default function UserAgreement() {
             </div>
 
             <div className="hidden sm:block">
-                <LeftSideBar />
+                <SideBar />
             </div>
 
             <div className= "grid grid-rows-10 fixed h-screen top-0 right-0 w-full sm:w-4/5 md:w-4/5 lg:w-4/5 justify-center overflow-y-scroll">

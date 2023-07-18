@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import LeftSideBar from '../components/LeftSideBar';
+import SideBar from '../components/SideBar';
 import ham from '../assets/icon_hamburgermenu.png';
+import { Link } from "react-router-dom";
 
 // TODO: Make a page that explains all the stages in detail
 export default function StageExp() {
@@ -23,18 +24,24 @@ export default function StageExp() {
 
                 <div className="flex h-screen bg-[#0E0E10]">
                 <div className="hidden sm:block">
-                    <LeftSideBar />
+                    <SideBar />
                 </div>
 
                 <div className="sm:hidden">
+                    <Link to={"/welcome"}>
+                        <p className="absolute top-0 left-0 m-4 text-white font-calibri font-medium text-2xl">
+                            Chat IT Out
+                        </p>   
+                    </Link>
+
                     <button>
-                        <img src={ham} className="absolute top-0 right-0 m-8" alt="Hamburger menu bar"/>
+                        <img src={ham} className="absolute top-0 right-0 mt-6 mr-10" alt="Hamburger menu bar"/>
                     </button>
                 </div>
 
                 <div className= "grid grid-rows-10 fixed h-screen top-0 right-0 w-full sm:w-4/5 justify-center overflow-y-scroll">
                     <div className="mt-6 mx-2 sm:mx-12 md:mx-24 lg:mx-36">
-                        <ul className="fixed grid grid-cols-5 bg-gray-700 justify-items-center items-center rounded-xl w-11/12 sm:w-3/5 top-16 h-14">
+                        <ul className="fixed grid grid-cols-5 bg-gray-700 justify-items-center items-center rounded-xl w-11/12 sm:w-3/5 top-16 md:top-10 h-14">
                         <li>
                         <button className={`text-base sm:text-base sm:text-lg ${clickedButton === 'stage1' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage1')}>
