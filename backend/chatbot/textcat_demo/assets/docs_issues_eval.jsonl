@@ -1,0 +1,19 @@
+{"text":"I don't think this will work","cats":{"DOUBT":1.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"What if this doesn't go the way I hope?","cats":{"DOUBT":1.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm really dreading this","cats":{"DOUBT":0.0,"FEAR":1.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm afraid they'll hate me","cats":{"DOUBT":0.0,"FEAR":1.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm afraid of violence","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":1.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I've had enough abuse","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":1.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Good day","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":1.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"How are you?","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":1.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Have a nice day","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":1.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"Thank you","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":1.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"That's helpful","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":1.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm just so mad","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm just so angry","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm just so upset","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":1.0,"CONFUSION":0.0,"TRANSITION":0.0}}
+{"text":"I'm unsure","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I still don't get it","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I'm so confused","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":1.0,"TRANSITION":0.0}}
+{"text":"I feel better now","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":1.0}}
+{"text":"I think that's good","cats":{"DOUBT":0.0,"FEAR":0.0,"VIOLENCE":0.0,"GREETING":0.0,"GOODBYE":0.0,"THANKS":0.0,"ANGER":0.0,"CONFUSION":0.0,"TRANSITION":1.0}}
