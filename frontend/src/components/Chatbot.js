@@ -76,13 +76,6 @@ export default function Chatbot() {
             return "An error occured. Please try again later."
         }
 
-        // try {
-        //     let resp = await axios.post(`${serverURL}/home/chat`, input);
-        //     return resp.data;
-        // } catch (err) {
-        //     console.log(err);
-        //     return "An error occured. Please try again later."
-        // }
         // axios.post(`${serverURL}/home/chat`, input)
         // .then(function (response) {
         //     console.log(response.data);
@@ -116,15 +109,35 @@ export default function Chatbot() {
             [globalStage.name]: stageMessages
         });
 
-        generateResponse(userInput).then((chatbotMessage) => {
-            console.log(chatbotMessage);
+        generateResponse(userInput).then((chatbotResp) => {
             setChatbotLoading(false);
-            stageMessages.push({ type: 'chatbot', message: chatbotMessage });
+            let msg = chatbotResp.ai;
+            stageMessages.push({ type: 'chatbot', message: msg });
             setMessages({
                 ...messages,
                 [globalStage.name]: stageMessages
             });
+            if (getStage(chatbotResp.stage) !== localStage.name) {
+                advanceStage();
+            }
         })
+    }
+
+    const getStage = (stage) => {
+        switch (stage) {
+            case 1:
+                return "invitation";
+            case 2:
+                return "connection";
+            case 3:
+                return "exchange";
+            case 4:
+                return "agreement";
+            case 5:
+                return "reflection";
+            default:
+                return "";
+        }
     }
 
     const advanceStage = () => {
