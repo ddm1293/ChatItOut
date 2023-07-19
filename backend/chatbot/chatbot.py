@@ -4,12 +4,15 @@ import en_textcat_demo
 
 # set API key
 openai.api_key="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"
+
 # load intent classifier
 nlp = en_textcat_demo.load()
+
 # stage tracker
-stage = 1
+# stage = 1
+
 # context
-messages = []
+#messages = []
 
 # define starting context
 systemContext = [
@@ -49,23 +52,8 @@ def intent_classify(input):
     else:
         return False
 
-# function to generate AI response
-def generate_response(input):
-    messages = systemContext # add original context to prompt list
-    messages.append({'role':'user', 'content':f"{input}"}) # add newest messaNotge to context
-    # generate response
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=messages,
-        temperature=0
-    )
-    ai_resp = response.choices[0].message["content"] # get response
-    messages.append({'role':'assistant', 'content':f"{ai_resp}"}) # add response as additional context for chat history
-
-    return ai_resp
-
 # get prompt to tell AI what stage it's in
-def get_stage():
+def get_stage(stage):
     if stage == 1:
         return "You are in the first stage."
     elif stage == 2:
@@ -77,24 +65,79 @@ def get_stage():
     elif stage == 5:
         return "You are now in the fifth stage."
     else:
-        return None
+        return "You have completed the stages. Wrap up the conversation."
+    
 
-# initial output
-print("Coach: Hey, how are you doing?")
+# # function to generate AI response
+# def generate_response(input):
+#     messages = systemContext # add original context to prompt list
+#     messages.append({'role':'user', 'content':f"{input}"}) # add newest messaNotge to context
+#     # generate response
+#     response = openai.ChatCompletion.create(
+#         model="gpt-3.5-turbo",
+#         messages=messages,
+#         temperature=0
+#     )
+#     ai_resp = response.choices[0].message["content"] # get response
+#     messages.append({'role':'assistant', 'content':f"{ai_resp}"}) # add response as additional context for chat history
 
-while True:
-    user_input = input("User: ") # get user input
-    if user_input.lower() == 'exit': # if the user wants to quit, exit program
-        break
-    messages.append({'role':'user', 'content':f"{user_input}"}) # add input to context
+#     return ai_resp
+
+def generate_response(input):
+    # Add previous context
+    messages = systemContext
+    for msg in input.get('context'):
+        if msg.get('type') == 'user':
+            messages.append({'role':'user', 'content':f"{msg.get('message')}"})
+        elif msg.get('type') == 'chatbot':
+            messages.append({'role':'assistant', 'content':f"{msg.get('message')}"})
+        else:
+            continue
+    print(messages)
+
+    # Determine stage transition
+    stage = input.get('stage')
+    user_input = input.get('newMsg')
+    messages.append({'role':'user', 'content':f"{user_input}"})
     trans = intent_classify(user_input) # classify user input
     if trans: # if the classification returned true...
         stage += 1 # go to next stage
-        pos = get_stage()
+        pos = get_stage(stage)
         messages.append({'role': 'system', 'content': f"{pos}"}) # tell the AI that it is in the next stage now
-    response = generate_response(messages) # generate response
-    messages.append({'role':'assistant', 'content':f"{response}"}) # add AI response to context (chat memory)
-    print(f"Current Stage: {stage}") #output the current stage
-    print("Coach:", response) # output response
-    if stage > 5: # if done the final stage, exit program
-        break
+
+    # Generate AI response
+    ai_resp = None
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=messages,
+            temperature=0
+        )
+        ai_resp = response.choices[0].message["content"]
+    except Exception as e:
+        print(e)
+        ai_resp = "An error occured with OpenAI. Please try again later."; 
+    
+    messages.append({'role':'assistant', 'content':f"{ai_resp}"})
+
+    return {'ai': ai_resp, 'stage': stage}
+
+# initial output
+# print("Coach: Hey, how are you doing?")
+
+# while True:
+#     user_input = input("User: ") # get user input
+#     if user_input.lower() == 'exit': # if the user wants to quit, exit program
+#         break
+#     messages.append({'role':'user', 'content':f"{user_input}"}) # add input to context
+#     trans = intent_classify(user_input) # classify user input
+#     if trans: # if the classification returned true...
+#         stage += 1 # go to next stage
+#         pos = get_stage()
+#         messages.append({'role': 'system', 'content': f"{pos}"}) # tell the AI that it is in the next stage now
+#     response = generate_response(messages) # generate response
+#     messages.append({'role':'assistant', 'content':f"{response}"}) # add AI response to context (chat memory)
+#     print(f"Current Stage: {stage}") #output the current stage
+#     print("Coach:", response) # output response
+#     if stage > 5: # if done the final stage, exit program
+#         break

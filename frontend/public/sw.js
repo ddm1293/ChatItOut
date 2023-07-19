@@ -28,6 +28,9 @@ self.addEventListener("install", event => {
 
 // Revalidate strategy
 self.addEventListener('fetch', event => {
+  if (event.request.method === 'POST') { // ignore chatbot requests
+    return;
+  }
   event.respondWith(
     caches.match(event.request).then(cachedResponse => {
       const networkFetch = fetch(event.request).then(response => {

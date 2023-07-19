@@ -1,6 +1,7 @@
 from flask import Flask, make_response
 from flask import request
-from chatbot.chatbot_v2 import *
+# from chatbot.chatbot_v2 import *
+from chatbot.chatbot import *
 
 app = Flask(__name__)
 
