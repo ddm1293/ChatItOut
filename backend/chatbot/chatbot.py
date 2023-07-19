@@ -48,7 +48,7 @@ def intent_classify(input):
     stage = input.get('stage')
     tag = max(intent.cats, key=intent.cats.get) # determine most probable classification
     print(f"{tag}")
-    if (tag == "TRANSITION") or (tag == "CON" and stage == 1) or (tag == "EXC" and stage == 2) or (tag == "AGR" and stage == 3) or (tag == "REF" and stage == 4): # determine whether to transition to the next stage (True) or not (False)
+    if (tag == "TRANSITION") or (tag == "CON" and stage == 1) or (tag == "EXC" and stage == 2) or (tag == "AGR" and stage == 3) or (tag == "THANKS" and stage == 4) or (tag == "GOODBYE" and stage == 4): # determine whether to transition to the next stage (True) or not (False)
         return True
     else:
         return False
