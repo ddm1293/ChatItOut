@@ -17,7 +17,7 @@ module.exports = {
     // set necessary fonts
     fontFamily: {
     }
-  }
+  },
 }
 
 

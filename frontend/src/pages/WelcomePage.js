@@ -20,7 +20,7 @@ export default function WelcomePage() {
                         </div>
                     </div>
 
-                    <img className="row-span-2" src={pic} alt="Welcome page picture" />
+                    <img className="row-span-2 max-w-screen-md" src={pic} alt="Welcome page picture" />
 
                     <Link to={"/home"}>
                     <div className="flex row-span-1 align-top justify-center">
