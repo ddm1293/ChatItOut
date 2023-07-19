@@ -52,7 +52,11 @@ export default function WelcomePage() {
                         </div>
                     </div>
 
+<<<<<<< HEAD
                     <img className="row-span-2 sm:px-36 md:px-24" src={pic} alt="Welcome page picture" />
+=======
+                    <img className="row-span-2 max-w-screen-md" src={pic} alt="Welcome page picture" />
+>>>>>>> bd9cb53d9693399f97b0c26efc1931a9b3995527
 
                     <Link to={"/home"}>
                     <div className="flex row-span-1 align-top justify-center">

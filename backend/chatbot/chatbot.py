@@ -45,9 +45,10 @@ systemContext = [
 # intent classification function
 def intent_classify(input):
     intent = nlp(input) # generate classification scores for input
+    stage = input.get('stage')
     tag = max(intent.cats, key=intent.cats.get) # determine most probable classification
     print(f"{tag}")
-    if tag == "TRANSITION" or tag == "THANKS" or tag == "GOODBYE": # determine whether to transition to the next stage (True) or not (False)
+    if (tag == "TRANSITION") or (tag == "CON" and stage == 1) or (tag == "EXC" and stage == 2) or (tag == "AGR" and stage == 3) or (tag == "THANKS" and stage == 4) or (tag == "GOODBYE" and stage == 4): # determine whether to transition to the next stage (True) or not (False)
         return True
     else:
         return False
@@ -93,7 +94,6 @@ def generate_response(input):
             messages.append({'role':'assistant', 'content':f"{msg.get('message')}"})
         else:
             continue
-    print(messages)
 
     # Determine stage transition
     stage = input.get('stage')
@@ -109,7 +109,7 @@ def generate_response(input):
     ai_resp = None
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+            model="gpt-3.5-turbo-16k",
             messages=messages,
             temperature=0
         )

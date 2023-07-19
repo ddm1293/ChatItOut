@@ -14,11 +14,11 @@
 
 <details>
 
-<summary>View label scheme (9 labels for 1 components)</summary>
+<summary>View label scheme (14 labels for 1 components)</summary>
 
 | Component | Labels |
 | --- | --- |
-| **`textcat`** | `DOUBT`, `FEAR`, `VIOLENCE`, `GREETING`, `GOODBYE`, `THANKS`, `ANGER`, `CONFUSION`, `TRANSITION` |
+| **`textcat`** | `DOUBT`, `FEAR`, `VIOLENCE`, `GREETING`, `GOODBYE`, `THANKS`, `ANGER`, `CONFUSION`, `TRANSITION`, `INFORMATION`, `AGREEMENT`, `CON`, `EXC`, `AGR` |
 
 </details>
 
@@ -26,13 +26,13 @@
 
 | Type | Score |
 | --- | --- |
-| `CATS_SCORE` | 47.57 |
-| `CATS_MICRO_P` | 57.89 |
-| `CATS_MICRO_R` | 57.89 |
-| `CATS_MICRO_F` | 57.89 |
-| `CATS_MACRO_P` | 48.15 |
-| `CATS_MACRO_R` | 50.00 |
-| `CATS_MACRO_F` | 47.57 |
-| `CATS_MACRO_AUC` | 82.06 |
+| `CATS_SCORE` | 42.37 |
+| `CATS_MICRO_P` | 55.77 |
+| `CATS_MICRO_R` | 55.77 |
+| `CATS_MICRO_F` | 55.77 |
+| `CATS_MACRO_P` | 42.53 |
+| `CATS_MACRO_R` | 47.42 |
+| `CATS_MACRO_F` | 42.37 |
+| `CATS_MACRO_AUC` | 75.50 |
 | `CATS_MACRO_AUC_PER_TYPE` | 0.00 |
 | `TEXTCAT_LOSS` | 0.00 |
