@@ -69,7 +69,7 @@ export default function LeftSideBar() {
 
     const newChat = () => {
         let today = new Date();
-        let emptyStart = { messages: { invitation: [{type: 'chatbot', message: "I'm an AI counselor here to help you with any conflicts or issues you may be facing. How can I assist you today?"}], connection: [], exchange: [], agreement: [], reflection: [] }, time: today, stage: new ChatStage(), atStartRef: false };
+        let emptyStart = { messages: { invitation: [{ type: 'newStage', message: 'invitation' }, {type: 'chatbot', message: "I'm an AI counselor here to help you with any conflicts or issues you may be facing. How can I assist you today?"}], connection: [], exchange: [], agreement: [], reflection: [] }, time: today, stage: new ChatStage(), atStartRef: false };
         setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
         // switch welcome page to Chatbot pg with a blank startState
     }

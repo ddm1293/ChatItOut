@@ -293,10 +293,10 @@ export default function Chatbot() {
     const scrollToStage = (stage) => {
         // just scroll to top for Invitation stage?
         // unless we have a not started and then the chatbot transitions into the invitation stage...
-        if (stage === "invitation") {
-            containerRef.current.scrollTop = 0;
-            return;
-        }
+        // if (stage === "invitation") {
+        //     containerRef.current.scrollTop = 0;
+        //     return;
+        // }
         document.getElementById(`stageLine-${stage}`).scrollIntoView({ behavior: 'smooth' });
     }
 
