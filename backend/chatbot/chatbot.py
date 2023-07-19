@@ -93,7 +93,6 @@ def generate_response(input):
             messages.append({'role':'assistant', 'content':f"{msg.get('message')}"})
         else:
             continue
-    print(messages)
 
     # Determine stage transition
     stage = input.get('stage')

@@ -69,7 +69,7 @@ export default function LeftSideBar() {
 
     const newChat = () => {
         let today = new Date();
-        let emptyStart = { messages: { invitation: [{type: 'chatbot', message: 'Hey, how are you doing?'}], connection: [], exchange: [], agreement: [], reflection: [] }, time: today, stage: new ChatStage(), atStartRef: false };
+        let emptyStart = { messages: { invitation: [{type: 'chatbot', message: "I'm an AI counselor here to help you with any conflicts or issues you may be facing. How can I assist you today?"}], connection: [], exchange: [], agreement: [], reflection: [] }, time: today, stage: new ChatStage(), atStartRef: false };
         setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
         // switch welcome page to Chatbot pg with a blank startState
     }
@@ -162,7 +162,7 @@ export default function LeftSideBar() {
                 {/* New Chat */}
                 <div className='flex absolute left-1 top-28 w-80 h-10 hover:bg-[#1e1e1e] rounded-lg'>
                     <button onClick={() => newChat()} className="flex items-center absolute left-4 font-normal text-lg text-white font-calibri">
-                        <img src={newchat} className="left-2 top-2 square-full mx-3" alt="New Chat Icon" />
+                        <img src={newchat} className="left-2 top-2 square-full w-4 mx-3" alt="New Chat Icon" />
                         <span>New Chat</span>
                     </button>
                 </div>
@@ -175,7 +175,7 @@ export default function LeftSideBar() {
                             }`}
                     >
                         <button className="flex items-center absolute left-4 font-normal text-lg text-white font-calibri">
-                            <img src={stageexp} className="left-2 top-2 square-full mx-3" alt="Stage Icon" />
+                            <img src={stageexp} className="left-2 top-2 square-full w-4 mx-3" alt="Stage Icon" />
                             <span>What are the 5 stages?</span>
                         </button>
                     </div>
