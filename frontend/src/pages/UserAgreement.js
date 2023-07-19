@@ -1,24 +1,50 @@
-import React from 'react';
+import { React, useState} from 'react';
 import SideBar from '../components/SideBar';
 import ham from '../assets/icon_hamburgermenu.png';
+import close from '../assets/icon_close.png'
+import { Link } from 'react-router-dom';
 
 // TODO: Make a page that shows privacy policy and user agreement, goes to home page upon user's agreement
 export default function UserAgreement() {
 
+    const [hamOpen, setHamOpen] = useState(false);
+    
+    const handleButtonOpen= () => {
+        setHamOpen(true);
+    };
+
+    const handleButtonClose = () => {
+        setHamOpen(close);
+    };
+
     return (
         <>
             <div class="bg-[#0E0E10] flex h-screen">
-            <div className="sm:hidden">
-                <button>
-                    <img src={ham} className="absolute top-0 right-0 m-8" alt="Hamburger menu bar"/>
+            <div className="sm:hidden absolute top-0 w-full h-16 z-10 bg-black">
+                <button onClick={handleButtonOpen} className="sm:hidden">
+                    <img src={ham} className="z-10 absolute top-0 right-0 mt-6 mr-10" alt="Hamburger menu bar"/>
+                </button>
+
+                <Link to={"/welcome"}>
+                    <button className="absolute top-0 left-0 m-4 text-white font-calibri font-medium text-2xl">
+                        Chat IT Out
+                    </button>   
+                </Link>
+            </div>
+
+            <div className={`absolute right-0 top-0 z-50 w-4/5 ${hamOpen === true? "block": "hidden"}`}>
+                <SideBar />
+                                    
+                <button onClick={handleButtonClose}>
+                    <img src={close} className="absolute right-0 top-0 m-8"/>
                 </button>
             </div>
 
-            <div className="hidden sm:block">
+            <div className="hidden sm:block w-1/5">
                 <SideBar />
             </div>
 
-            <div className= "grid grid-rows-10 fixed h-screen top-0 right-0 w-full sm:w-4/5 md:w-4/5 lg:w-4/5 justify-center overflow-y-scroll">
+            <div className= "grid grid-rows-10 fixed h-screen top-8 right-0 w-full sm:w-4/5 md:w-4/5 lg:w-4/5 justify-center overflow-y-scroll">
                 <div className="text-center mt-12 text-3xl text-white font-calibri font-medium">
                     Terms of use
                 </div>

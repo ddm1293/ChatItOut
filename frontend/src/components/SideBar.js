@@ -150,7 +150,7 @@ export default function SideBar() {
 
     return (
         <>
-            <div className="md:flex flex-col h-screen bg-[#333333] w-full">
+            <div className="sm:flex flex-col h-screen bg-[#333333] w-full">
                 {/* Title */}
                 <div>
                     <Link to={"/home"}>
@@ -200,7 +200,7 @@ export default function SideBar() {
                 </HistoryContext.Provider>
 
                 {/* Divider */}
-                <hr class="mt-64 w-full bg-[#eeeeee] opacity-20" />
+                <hr class="mt-96 w-full bg-[#eeeeee] opacity-20" />
 
                 {/* Menu items */}
                 <Link to={'/useragreement'}>

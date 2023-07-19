@@ -5,6 +5,8 @@ import stagearrow from "../assets/icon_stagearrow.png";
 import { ChatCompleteContext, HistoryContext, HistoryContextProvider } from '../ChatContexts';
 import stagecomplete from "../assets/icon_stagecomplete.png";
 import ailogo from "../assets/icon_ailogo.png";
+import pencil from "../assets/icon_pencil.png";
+import home from "../assets/icon_home.png";
 import ChatStage from '../ChatStage';
 import Loading from './Loading';
 import StageLine from './StageLine';
@@ -28,10 +30,12 @@ export default function Chatbot() {
     const [refStage, setRefStage] = useState("notStarted");
     const containerRef = useRef(null);
 
-    const isInitialMount = useRef(true);
     const dbReq = indexedDB.open("chathistory", 1);
 
     const [isOnline, setIsOnline] = useState(navigator.onLine);
+    const [chatbotLoading, setChatbotLoading] = useState(false);
+    const isInitialMount = useRef(true);
+    const addRefLine = useRef(false);
 
     // Offline handling
     useEffect(() => {
@@ -62,7 +66,7 @@ export default function Chatbot() {
         // return responses[i];
 
         let context = getAllMessages();
-        let input = { context: context, newMsg: msg, stage: getStageNum()};
+        let input = { context: context, newMsg: msg, stage: getStageNum() };
 
         try {
             let resp = await axios.post(`${serverURL}/home/chat`, input, {
@@ -70,7 +74,6 @@ export default function Chatbot() {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log(resp.data);
             return resp.data;
         } catch (err) {
             console.log(err);
@@ -79,22 +82,23 @@ export default function Chatbot() {
     }
 
     useEffect(() => {
+        console.log('currchathist useeffect');
         setMessages(currChatHist.messages);
         setAtStartRef(currChatHist.atStartRef);
         setStageProgress(currChatHist.stage)
         setLocalStage(currChatHist.stage);
     }, [currChatHist])
 
-    const handleUserInput = (content) => {
+    const handleUserInput = async (content) => {
+        console.log('handle user input');
+        if (globalStage.name === "complete") {
+            return;
+        }
+
+        let stageMessages = messages[globalStage.name];
+
         content.preventDefault();
         const userInput = content.target.userInput.value;
-        const chatbotMessage = generateResponse();
-
-        if (globalStage.name !== "complete") {
-            let stageMessages = messages[globalStage.name];
-            stageMessages.push({ type: 'user', message: userInput });
-            stageMessages.push({ type: 'chatbot', message: chatbotMessage });
-
         content.target.userInput.value = "";
         setChatbotLoading(true);
         stageMessages.push({ type: 'user', message: userInput });
@@ -104,20 +108,27 @@ export default function Chatbot() {
         });
 
         generateResponse(userInput).then((chatbotResp) => {
-            console.log(globalStage);
-            console.log(stageMessages);
             setChatbotLoading(false);
+            if (chatbotResp.stage === undefined) {
+                stageMessages.push({ type: 'chatbot', message: chatbotResp });
+                setMessages({
+                    ...messages,
+                    [globalStage.name]: stageMessages
+                });
+                return;
+            }
             let chatbotStage = getStage(chatbotResp.stage);
             let addLine = false;
+            let addMsg = true;
 
             // Transition stage
-            if (chatbotStage !== localStage.name) {
-                console.log(chatbotStage);
+            if (chatbotStage !== globalStage.name) {
                 addLine = true;
                 if (chatbotStage === 'reflection') {
                     setAtStartRef(true);
                     stageMessages.push({ type: 'newStage', message: 'The chat is over for now. Please come back and start reflection once you are ready!' });
                     addLine = false;
+                    addMsg = false;
                 }
                 if (chatbotStage !== 'complete') {
                     stageMessages = messages[chatbotStage];
@@ -127,7 +138,6 @@ export default function Chatbot() {
 
             // Add stage line break
             let msg = chatbotResp.ai;
-            console.log(stageMessages);
             if (addLine && chatbotStage === 'complete') { // add msg before line
                 stageMessages.push({ type: 'chatbot', message: msg });
                 stageMessages.push({ type: 'newStage', message: chatbotStage });
@@ -135,10 +145,10 @@ export default function Chatbot() {
             } else if (addLine) { // add line before msg
                 stageMessages.push({ type: 'newStage', message: chatbotStage });
                 stageMessages.push({ type: 'chatbot', message: msg });
-            } else { // no line
+            } else if (addMsg) { // no line
                 stageMessages.push({ type: 'chatbot', message: msg });
             }
-    
+
             setMessages({
                 ...messages,
                 [globalStage.name === "complete" ? "reflection" : globalStage.name]: stageMessages
@@ -204,7 +214,6 @@ export default function Chatbot() {
             case "agreement":
                 globalStage.setReflection();
                 setAgrStage("completed");
-                //setRefStage("inProgress");
                 break;
             case "reflection":
                 globalStage.setComplete();
@@ -267,40 +276,56 @@ export default function Chatbot() {
         }
     }
 
-    // Server solution
-    // const saveToDisk = useCallback(() => {
-    //     let info = {id: id, messages: messages}; 
-    //     axios.post(`${serverURL}/home/chat/${id}`, info, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         }
-    //     })
-    //     .catch(function (error) {
-    //         console.log(error);
-    //     });
-    //   }, [messages])
+    const startReflection = () => {
+        let agrMsgs = messages.agreement.slice(0, -1);
+        let newMsgs = {
+            ...messages,
+            agreement: agrMsgs,
+      };
+
+        setMessages(newMsgs);
+
+        setRefStage("inProgress");
+        setAtStartRef(false); 
+        addRefLine.current = true;
+    }
+
     const scrollToStage = (stage) => {
         // just scroll to top for Invitation stage?
         // unless we have a not started and then the chatbot transitions into the invitation stage...
-        if (stage === "invitation") {
-            containerRef.current.scrollTop = 0;
-            return;
-        }
-        document.getElementById(`stageLine-${stage}`).scrollIntoView({behavior: 'smooth'});
+        // if (stage === "invitation") {
+        //     containerRef.current.scrollTop = 0;
+        //     return;
+        // }
+        document.getElementById(`stageLine-${stage}`).scrollIntoView({ behavior: 'smooth' });
     }
 
     useEffect(() => {
-        console.log(messages);
         if (isOnline) containerRef.current.scrollTop = containerRef.current.scrollHeight;
 
         if (isInitialMount.current) {
             isInitialMount.current = false;
             return;
         }
+
+        if (addRefLine.current) {
+            addRefLine.current = false;
+            let refMsgs = [
+                { type: 'newStage', message: globalStage.name }, 
+                { type: 'chatbot', message: "How satisfied are you with the outcomes or agreements you made in this conversation?"}
+            ];
+            setMessages(prevMessages => {
+            return {
+              ...prevMessages,
+              [globalStage.name]: refMsgs
+            };
+          });
+        }
+
         let updatedContext = { messages: messages, time: currChatHist.time, stage: globalStage, atStartRef: atStartRef }
         dbReq.onsuccess = function (evt) {
             let db = dbReq.result;
-            if (!db.objectStoreNames.contains('chats') || currChatHist.time === undefined) {
+            if (!db.objectStoreNames.contains('chats') || (messages === currChatHist.messages && localStage === currChatHist.stage)) {
                 return;
             }
             const tx = db.transaction('chats', 'readwrite');
@@ -333,7 +358,7 @@ export default function Chatbot() {
         } else {
             return 'opacity-100 bg-[#1993D6] text-opacity-0';
         }
-    }
+    };
 
     return (
         <>
