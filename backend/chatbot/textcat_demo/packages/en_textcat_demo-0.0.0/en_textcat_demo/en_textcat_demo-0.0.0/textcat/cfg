@@ -8,7 +8,12 @@
     "THANKS",
     "ANGER",
     "CONFUSION",
-    "TRANSITION"
+    "TRANSITION",
+    "INFORMATION",
+    "AGREEMENT",
+    "CON",
+    "EXC",
+    "AGR"
   ],
   "threshold":0.5,
   "positive_label":null
