@@ -1,10 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import chathist from "../assets/icon_chathist.png";
 import email from "../assets/icon_sendemail.png";
 import download from "../assets/icon_download.png";
 import trash from "../assets/icon_trashchat.png";
 import chatdone from "../assets/icon_chatdone.png";
+import confirm from "../assets/icon_confirm.png";
+import cancel from "../assets/icon_cancel.png";
 import { ChatDeleteContext, HistoryContext } from '../ChatContexts';
 import { jsPDF } from 'jspdf';
 
@@ -13,6 +15,7 @@ export default function ChatHistory(props) {
     const time = props.startState.time;
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
     const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const navigate = useNavigate();
 
     const getTime = (today) => {
@@ -118,6 +121,17 @@ export default function ChatHistory(props) {
             // TODO: if this chat is currently open, switch back to welcome page
             //navigate('/welcome');
         }
+        setConfirmDelete(false);
+    }
+
+    const determineChatIcon = () => {
+        if (startState.stage.name === 'complete') {
+            return chatdone;
+        } else if (confirmDelete.current) {
+            return trash;
+        } else {
+            return chathist;
+        }
     }
 
     useEffect(() => {
@@ -142,19 +156,32 @@ export default function ChatHistory(props) {
             <div className={`group flex items-center hover:bg-[#1e1e1e] rounded-lg ${time.getTime() == currChatHist.time.getTime() ? 'bg-[#1e1e1e]' : ''}`}>
                 <button onClick={() => setCurrChatHist(startState)} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
                     <div className="flex items-center">
-                        <img className="w-5 h-5" src={startState.stage.name === 'complete' ? chatdone : chathist} alt="Chat History" />
+                        <img className="w-5 h-5" src={determineChatIcon()} alt="Chat History" />
                         <span className="px-2"> {getTime(time)} </span>
                     </div>
                 </button>
+                {!confirmDelete ? 
+                <div>
                 <button onClick={() => downloadChatPDF()}>
                     <img className={`px-1 w-7 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={download} />
                 </button>
                 <button onClick={() => sendEmail()}>
                     <img className={`px-1 w-7 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={email} />
                 </button>
-                <button onClick={() => deleteChat()}>
+                <button onClick={() => {setConfirmDelete(true)}}>
                     <img className={`px-1 w-7 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={trash} />
+                </button> 
+                </div>
+                :
+                <div>
+                <button onClick={() => deleteChat()}>
+                    <img className={'ml-2 px-1 w-7'} src={confirm} />
                 </button>
+                <button onClick={() => {setConfirmDelete(false)}}>
+                    <img className={'ml-1 px-1 w-6'} src={cancel} />
+                </button>
+                </div>
+}
             </div>
         </>
     )
