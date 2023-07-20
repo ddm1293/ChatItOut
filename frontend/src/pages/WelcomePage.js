@@ -20,9 +20,28 @@ export default function WelcomePage() {
         <>
 
             <div class="bg-[#1e1e1e] flex h-screen">
-            <div className="z-10 absolute top-0 left-0 w-1/5 hidden sm:block">
-                    <SideBar />
-                </div>
+            <div className="w-1/5 absolute top-0 left-0 hidden sm:block">
+                <SideBar />
+            </div>
+
+            <div className="sm:hidden">
+                <Link to={"/welcome"}>
+                    <p className="z-10 absolute top-0 left-0 m-4 text-white font-calibri font-medium text-2xl">
+                        Chat IT Out
+                    </p>   
+                </Link>
+            </div>
+                    
+            <button onClick={handleButtonOpen} className="sm:hidden">
+                <img src={ham} className="z-10 absolute top-0 right-0 mt-6 mr-10" alt="Hamburger menu bar"/>
+            </button>
+
+            <div className={`absolute right-0 top-0 z-50 w-4/5 ${hamOpen === true? "block": "hidden"}`}>
+                <SideBar />                                   
+                <button onClick={handleButtonClose}>
+                    <img src={close} className="absolute right-0 top-0 m-8"/>
+                </button>
+            </div>
 
                 <div className= "bg-[#0E0E10] grid grid-rows-8 fixed h-screen lg:w-4/5 sm:w-full top-0 right-0 justify-center">
                     <div className="sm:hidden absolute top-0 w-full h-16 z-10 bg-black">
@@ -52,11 +71,11 @@ export default function WelcomePage() {
                         </div>
                     </div>
 
-<<<<<<< HEAD
-                    <img className="row-span-2 sm:px-36 md:px-24" src={pic} alt="Welcome page picture" />
-=======
-                    <img className="row-span-2 max-w-screen-md" src={pic} alt="Welcome page picture" />
->>>>>>> bd9cb53d9693399f97b0c26efc1931a9b3995527
+                    <div className="row-span-2 sm:px-36 md:px-24 flex justify-center">
+                        <img className="w-4/5 h-full" src={pic} alt="Welcome page picture" />
+                    </div>
+
+                    <div className="row-span-1" />
 
                     <Link to={"/home"}>
                     <div className="flex row-span-1 align-top justify-center">

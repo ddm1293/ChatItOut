@@ -153,7 +153,7 @@ export default function SideBar() {
             <div className="sm:flex flex-col h-screen bg-[#333333] w-full">
                 {/* Title */}
                 <div>
-                    <Link to={"/home"}>
+                    <Link to={"/welcome"}>
                         <button className="m-8 font-bold hidden sm:block md:text-lg lg:text-2xl text-white font-calibri">
                             Chat IT Out
                         </button>
@@ -166,7 +166,7 @@ export default function SideBar() {
                 {/* New Chat */}
                 <div className='flex w-full h-fit p-2 mt-24 sm:mt-10 hover:bg-[#1e1e1e] rounded-lg'>
                     <button onClick={() => newChat()} className="flex items-center ml-5 font-normal text-lg text-white font-calibri">
-                        <img src={newchat} className="square-full mx-3" alt="New Chat Icon" />
+                        <img src={newchat} className="square-full mx-3 w-4 h-4" alt="New Chat Icon" />
                         <span>New Chat</span>
                     </button>
                 </div>
@@ -174,15 +174,16 @@ export default function SideBar() {
                 {/* What are 5 stages? */}
                 <Link to={"/stageexp"}>
                     <div
-                        className={`flex w-full h-fit p-2 mt-2 hover:bg-[#1e1e1e] rounded-lg ${(useLocation().pathname === "/stageexp") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
+                        className={`flex w-full h-fit p-2 mt-2 hover:bg-[#1e1e1e] rounded-lg ${(useLocation().pathname === "/stageexp") ? 'bg-[#1e1e1e] rounded-lg' : ''
                             }`}
                     >
                         <button className="flex items-center ml-5 font-normal text-lg text-white font-calibri">
-                            <img src={stageexp} className="square-full mx-3" alt="Stage Icon" />
+                            <img src={stageexp} className="square-full mx-3 w-4 h-4" alt="Stage Icon" />
                             <span>What are the 5 stages?</span>
                         </button>
                     </div>
                 </Link>
+
 
                 <HistoryContext.Provider value={value}>
                     {/* In Progress */}
@@ -218,6 +219,3 @@ export default function SideBar() {
         </>
     )
 };
-
-
-

@@ -1,11 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import SideBar from "../components/SideBar"
-import Chatbot from '../components/Chatbot'
+import Chatbot from "../components/Chatbot"
+import Welcome from "../components/Welcome"
+import StageExp from "../components/StageExplanation";
+import TermsOfUse from "../components/TermsOfUse"
 import { ChatDeleteContext, HistoryContext, ChatCompleteContext } from '../ChatContexts';
 import ChatStage from '../ChatStage';
 import ham from '../assets/icon_hamburgermenu.png';
 import { Link } from "react-router-dom";
-import close from '../assets/icon_close.png'
+import close from "../assets/icon_close.png";
+import usePageState from '../components/PageRoute';
 
 
 export default function HomePage() {
@@ -20,6 +24,20 @@ export default function HomePage() {
 
     const [hamOpen, setHamOpen] = useState(false);
     
+    const  { currentPage, setCurrentPage, handlePageChange } = usePageState();
+
+    // const [home, setHome] = useState(true);
+    // const [welcome, setWelcome] = useState(false);
+    // const [stageexp, setStageExp] = useState(false);
+    // const [useterms, setUseTerms] = useState(false);
+
+    const openPage = (page) => {
+        if (page === true) {
+            return "block";
+        }
+        return "hidden";
+    }
+    
     const handleButtonOpen= () => {
         setHamOpen(true);
     };
@@ -28,13 +46,15 @@ export default function HomePage() {
         setHamOpen(close);
     };
 
+
     return (
         <>
+
             <HistoryContext.Provider value={historyContextValue}>
                 <ChatDeleteContext.Provider value={chatToDeleteValue}>
                     <ChatCompleteContext.Provider value={chatToCompleteValue}>
                         <div className="bg-[#1e1e1e] flex h-screen">
-                                <div className="z-10 absolute top-0 left-0 w-1/5 hidden sm:block">
+                                <div className="w-1/5 absolute top-0 left-0 hidden sm:block">
                                     <SideBar />
                                 </div>
 

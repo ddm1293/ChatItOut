@@ -58,34 +58,34 @@ export default function Chatbot() {
     }, []);
 
     const generateResponse = async (msg) => {
-        // let responses = ["Hello, how are you?", "That is a bad idea.", "You are very intelligent!"];
-        // let i = Math.floor((Math.random() * 3));
-        // if (i === 2) {
-        //     advanceStage();
-        // }
-        // return responses[i];
-
-        let context = getAllMessages();
-        let input = { context: context, newMsg: msg, stage: getStageNum() };
-
-        try {
-            let resp = await axios.post(`${serverURL}/home/chat`, input, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            return resp.data;
-        } catch (err) {
-            console.log(err);
-            return "An error occured. Please try again later."
+        let responses = ["Hello, how are you?", "That is a bad idea.", "You are very intelligent!"];
+        let i = Math.floor((Math.random() * 3));
+        if (i === 2) {
+            advanceStage();
         }
+        return responses[i];
+
+        // let context = getAllMessages();
+        // let input = { context: context, newMsg: msg, stage: getStageNum() };
+
+        // try {
+        //     let resp = await axios.post(`${serverURL}/home/chat`, input, {
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //         }
+        //     });
+        //     return resp.data;
+        // } catch (err) {
+        //     console.log(err);
+        //     return "An error occured. Please try again later."
+        // }
     }
 
     useEffect(() => {
         console.log('currchathist useeffect');
         setMessages(currChatHist.messages);
         setAtStartRef(currChatHist.atStartRef);
-        setStageProgress(currChatHist.stage)
+        setStageProgress(currChatHist.stage);
         setLocalStage(currChatHist.stage);
     }, [currChatHist])
 
@@ -356,7 +356,7 @@ export default function Chatbot() {
         } else if (stage == "inProgress") {
             return 'opacity-100 bg-[#1993D6] text-black';
         } else {
-            return 'opacity-100 bg-[#1993D6] text-opacity-0';
+            return 'hidden';
         }
     };
 
@@ -422,74 +422,92 @@ export default function Chatbot() {
                             </div>
                         </div>
 
-                        {/* Left Status Bar */}
-                        <div className="absolute w-4/5 h-20 bg-[#242424] flex right-0 top-0">
-                            <button onClick={() => scrollToStage('invitation')} className='group'>
-                                <span className={`flex absolute top-8 left-0 w-64 h-12 ${invStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} group-hover:border-b-4 group-hover:border-[#1993D6]`}></span>
-                                <div className="flex absolute top-8 left-20">
-                                    <span className={`w-4 h-4 flex rounded-full items-center justify-center ${invStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}>
-                                        {invStage === "completed" ? <img src={stagecomplete} className="w-3 h-3" alt="Stage Complete" /> : null}
-                                    </span>
-                                    <span className={`absolute left-1 -top-1 font-calibri text-14 leading-17 ${invStage === "completed" ? "opacity-0" : "text-black"}`}> 1 </span>
-                                    <span className={`absolute left-8 -top-2 text-lg leading-22 font-calibri ${wordColor(invStage)}`}>
-                                        Invitation
-                                    </span>
-                                    <img src={stagearrow} className="absolute left-40 top-1 rounded-full" alt="Stage Arrow" />
+
+                        {/* Top Status Bar */}
+                        <div className="flex flex-row w-full sm:w-4/5 h-20 bg-[#242424] absolute right-0 md:top-0 top-16">
+                            <button onClick={() => scrollToStage('invitation')} className='w-[18%] justify-center' disabled={invStage === "notStarted"}>
+                                <div className={`flex flex-col justify-center items-center w-full h-20 border-b-4 ${invStage === "inProgress" ? "border-[#1993D6]" : "border-none"}`}>
+                                    <div className='p-4'>
+                                        <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
+                                            <p className={`w-6 h-6 md:w-4 md:h-4 rounded-full font-calibri text-base ${buttonColor(invStage)}`}> 1 </p>
+                                            <img className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] ${invStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
+                                            <p className={`md:ml-6 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(invStage)}`}>
+                                                Invitation
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </button>
 
-                            <button onClick={() => scrollToStage('connection')} className='group' disabled={conStage === "notStarted"}>
-                                <span className={`flex absolute top-8 left-64 w-64 h-12 ${conStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${conStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></span>
-                                <div className="flex absolute top-8 left-80">
-                                    <span className={`w-4 h-4 flex rounded-full items-center justify-center ${conStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}>
-                                        {conStage === "completed" ? <img src={stagecomplete} className="w-3 h-3" alt="Stage Complete" /> : null}
-                                    </span>
-                                    <span className={`absolute left-1 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 ${conStage === "completed" ? "opacity-0" : "text-black"}`}>2</span>
-                                    <span className={`absolute left-8 -top-2 text-lg leading-22 font-calibri ${wordColor(conStage)}`}>
-                                        Connection
-                                    </span>
-                                    <img src={stagearrow} className="absolute left-44 top-1 rounded-full" alt="Stage Arrow" />
+                            <div className="flex max-w-xs items-center">
+                                <img src={stagearrow} className="rounded-full" alt="Stage Arrow" />
+                            </div>
+
+                            <button onClick={() => scrollToStage('connection')} className='w-[18%] justify-center' disabled={conStage === "notStarted"}>
+                                <div className={`flex flex-col justify-center items-center w-full h-20 border-b-4 ${conStage === "inProgress" ? "border-[#1993D6]" : "border-none"}`}>
+                                    <div className='p-4'>
+                                        <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
+                                            <p className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] font-calibri text-base justify-center items-center ${buttonColor(conStage)}`}> 2 </p>
+                                            <img className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] ${conStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
+                                            <p className={`md:ml-6 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(conStage)}`}>
+                                                Connection
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </button>
 
-                            <button onClick={() => scrollToStage('exchange')} className='group' disabled={excStage === "notStarted"}>
-                                <span className={`flex absolute top-8 left-[500px] w-64 h-12 ${excStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${excStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></span>
-                                <div className="flex absolute top-8" style={{ left: '560px' }}>
-                                    <span className={`w-4 h-4 flex rounded-full items-center justify-center ${excStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}>
-                                        {excStage === "completed" ? <img src={stagecomplete} className="w-3 h-3" alt="Stage Complete" /> : null}
-                                    </span>
-                                    <span className={`absolute left-1 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 ${excStage === "completed" ? "opacity-0" : "text-black"}`}>3</span>
-                                    <span className={`absolute left-8 -top-2 text-lg leading-22 font-calibri ${wordColor(excStage)}`}>
-                                        Exchange
-                                    </span>
-                                    <img src={stagearrow} className="absolute left-44 top-1 rounded-full" alt="Stage Arrow" />
+                            <div className="flex max-w-xs items-center">
+                                <img src={stagearrow} className="rounded-full" alt="Stage Arrow" />
+                            </div>
+
+                            <button onClick={() => scrollToStage('exchange')} className='w-[18%] justify-center' disabled={excStage === "notStarted"}>
+                                <div className={`flex flex-col justify-center items-center w-full h-20 border-b-4 ${excStage === "inProgress" ? "border-[#1993D6]" : "border-none"}`}>
+                                    <div className='p-4'>
+                                        <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
+                                            <p className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] font-calibri text-base justify-center items-center ${buttonColor(excStage)}`}> 3 </p>
+                                            <img className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] ${excStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
+                                            <p className={`md:ml-6 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(excStage)}`}>
+                                                Exchange
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </button>
 
-                            <button onClick={() => scrollToStage('agreement')} className='group' disabled={agrStage === "notStarted"}>
-                                <div className={`flex absolute top-8 left-[750px] w-60 h-12 ${agrStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${agrStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></div>
-                                <div className="flex absolute top-8" style={{ left: '800px' }}>
-                                    <span className={`w-4 h-4 flex rounded-full items-center justify-center ${agrStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}>
-                                        {agrStage === "completed" ? <img src={stagecomplete} className="w-3 h-3" alt="Stage Complete" /> : null}
-                                    </span>
-                                    <span className={`absolute left-1 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 ${agrStage === "completed" ? "opacity-0" : "text-black"}`}>4</span>
-                                    <span className={`absolute left-8 -top-2 text-lg leading-22 font-calibri ${wordColor(agrStage)}`}>
-                                        Agreement
-                                    </span>
-                                    <img className="absolute left-44 top-1 rounded-full" src={stagearrow} alt="Stage Arrow" />
+                            <div className="flex max-w-xs items-center">
+                                <img src={stagearrow} className="rounded-full" alt="Stage Arrow" />
+                            </div>
+
+                            <button onClick={() => scrollToStage('agreement')} className='w-[18%] justify-center' disabled={agrStage === "notStarted"}>
+                                <div className={`flex flex-col justify-center items-center w-full h-20 border-b-4 ${agrStage === "inProgress" ? "border-[#1993D6]" : "border-none"}`}>
+                                    <div className='p-4'>
+                                        <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
+                                            <p className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] font-calibri text-base justify-center items-center ${buttonColor(agrStage)}`}> 4 </p>
+                                            <img className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] ${agrStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
+                                            <p className={`md:ml-6 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(agrStage)}`}>
+                                                Agreement
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </button>
 
-                            <button onClick={() => scrollToStage('reflection')} className='group' disabled={refStage === "notStarted"}>
-                                <div className={`flex absolute top-8 left-[990px] w-64 h-12 ${refStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${refStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}></div>
-                                <div className="flex absolute top-8" style={{ left: '1040px' }}>
-                                    <span className={`w-4 h-4 flex rounded-full items-center justify-center ${refStage === "notStarted" ? "opacity-50 bg-white" : "opacity-100 bg-[#1993D6]"}`}>
-                                        {refStage === "completed" ? <img src={stagecomplete} className="w-3 h-3" alt="Stage Complete" /> : null}
-                                    </span>
-                                    <span className={`absolute left-1 flex items-center justify-center -top-1 font-calibri font-normal text-14 leading-17 ${refStage === "completed" ? "opacity-0" : "text-black"}`}>5</span>
-                                    <span className={`absolute left-8 -top-2 text-lg leading-22 font-calibri ${wordColor(refStage)}`}>
-                                        Reflection
-                                    </span>
+                            <div className="flex max-w-xs items-center">
+                                <img src={stagearrow} className="rounded-full" alt="Stage Arrow" />
+                            </div>
+
+                            <button onClick={() => scrollToStage('reflection')} className='w-[18%] justify-center' disabled={refStage === "notStarted"}>
+                                <div className={`flex flex-col justify-center items-center w-full h-20 border-b-4 ${refStage === "inProgress" ? "border-[#1993D6]" : "border-none"}`}>
+                                    <div className='p-4'>
+                                        <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
+                                            <p className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] font-calibri text-base justify-center items-center ${buttonColor(refStage)}`}> 5 </p>
+                                            <img className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] ${refStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
+                                            <p className={`md:ml-6 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(refStage)}`}>
+                                                Reflection
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </button>
                         </div>

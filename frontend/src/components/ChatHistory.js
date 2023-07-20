@@ -141,33 +141,19 @@ export default function ChatHistory(props) {
         <>
             <div className={`group flex items-center hover:bg-[#1e1e1e] rounded-lg ${time.getTime() == currChatHist.time.getTime() ? 'bg-[#1e1e1e]' : ''}`}>
                 <button onClick={() => setCurrChatHist(startState)} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
-<<<<<<< HEAD
                     <div className="flex">
-                        <img className="px-1 w-7 h-5" src={startState.stage.name === 'complete' ? chatdone : chathist} alt="Chat History" />
-                        <span className="px-1"> {getTime(time)} </span>
-                    </div>
-                </button>
-                <button onClick={() => downloadChatPDF()}>
-                    <img className={`px-1 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={download} />
-=======
-                    <div className="flex items-center">
                         <img className="w-5 h-5" src={startState.stage.name === 'complete' ? chatdone : chathist} alt="Chat History" />
                         <span className="px-2"> {getTime(time)} </span>
                     </div>
                 </button>
                 <button onClick={() => downloadChatPDF()}>
-                    <img className={`px-1 w-7 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={download} />
->>>>>>> bd9cb53d9693399f97b0c26efc1931a9b3995527
+                    <img className={`px-1 w-6 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={download} />
                 </button>
                 <button onClick={() => sendEmail()}>
-                    <img className={`px-1 w-7 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={email} />
+                    <img className={`px-1 w-6 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={email} />
                 </button>
                 <button onClick={() => deleteChat()}>
-<<<<<<< HEAD
-                    <img className={`px-1 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={trash} />
-=======
-                    <img className={`px-1 w-7 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={trash} />
->>>>>>> bd9cb53d9693399f97b0c26efc1931a9b3995527
+                    <img className={`px-1 w-6 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={trash} />
                 </button>
             </div>
         </>
