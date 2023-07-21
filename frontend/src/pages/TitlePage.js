@@ -5,13 +5,13 @@ import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
 
-    // // useEffect(() => {
-    // //     setTimeout(() => {
-    // //         navigate('/home')
-    // //     }, 2000)
-    // // }, [])
+    useEffect(() => {
+        setTimeout(() => {
+            navigate('/home')
+        }, 2000)
+    }, [])
 
     return (
         <>
