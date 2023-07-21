@@ -160,28 +160,28 @@ export default function ChatHistory(props) {
                         <span className="px-2"> {getTime(time)} </span>
                     </div>
                 </button>
-                {!confirmDelete ? 
-                <div>
-                <button onClick={() => downloadChatPDF()}>
-                    <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={download} />
-                </button>
-                <button onClick={() => sendEmail()}>
-                    <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={email} />
-                </button>
-                <button onClick={() => {setConfirmDelete(true)}}>
-                    <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={trash} />
-                </button> 
-                </div>
-                :
-                <div>
-                <button onClick={() => deleteChat()}>
-                    <img className={'ml-2 px-1 w-7 opacity-70 hover:opacity-100'} src={confirm} />
-                </button>
-                <button onClick={() => {setConfirmDelete(false)}}>
-                    <img className={'ml-1 px-1 w-6 opacity-70 hover:opacity-100'} src={cancel} />
-                </button>
-                </div>
-}
+                {!confirmDelete ?
+                    <div>
+                        <button onClick={() => downloadChatPDF()}>
+                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={download} />
+                        </button>
+                        <button onClick={() => sendEmail()}>
+                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={email} />
+                        </button>
+                        <button onClick={() => { setConfirmDelete(true) }}>
+                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={trash} />
+                        </button>
+                    </div>
+                    :
+                    <div>
+                        <button onClick={() => deleteChat()}>
+                            <img className={'ml-2 px-1 w-7 opacity-70 hover:opacity-100'} src={confirm} />
+                        </button>
+                        <button onClick={() => { setConfirmDelete(false) }}>
+                            <img className={'ml-1 px-1 w-6 opacity-70 hover:opacity-100'} src={cancel} />
+                        </button>
+                    </div>
+                }
             </div>
         </>
     )
