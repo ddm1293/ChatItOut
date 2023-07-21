@@ -1,31 +1,38 @@
-import { useContext, useEffect, useState, useRef } from "react";
+import { useContext, useEffect, useState, useRef} from "react";
 import React from 'react';
-import { Link, useLocation } from "react-router-dom";
 import newchat from "../assets/icon_newchat.png";
 import stageexp from "../assets/icon_stageexp.png";
 import ChatHistory from "./ChatHistory";
 import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatContexts';
 import ChatStage from "../ChatStage";
-import ham from '../assets/icon_hamburgermenu.png';
-
+import { SideBarContext } from '../components/PageRoute';
+import close from '../assets/icon_close.png';
 
 export default function SideBar() {
     const [currChats, setCurrChats] = useState([]);
-    const [doneChats, setDoneChats] = useState([]); 
+    const [doneChats, setDoneChats] = useState([]);
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
     const value = { currChatHist, setCurrChatHist };
+
 
     const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
     const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
 
     let isInitialMount = useRef(true);
 
+
     const [clickedButton, setClickedButton] = useState(false);
+
+    const { currentPage, setCurrentPage } = useContext(SideBarContext);
+
 
     const handleButtonClick = () => {
         setClickedButton(true);
     };
 
+
+    const [hamOpen, setHamOpen] = useState(false);
+   
     const loadDbReq = indexedDB.open("chathistory", 1);
     const delDbReq = indexedDB.open("chathistory", 1);
 
@@ -35,6 +42,7 @@ export default function SideBar() {
             if (!db.objectStoreNames.contains('chats')) {
                 return;
             }
+
 
             // load chats
             const tx = await db.transaction('chats', 'readonly');
@@ -69,6 +77,7 @@ export default function SideBar() {
         //   - pass the ChatHist the object from db (to set its startState)
     }
 
+
     const newChat = () => {
         let today = new Date();
         let emptyStart = { messages: { invitation: [{ type: 'newStage', message: 'invitation' }, {type: 'chatbot', message: "I'm an AI counselor here to help you with any conflicts or issues you may be facing. How can I assist you today?"}], connection: [], exchange: [], agreement: [], reflection: [] }, time: today, stage: new ChatStage(), atStartRef: false };
@@ -76,15 +85,18 @@ export default function SideBar() {
         // switch welcome page to Chatbot pg with a blank startState
     }
 
+
     const completeChat = () => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
             return;
         }
 
+
         let chatToCompleteTime = chatToComplete.getTime();
         let completedChat;
         let newCurrChats = [];
+
 
         for (let currChat of currChats) {
             if (currChat.key != chatToCompleteTime) {
@@ -94,9 +106,11 @@ export default function SideBar() {
             }
         }
 
+
         setCurrChats(newCurrChats);
         setDoneChats(doneChats.concat([completedChat]));
     }
+
 
     const deleteChat = () => {
         if (isInitialMount.current) {
@@ -104,7 +118,9 @@ export default function SideBar() {
             return;
         }
 
+
         let chatToDeleteTime = chatToDelete.time.getTime();
+
 
         // Update UI
         let newChats = [];
@@ -124,6 +140,7 @@ export default function SideBar() {
             setCurrChats(newChats);
         }
 
+
         // Update DB
         delDbReq.onsuccess = async function (evt) {
             let db = delDbReq.result;
@@ -136,32 +153,38 @@ export default function SideBar() {
         }
     }
 
+
     useEffect(() => {
         loadChats();
     }, []);
+
 
     useEffect(() => {
         completeChat();
     }, [chatToComplete]);
 
+
     useEffect(() => {
         deleteChat();
     }, [chatToDelete]);
 
+
+
+
     return (
         <>
-            <div className="sm:flex flex-col h-screen bg-[#333333] w-full">
+            <div className={`sm:flex flex-col h-screen bg-[#333333] absolute top-0 sm:left-0 sm:w-1/5 w-4/5 right-0 z-10`}>
                 {/* Title */}
+                <SideBarContext.Provider>
                 <div>
-                    <Link to={"/welcome"}>
-                        <button className="m-8 font-bold hidden sm:block md:text-lg lg:text-2xl text-white font-calibri">
-                            Chat IT Out
-                        </button>
-                    </Link>
+                    <button onClick={() => setCurrentPage('welcome')} className="m-8 font-bold hidden sm:block md:text-lg lg:text-2xl text-white font-calibri">
+                        Chat IT Out
+                    </button>
                 </div>
 
                 {/* Divider */}
-                <hr class="-my-4 w-full bg-[#eeeeee] opacity-20" />
+                <hr class="-my-4 w-full bg-[#eeeeee] opacity-20 hidden sm:block" />
+
 
                 {/* New Chat */}
                 <div className='flex w-full h-fit p-2 mt-24 sm:mt-10 hover:bg-[#1e1e1e] rounded-lg'>
@@ -171,18 +194,17 @@ export default function SideBar() {
                     </button>
                 </div>
 
+
                 {/* What are 5 stages? */}
-                <Link to={"/stageexp"}>
                     <div
-                        className={`flex w-full h-fit p-2 mt-2 hover:bg-[#1e1e1e] rounded-lg ${(useLocation().pathname === "/stageexp") ? 'bg-[#1e1e1e] rounded-lg' : ''
+                        className={`flex w-full h-fit p-2 mt-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "stageexp") ? 'bg-[#1e1e1e] rounded-lg' : ''
                             }`}
                     >
-                        <button className="flex items-center ml-5 font-normal text-lg text-white font-calibri">
+                        <button onClick={() => setCurrentPage('stageexp')} className="flex items-center ml-5 font-normal text-lg text-white font-calibri">
                             <img src={stageexp} className="square-full mx-3 w-4 h-4" alt="Stage Icon" />
                             <span>What are the 5 stages?</span>
                         </button>
                     </div>
-                </Link>
 
 
                 <HistoryContext.Provider value={value}>
@@ -190,8 +212,10 @@ export default function SideBar() {
                     <div className="flex flex-col ml-8 mt-10 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
                         In Progress
 
+
                         <div className="max-h-[180px] overflow-y-auto">{currChats}</div>
                     </div>
+
 
                     {/* Completed */}
                     <div className="flex flex-col ml-8 mt-8 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
@@ -201,21 +225,21 @@ export default function SideBar() {
                 </HistoryContext.Provider>
 
                 {/* Divider */}
-                <hr class="mt-96 w-full bg-[#eeeeee] opacity-20" />
+                <hr className="absolute bottom-20 w-full bg-[#eeeeee] opacity-20" />
+
 
                 {/* Menu items */}
-                <Link to={'/useragreement'}>
                     <div
-                        className={`flex mt-2 w-full h-fit p-2 hover:bg-[#1e1e1e] rounded-lg ${(useLocation().pathname === "/useragreement") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
+                        className={`flex absolute bottom-8 w-full h-fit p-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "useterms") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
                             }`}
                     >
-                        <button className="ml-5 font-normal text-lg leading-5 text-white font-calibri">
+                        <button onClick={() => setCurrentPage('useterms')} className="ml-5 font-normal text-lg leading-5 text-white font-calibri">
                             Terms of use
                         </button>
                     </div>
-                </Link>
-
+                </SideBarContext.Provider>
             </div>
         </>
     )
 };
+

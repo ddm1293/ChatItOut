@@ -4,9 +4,6 @@ import './App.css';
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import TitlePage from './pages/TitlePage.js';
 import HomePage from './pages/HomePage.js';
-import WelcomePage from './pages/WelcomePage.js';
-import StageExp from './pages/StageExp.js';
-import UserAgreement from './pages/UserAgreement.js';
 import { openDB } from 'idb';
 
 function App() {
@@ -74,10 +71,7 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route exact path={"/"} element={<TitlePage/>}/>
-      <Route exact path={"/welcome"} element={<WelcomePage/>}/>
-      <Route exact path={"/useragreement"} element={<UserAgreement/>}/>
       <Route exact path={"/home"} element={<HomePage/>}/>
-      <Route exact path={"/stageexp"} element={<StageExp/>}/>
       <Route exact path={"*"} element={
             <>
                 <main>This page does not exist!</main>

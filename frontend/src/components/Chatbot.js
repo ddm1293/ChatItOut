@@ -58,27 +58,27 @@ export default function Chatbot() {
     }, []);
 
     const generateResponse = async (msg) => {
-        let responses = ["Hello, how are you?", "That is a bad idea.", "You are very intelligent!"];
-        let i = Math.floor((Math.random() * 3));
-        if (i === 2) {
-            advanceStage();
-        }
-        return responses[i];
-
-        // let context = getAllMessages();
-        // let input = { context: context, newMsg: msg, stage: getStageNum() };
-
-        // try {
-        //     let resp = await axios.post(`${serverURL}/home/chat`, input, {
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //         }
-        //     });
-        //     return resp.data;
-        // } catch (err) {
-        //     console.log(err);
-        //     return "An error occured. Please try again later."
+        // let responses = ["Hello, how are you?", "That is a bad idea.", "You are very intelligent!"];
+        // let i = Math.floor((Math.random() * 3));
+        // if (i === 2) {
+        //     advanceStage();
         // }
+        // return responses[i];
+
+        let context = getAllMessages();
+        let input = { context: context, newMsg: msg, stage: getStageNum() };
+
+        try {
+            let resp = await axios.post(`${serverURL}/home/chat`, input, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return resp.data;
+        } catch (err) {
+            console.log(err);
+            return "An error occured. Please try again later."
+        }
     }
 
     useEffect(() => {

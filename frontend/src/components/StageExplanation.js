@@ -185,11 +185,6 @@ export default function StageExp() {
                         </div>
                     </div>
                 </div>
-
-                {/* <div id="inv">
-                    <span className="absolute top-[130px] left-[668px] text-white text-3xl font-calibri font-medium"> Stage 1: Invitation </span>
-                </div> */}
-
         </>
     )
 }
