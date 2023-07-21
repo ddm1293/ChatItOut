@@ -43,9 +43,8 @@ systemContext = [
 ]
 
 # intent classification function
-def intent_classify(input):
+def intent_classify(input, stage):
     intent = nlp(input) # generate classification scores for input
-    stage = input.get('stage')
     tag = max(intent.cats, key=intent.cats.get) # determine most probable classification
     print(f"{tag}")
     if (tag == "TRANSITION") or (tag == "CON" and stage == 1) or (tag == "EXC" and stage == 2) or (tag == "AGR" and stage == 3) or (tag == "THANKS" and stage == 4) or (tag == "GOODBYE" and stage == 4): # determine whether to transition to the next stage (True) or not (False)
@@ -99,7 +98,7 @@ def generate_response(input):
     stage = input.get('stage')
     user_input = input.get('newMsg')
     messages.append({'role':'user', 'content':f"{user_input}"})
-    trans = intent_classify(user_input) # classify user input
+    trans = intent_classify(user_input, stage) # classify user input
     if trans: # if the classification returned true...
         stage += 1 # go to next stage
         pos = get_stage(stage)
