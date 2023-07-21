@@ -5,7 +5,7 @@ importScripts(
 workbox.loadModule('workbox-strategies');
 workbox.loadModule('workbox-routing');
 
-const minResources = ['./manifest.json', './icons/favicon-196.png', './icons/manifest-icon-192.maskable.png', './static/js/main.493fb7fa.js'];
+const minResources = ['./manifest.json', './icons/favicon-196.png', './icons/manifest-icon-192.maskable.png', './static/js/main.493fb7fa.js', './static/css/main.8861d999.css', './', './home'];
 
 // Minimum resources are cached when page is first loaded
 self.addEventListener("install", event => {
