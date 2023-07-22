@@ -1,11 +1,22 @@
-importScripts(
-  'https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js'
-);
+// importScripts(
+//   'https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js'
+// );
 
-workbox.loadModule('workbox-strategies');
-workbox.loadModule('workbox-routing');
+// workbox.loadModule('workbox-strategies');
+// workbox.loadModule('workbox-routing');
 
-const minResources = ['./manifest.json', './icons/favicon-196.png', './icons/manifest-icon-192.maskable.png', './static/js/bundle.js', './ws'];
+const minResources = [
+  './manifest.json', 
+  './icons/favicon-196.png', 
+  './icons/manifest-icon-192.maskable.png', 
+  './static/js/main.493fb7fa.js', 
+  './static/css/main.8861d999.css', 
+  './', 
+  './home',
+  './static/media/icon_logo.3a74f4aee1465ab95c70.png',
+  './static/media/icon_collab.c4a8b73afdfc243b1a7d.png',
+  './static/media/icon_welcomepage.9e08abe1dbc964da6846.png'
+];
 
 // Minimum resources are cached when page is first loaded
 self.addEventListener("install", event => {
