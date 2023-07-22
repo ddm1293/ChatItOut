@@ -1,18 +1,22 @@
-import { useState } from 'react';
+import { useState, createContext, useContext } from 'react';
 
-const usePageState = () => {
-    const [currentPage, setCurrentPage] = useState('home');
+export const SideBarContext = createContext({
+    currentPage: 'home',
+    setCurrentPage: () => {}
+});
 
-    const handlePageChange = (pageName) => {
-        if (currentPage !== pageName) {
-            setCurrentPage(pageName);
-        }
-    };
+// export function SideBarProvider({ children }) {
+//     const [currentPage, setCurrentPage] = useState('home');
 
-    return { currentPage, setCurrentPage, handlePageChange };
-};
+//     const handlePageChange = (pageName) => {
+//         if (currentPage !== pageName) {
+//             setCurrentPage(pageName);
+//         }
+//     };
 
-
-
-
-export default usePageState;
+//     return (
+//         <SideBarContext.Provider value={{ currentPage, handlePageChange }}>
+//           {children}
+//         </SideBarContext.Provider>
+//       );
+// }

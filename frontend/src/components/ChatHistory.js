@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import chathist from "../assets/icon_chathist.png";
 import email from "../assets/icon_sendemail.png";
 import download from "../assets/icon_download.png";
@@ -8,15 +7,17 @@ import chatdone from "../assets/icon_chatdone.png";
 import confirm from "../assets/icon_confirm.png";
 import cancel from "../assets/icon_cancel.png";
 import { ChatDeleteContext, HistoryContext } from '../ChatContexts';
+import { SideBarContext } from '../components/PageRoute';
 import { jsPDF } from 'jspdf';
 
 export default function ChatHistory(props) {
     const [startState, setStartState] = useState(props.startState);
+    const [confirmDelete, setConfirmDelete] = useState(false);
     const time = props.startState.time;
+
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
     const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
-    const [confirmDelete, setConfirmDelete] = useState(false);
-    const navigate = useNavigate();
+    const { currentPage, setCurrentPage } = useContext(SideBarContext);
 
     const getTime = (today) => {
         let hours = today.getHours();
@@ -61,7 +62,6 @@ export default function ChatHistory(props) {
         output += getStageMessages(messages['reflection']);
         console.log(output);
         return output;
-
     }
 
     const sendEmail = async () => {
@@ -69,7 +69,7 @@ export default function ChatHistory(props) {
         const shareData = {
             text: chat
         }
-        try { // TODO: check if canShare first? 
+        try {
             await navigator.share(shareData);
             console.log('Chat shared succesfully');
         } catch (err) {
@@ -87,7 +87,7 @@ export default function ChatHistory(props) {
         doc.setFontSize(12);
         let iterations = 1;
         const margin = 15; //top and botton margin in mm
-        const defaultYJump = 5; // default space btw lines
+        const defaultYJump = 5; // default space btwn lines
 
         wrappedText.forEach((line) => {
             let posY = margin + defaultYJump * iterations++;
@@ -118,8 +118,7 @@ export default function ChatHistory(props) {
     const deleteChat = () => {
         setChatToDelete({ stage: startState.stage, time: time });
         if (time.getTime() == currChatHist.time.getTime()) {
-            // TODO: if this chat is currently open, switch back to welcome page
-            //navigate('/welcome');
+            setCurrentPage('welcome');
         }
         setConfirmDelete(false);
     }
@@ -132,6 +131,17 @@ export default function ChatHistory(props) {
         } else {
             return chathist;
         }
+    }
+
+    const setChat = () => {
+        setCurrChatHist(startState); 
+        if (currentPage !== 'home') {
+            setCurrentPage('home');
+        }
+    }
+
+    const onChat = () => {
+        return time.getTime() == currChatHist.time.getTime() && currentPage == 'home';
     }
 
     useEffect(() => {
@@ -153,8 +163,8 @@ export default function ChatHistory(props) {
 
     return (
         <>
-            <div className={`group flex items-center hover:bg-[#1e1e1e] rounded-lg ${time.getTime() == currChatHist.time.getTime() ? 'bg-[#1e1e1e]' : ''}`}>
-                <button onClick={() => setCurrChatHist(startState)} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
+            <div className={`group flex items-center hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#1e1e1e]' : ''}`}>
+                <button onClick={() => setChat()} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
                     <div className="flex items-center">
                         <img className="w-5 h-5" src={determineChatIcon()} alt="Chat History" />
                         <span className="px-2"> {getTime(time)} </span>
@@ -163,13 +173,13 @@ export default function ChatHistory(props) {
                 {!confirmDelete ?
                     <div>
                         <button onClick={() => downloadChatPDF()}>
-                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={download} />
+                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={download} />
                         </button>
                         <button onClick={() => sendEmail()}>
-                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={email} />
+                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={email} />
                         </button>
                         <button onClick={() => { setConfirmDelete(true) }}>
-                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${time.getTime() == currChatHist.time.getTime() ? 'visible' : 'invisible'}`} src={trash} />
+                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={trash} />
                         </button>
                     </div>
                     :

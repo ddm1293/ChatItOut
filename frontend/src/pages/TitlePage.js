@@ -9,7 +9,7 @@ export default function HomePage() {
 
     useEffect(() => {
         setTimeout(() => {
-            navigate('/welcome')
+            navigate('/home')
         }, 2000)
     }, [])
 
