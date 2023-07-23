@@ -11,7 +11,7 @@ import ChatStage from '../ChatStage';
 import Loading from './Loading';
 import StageLine from './StageLine';
 
-const serverURL = "http://localhost:5000";
+const serverURL = "https://chatitout-chatbot.onrender.com";
 
 
 export default function Chatbot() {
