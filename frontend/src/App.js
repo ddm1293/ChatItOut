@@ -51,13 +51,21 @@ function App() {
               switch(oldVersion) {
                   case 0:
                       // Placeholder to execute when database is created (oldVersion is 0)
-                  case 1:
-                      // Create a store of objects
-                      const chatStore = db.createObjectStore('chats', {
-                          // The `time` property of the object will be the key, and be incremented automatically
-                          autoIncrement: true,
-                          keyPath: 'time'
-                      });
+                      break;
+                  default:
+                    // Create a store of objects
+                    const chatStore = db.createObjectStore('chats', {
+                      // The `time` property of the object will be the key, and be incremented automatically
+                      autoIncrement: true,
+                      keyPath: 'time'
+                  });
+                  // case 1:
+                  //     // Create a store of objects
+                  //     const chatStore = db.createObjectStore('chats', {
+                  //         // The `time` property of the object will be the key, and be incremented automatically
+                  //         autoIncrement: true,
+                  //         keyPath: 'time'
+                  //     });
               }
           }
       });
