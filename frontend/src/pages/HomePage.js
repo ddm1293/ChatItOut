@@ -9,6 +9,10 @@ import ChatStage from '../ChatStage';
 import ham from '../assets/icon_hamburgermenu.png';
 import close from "../assets/icon_close.png";
 import { SideBarContext  } from '../components/PageRoute';
+<<<<<<< HEAD
+=======
+
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
 export default function HomePage() {
     const [currChatHist, setCurrChatHist] = useState({messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, time: new Date(), stage: new ChatStage(), atStartRef: false});
@@ -21,9 +25,20 @@ export default function HomePage() {
     const chatToCompleteValue = {chatToComplete, setChatToComplete};
 
     const [hamOpen, setHamOpen] = useState(false);
+<<<<<<< HEAD
 
     const [currentPage, setCurrentPage] = useState('welcome');
     const currentPageValue = {currentPage, setCurrentPage};
+=======
+
+    const [currentPage, setCurrentPage] = useState('welcome');
+    const currentPageValue = {currentPage, setCurrentPage};
+
+    // const [home, setHome] = useState(true);
+    // const [welcome, setWelcome] = useState(false);
+    // const [stageexp, setStageExp] = useState(false);
+    // const [useterms, setUseTerms] = useState(false);
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
     
     const handleButtonOpen= () => {
         setHamOpen(true);
@@ -50,18 +65,30 @@ export default function HomePage() {
                                 <div>
 
                                 <button onClick={() => handleButtonOpen()} className={"block sm:hidden"}>
+<<<<<<< HEAD
                                     <img src={ham} className="z-10 absolute top-0 right-0 mt-6 mr-10" alt="Hamburger menu bar"/>
+=======
+                                    <img src={ham} className="z-10 absolute top-0 right-0 mt-6 mr-10 h-5" alt="Hamburger menu bar"/>
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                                 </button>
 
                                 <div className={`sm:block z-20 ${(hamOpen === true? "visible" : "hidden")}`}>
                                     <SideBar />
 
                                     <button onClick={() => handleButtonClose()} className={`${(hamOpen == true? "block" : "hidden")}`}>
+<<<<<<< HEAD
                                         <img src={close} className="absolute z-10 right-0 top-0 m-8"/>
                                     </button>
                                 </div>
 
                                 <div className= {`${currentPage === 'home'? "block" : "hidden"}`}>
+=======
+                                        <img src={close} className="absolute z-10 right-0 top-0 m-8 w-5"/>
+                                    </button>
+                                </div>
+
+                                <div className= {`${currentPage === 'home' || currentPage === 'newchat' ? "block" : "hidden"}`}>
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                                     <Chatbot />
                                 </div>
 
@@ -80,7 +107,11 @@ export default function HomePage() {
                     </ChatCompleteContext.Provider>
                 </ChatDeleteContext.Provider>
             </HistoryContext.Provider>
+<<<<<<< HEAD
         </SideBarContext.Provider>
+=======
+            </SideBarContext.Provider>
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
         
         </>
     )

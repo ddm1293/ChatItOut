@@ -11,7 +11,7 @@ import ChatStage from '../ChatStage';
 import Loading from './Loading';
 import StageLine from './StageLine';
 
-const serverURL = "http://localhost:5000";
+const serverURL = "https://chatitout-chatbot.onrender.com";
 
 
 export default function Chatbot() {
@@ -82,7 +82,6 @@ export default function Chatbot() {
     }
 
     useEffect(() => {
-        console.log('currchathist useeffect');
         setMessages(currChatHist.messages);
         setAtStartRef(currChatHist.atStartRef);
         setStageProgress(currChatHist.stage);
@@ -90,7 +89,6 @@ export default function Chatbot() {
     }, [currChatHist])
 
     const handleUserInput = async (content) => {
-        console.log('handle user input');
         if (globalStage.name === "complete") {
             return;
         }
@@ -369,8 +367,13 @@ export default function Chatbot() {
                 ) : (
                     <div>
                         
+<<<<<<< HEAD
                         <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-screen">
                             <div className="w-full mb-4 h-[80%] sm:h-[85%] overflow-y-auto" ref={containerRef}>
+=======
+                        <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-[90%]">
+                            <div className="w-full mb-4 h-[85%] overflow-y-auto" ref={containerRef}>
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                                 {getAllMessages().map((message, index) => (
                                     <div>{message.type === 'newStage' ? <StageLine key={globalStage} text={message.message} /> :
                                         <div className={`flex flex-col basis-3/5" ${message.type === 'user' ? "items-end" : "items-start"}`}>
@@ -403,18 +406,19 @@ export default function Chatbot() {
                                     </button>
                                 </div> : <></>}
                             </div>
+
                             <div className={`flex w-full items-center ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
                                 <form onSubmit={handleUserInput}>
                                     <input
                                         type="text"
                                         name="userInput"
-                                        className="flex absolute w-11/12 px-4 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
+                                        className="mt-12 ml-8 flex absolute w-11/12 px-4 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
                                         placeholder="Send your message here"
                                     />
                                     <span>
                                         <button
                                             type="submit"
-                                            className="absolute right-[8%] rounded-full transform translate-y-1/2">
+                                            className="mt-12 ml-8 absolute right-[4%] rounded-full transform translate-y-1/2">
                                             <img src={send} className="w-6 h-6" />
                                         </button>
                                     </span>
@@ -429,8 +433,10 @@ export default function Chatbot() {
                                 <div className={`flex flex-col justify-center items-center w-full h-20 ${invStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} group-hover:border-b-4 group-hover:border-[#1993D6]`}>
                                     <div className='p-4'>
                                         <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
-                                            <p className={`w-6 h-6 md:w-4 md:h-4 rounded-full font-calibri text-base ${buttonColor(invStage)}`}> 1 </p>
-                                            <img className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] ${invStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
+                                            <div className={`w-6 h-6 md:w-5 md:h-5 rounded-full justify-center flex items-center ${buttonColor(invStage)}`}> 
+                                                <p className="-top-1 font-calibri text-base text-center"> 1 </p>
+                                            </div>
+                                            <img className={`w-6 h-6 md:w-5 md:h-5 rounded-full bg-[#1993D6] ${invStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
                                             <p className={`md:ml-6 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(invStage)}`}>
                                                 Invitation
                                             </p>
@@ -440,15 +446,17 @@ export default function Chatbot() {
                             </button>
 
                             <div className="flex max-w-xs items-center">
-                                <img src={stagearrow} className="rounded-full" alt="Stage Arrow" />
+                                <img src={stagearrow} className="w-4" alt="Stage Arrow" />
                             </div>
 
                             <button onClick={() => scrollToStage('connection')} className='w-[18%] group justify-center' disabled={conStage === "notStarted"}>
                                 <div className={`flex flex-col justify-center items-center w-full h-20 ${conStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${conStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}>
                                     <div className='p-4'>
                                         <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
-                                            <p className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] font-calibri text-base justify-center items-center ${buttonColor(conStage)}`}> 2 </p>
-                                            <img className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] ${conStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
+                                            <div className={`w-6 h-6 md:w-5 md:h-5 rounded-full justify-center flex items-center ${buttonColor(conStage)}`}> 
+                                                <p className="-top-1 font-calibri text-base text-center"> 2 </p>
+                                            </div>
+                                            <img className={`w-6 h-6 md:w-5 md:h-5 rounded-full bg-[#1993D6] ${conStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
                                             <p className={`md:ml-6 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(conStage)}`}>
                                                 Connection
                                             </p>
@@ -458,15 +466,17 @@ export default function Chatbot() {
                             </button>
 
                             <div className="flex max-w-xs items-center">
-                                <img src={stagearrow} className="rounded-full" alt="Stage Arrow" />
+                                <img src={stagearrow} className="w-4" alt="Stage Arrow" />
                             </div>
 
                             <button onClick={() => scrollToStage('exchange')} className='w-[18%] justify-center group' disabled={excStage === "notStarted"}>
                                 <div className={`flex flex-col justify-center items-center w-full h-20 ${excStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${excStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}>
                                     <div className='p-4'>
                                         <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
-                                            <p className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] font-calibri text-base justify-center items-center ${buttonColor(excStage)}`}> 3 </p>
-                                            <img className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] ${excStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
+                                            <div className={`w-6 h-6 md:w-5 md:h-5 rounded-full justify-center flex items-center ${buttonColor(excStage)}`}> 
+                                                <p className="-top-1 font-calibri text-base text-center"> 3 </p>
+                                            </div>
+                                            <img className={`w-6 h-6 md:w-5 md:h-5 rounded-full bg-[#1993D6] ${excStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
                                             <p className={`md:ml-6 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(excStage)}`}>
                                                 Exchange
                                             </p>
@@ -476,15 +486,17 @@ export default function Chatbot() {
                             </button>
 
                             <div className="flex max-w-xs items-center">
-                                <img src={stagearrow} className="rounded-full" alt="Stage Arrow" />
+                                <img src={stagearrow} className="w-4" alt="Stage Arrow" />
                             </div>
 
                             <button onClick={() => scrollToStage('agreement')} className='w-[18%] justify-center group' disabled={agrStage === "notStarted"}>
                                 <div className={`flex flex-col justify-center items-center w-full h-20 ${agrStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${agrStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}>
                                     <div className='p-4'>
                                         <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
-                                            <p className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] font-calibri text-base justify-center items-center ${buttonColor(agrStage)}`}> 4 </p>
-                                            <img className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] ${agrStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
+                                            <div className={`w-6 h-6 md:w-5 md:h-5 rounded-full justify-center flex items-center ${buttonColor(agrStage)}`}> 
+                                                <p className="-top-1 font-calibri text-base text-center"> 4 </p>
+                                            </div>
+                                            <img className={`w-6 h-6 md:w-5 md:h-5 rounded-full bg-[#1993D6] ${agrStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
                                             <p className={`md:ml-6 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(agrStage)}`}>
                                                 Agreement
                                             </p>
@@ -494,15 +506,17 @@ export default function Chatbot() {
                             </button>
 
                             <div className="flex max-w-xs items-center">
-                                <img src={stagearrow} className="rounded-full" alt="Stage Arrow" />
+                                <img src={stagearrow} className="w-4" alt="Stage Arrow" />
                             </div>
 
                             <button onClick={() => scrollToStage('reflection')} className='w-[18%] justify-center group' disabled={refStage === "notStarted"}>
                                 <div className={`flex flex-col justify-center items-center w-full h-20 ${refStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${refStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}>
                                     <div className='p-4'>
                                         <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
-                                            <p className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] font-calibri text-base justify-center items-center ${buttonColor(refStage)}`}> 5 </p>
-                                            <img className={`w-6 h-6 md:w-4 md:h-4 rounded-full bg-[#1993D6] ${refStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
+                                            <div className={`w-6 h-6 md:w-5 md:h-5 rounded-full justify-center flex items-center ${buttonColor(refStage)}`}> 
+                                                <p className="-top-1 font-calibri text-base text-center"> 5 </p>
+                                            </div>
+                                            <img className={`w-6 h-6 md:w-5 md:h-5 rounded-full bg-[#1993D6] ${refStage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
                                             <p className={`md:ml-6 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(refStage)}`}>
                                                 Reflection
                                             </p>
