@@ -4,7 +4,7 @@ module.exports = function(app) {
   app.use(
     '/api/**',
     createProxyMiddleware({
-      target: 'http://localhost:5000',
+      target: 'https://chatitout-chatbot.onrender.com',
       onProxyRes: function (proxyRes, req, res) {
         proxyRes.headers['Access-Control-Allow-Origin'] = 'https://chatitout.onrender.com';
       },
