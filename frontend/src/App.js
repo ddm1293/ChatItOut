@@ -49,9 +49,9 @@ function App() {
           upgrade(db, oldVersion, newVersion, transaction) {
               // Switch over the oldVersion, *without breaks*, to allow the database to be incrementally upgraded.
               switch(oldVersion) {
-                  case 0:
-                      // Placeholder to execute when database is created (oldVersion is 0)
-                      break;
+                  // case 0:
+                  //     // Placeholder to execute when database is created (oldVersion is 0)
+                  //     break;
                   default:
                     // Create a store of objects
                     const chatStore = db.createObjectStore('chats', {
