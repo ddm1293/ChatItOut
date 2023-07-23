@@ -6,7 +6,7 @@ module.exports = function(app) {
     createProxyMiddleware({
       target: 'http://localhost:5000',
       onProxyRes: function (proxyRes, req, res) {
-        proxyRes.headers['Access-Control-Allow-Origin'] = 'http://localhost:3000';
+        proxyRes.headers['Access-Control-Allow-Origin'] = 'https://chatitout.onrender.com';
       },
     })
   );
