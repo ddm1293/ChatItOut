@@ -8,7 +8,7 @@ vars:
   lang: "en"
   # Set your GPU ID, -1 is CPU
   gpu_id: -1
-  version: "0.0.0"
+  version: "0.0.1"
   train: "docs_issues_training.jsonl"
   dev: "docs_issues_eval.jsonl"
   config: "config.cfg"

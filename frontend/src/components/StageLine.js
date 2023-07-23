@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { SideBarContext } from '../components/PageRoute';
 
 export default function StageLine(props) {
     const [text, setText] = useState();
+    const { currentPage, setCurrentPage } = useContext(SideBarContext);
 
     useEffect(() => {
         if (props.text.length > 10) {
             setText(props.text);
         } else if (props.text === "complete") {
-            setText(<>This is the end of this coaching. Back to <a className="text-[#1993D6] hover:text-[#9ADBFF] underline" href="/welcome">Home</a> page</>);
+            setText(<>This is the end of this coaching. Back to <button className="text-[#1993D6] hover:text-[#9ADBFF] underline" onClick={() => setCurrentPage('welcome')}>Home</button> page</>);
         } else {
             setText(`Below is ${props.text.charAt(0).toUpperCase() + props.text.slice(1)} Stage`);
         }
