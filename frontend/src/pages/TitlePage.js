@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     useEffect(() => {
         setTimeout(() => {
@@ -16,15 +16,15 @@ export default function HomePage() {
     return (
         <>
 
-            <div class="flex h-screen bg-[#024DA1] justify-center">
+            <div class="flex flex-col h-screen bg-[#024DA1] justify-center items-center">
 
-                <img className= "absolute top-[28%] h-60 w-56" src={logo} alt="logo" />
+                <img className= "h-60 w-56 mb-6" src={logo} alt="logo" />
 
-                <div className="absolute top-[55%] text-5xl font-medium text-[#9adbff]">
+                <div className="text-4xl sm:text-5xl font-medium text-[#9adbff]">
                     Chat IT Out
                 </div>
 
-                <img className= "absolute bottom-20 h-12 w-72" src={collab} alt="JIBC x Center for Digital Media" />
+                <img className= "absolute bottom-16 h-12 w-72" src={collab} alt="JIBC x Center for Digital Media" />
             </div>
 
         </>

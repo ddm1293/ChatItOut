@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SideBar from "../components/SideBar"
 import Chatbot from "../components/Chatbot"
 import Welcome from "../components/Welcome"
@@ -9,7 +9,6 @@ import ChatStage from '../ChatStage';
 import ham from '../assets/icon_hamburgermenu.png';
 import close from "../assets/icon_close.png";
 import { SideBarContext  } from '../components/PageRoute';
-
 
 export default function HomePage() {
     const [currChatHist, setCurrChatHist] = useState({messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, time: new Date(), stage: new ChatStage(), atStartRef: false});

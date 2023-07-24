@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState, useRef, createContext } from "react";
 import React from 'react';
-import { Link, useLocation } from "react-router-dom";
 import newchat from "../assets/icon_newchat.png";
 import stageexp from "../assets/icon_stageexp.png";
 import ChatHistory from "./ChatHistory";
@@ -9,12 +8,12 @@ import ChatStage from "../ChatStage";
 import { SideBarContext } from '../components/PageRoute';
 import close from '../assets/icon_close.png';
 
-
 export default function SideBar() {
     const [currChats, setCurrChats] = useState([]);
     const [doneChats, setDoneChats] = useState([]);
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
     const currChatHistValue = { currChatHist, setCurrChatHist };
+
 
     const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
     const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
@@ -42,6 +41,9 @@ export default function SideBar() {
     //     setHamOpen(close);
     // };
 
+
+    const [hamOpen, setHamOpen] = useState(false);
+   
     const loadDbReq = indexedDB.open("chathistory", 2);
     const delDbReq = indexedDB.open("chathistory", 2);
 
@@ -52,6 +54,7 @@ export default function SideBar() {
             if (!db.objectStoreNames.contains('chats')) {
                 return;
             }
+
 
             // load chats
             const tx = await db.transaction('chats', 'readonly');
@@ -86,6 +89,7 @@ export default function SideBar() {
         //   - pass the ChatHist the object from db (to set its startState)
     }
 
+
     const newChat = () => {
         let today = new Date();
         let emptyStart = { messages: { invitation: [{ type: 'newStage', message: 'invitation' }, { type: 'chatbot', message: "I'm an AI conflict coach here to help you with any conflicts or issues you may be facing. How can I assist you today?" }], connection: [], exchange: [], agreement: [], reflection: [] }, time: today, stage: new ChatStage(), atStartRef: false };
@@ -96,15 +100,18 @@ export default function SideBar() {
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
 
+
     const completeChat = () => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
             return;
         }
 
+
         let chatToCompleteTime = chatToComplete.getTime();
         let completedChat;
         let newCurrChats = [];
+
 
         for (let currChat of currChats) {
             if (currChat.key != chatToCompleteTime) {
@@ -113,6 +120,7 @@ export default function SideBar() {
                 completedChat = currChat;
             }
         }
+
 
         setCurrChats(newCurrChats);
         setDoneChats(doneChats.concat([completedChat]));
@@ -125,7 +133,9 @@ export default function SideBar() {
             return;
         }
 
+
         let chatToDeleteTime = chatToDelete.time.getTime();
+
 
         // Update UI
         let newChats = [];
@@ -145,6 +155,7 @@ export default function SideBar() {
             setCurrChats(newChats);
         }
 
+
         // Update DB
         delDbReq.onsuccess = async function (evt) {
             let db = delDbReq.result;
@@ -162,9 +173,11 @@ export default function SideBar() {
         loadChats();
     }, []);
 
+
     useEffect(() => {
         completeChat();
     }, [chatToComplete]);
+
 
     useEffect(() => {
         deleteChat();
