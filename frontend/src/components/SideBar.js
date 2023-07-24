@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import { useContext, useEffect, useState, useRef} from "react";
-=======
 import { useContext, useEffect, useState, useRef, createContext } from "react";
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 import React from 'react';
 import newchat from "../assets/icon_newchat.png";
 import stageexp from "../assets/icon_stageexp.png";
@@ -11,10 +7,6 @@ import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatC
 import ChatStage from "../ChatStage";
 import { SideBarContext } from '../components/PageRoute';
 import close from '../assets/icon_close.png';
-<<<<<<< HEAD
-=======
-
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
 export default function SideBar() {
     const [currChats, setCurrChats] = useState([]);
@@ -29,17 +21,6 @@ export default function SideBar() {
     let isInitialMount = useRef(true);
     const containerRef = useRef(null);
 
-<<<<<<< HEAD
-
-    const [clickedButton, setClickedButton] = useState(false);
-
-    const { currentPage, setCurrentPage } = useContext(SideBarContext);
-
-
-    const handleButtonClick = () => {
-        setClickedButton(true);
-    };
-=======
     // const [clickedButton, setClickedButton] = useState(false);
 
     const { currentPage, setCurrentPage } = useContext(SideBarContext);
@@ -59,7 +40,6 @@ export default function SideBar() {
     // const handleButtonClose = () => {
     //     setHamOpen(close);
     // };
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
 
     const [hamOpen, setHamOpen] = useState(false);
@@ -203,33 +183,17 @@ export default function SideBar() {
         deleteChat();
     }, [chatToDelete]);
 
-<<<<<<< HEAD
-
-=======
     useEffect(() => {
         if (currentPage === 'newchat') {
             newChat();
         }
     }, [currentPage]);
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
 
     return (
         <>
             <div className={`sm:flex flex-col h-screen bg-[#333333] absolute top-0 sm:left-0 sm:w-1/5 w-4/5 right-0 z-10`}>
                 {/* Title */}
-<<<<<<< HEAD
-                <SideBarContext.Provider>
-                <div>
-                    <button onClick={() => setCurrentPage('welcome')} className="m-8 font-bold hidden sm:block md:text-lg lg:text-2xl text-white font-calibri">
-                        Chat IT Out
-                    </button>
-                </div>
-
-                {/* Divider */}
-                <hr class="-my-4 w-full bg-[#eeeeee] opacity-20 hidden sm:block" />
-
-=======
                 <SideBarContext.Provider value={currentPageValue}>
                     <div>
                         <button onClick={() => setCurrentPage('welcome')} className="m-8 font-bold hidden sm:block md:text-lg lg:text-2xl text-white font-calibri">
@@ -239,13 +203,8 @@ export default function SideBar() {
 
                     {/* Divider */}
                     <hr class="-my-4 w-full bg-[#eeeeee] opacity-20 hidden sm:block" />
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
 
-<<<<<<< HEAD
-
-                {/* What are 5 stages? */}
-=======
                     {/* New Chat */}
                     <div className='flex w-full h-fit p-2 mt-24 sm:mt-10 hover:bg-[#1e1e1e] rounded-lg'>
                         <button onClick={() => newChat()} className="flex items-center ml-5 font-normal text-lg text-white font-calibri">
@@ -255,7 +214,6 @@ export default function SideBar() {
                     </div>
 
                     {/* What are 5 stages? */}
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                     <div
                         className={`flex w-full h-fit p-2 mt-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "stageexp") ? 'bg-[#1e1e1e] rounded-lg' : ''
                             }`}
@@ -265,38 +223,16 @@ export default function SideBar() {
                             <span>What are the 5 stages?</span>
                         </button>
                     </div>
-<<<<<<< HEAD
-=======
 
                     <HistoryContext.Provider value={currChatHistValue}>
                         {/* In Progress */}
                         <div className="flex flex-col ml-8 mt-10 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
                             In Progress
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
 
                             <div className="max-h-[180px] overflow-y-auto" ref={containerRef}>{currChats}</div>
                         </div>
 
-<<<<<<< HEAD
-
-                        <div className="max-h-[180px] overflow-y-auto">{currChats}</div>
-                    </div>
-
-
-                    {/* Completed */}
-                    <div className="flex flex-col ml-8 mt-8 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
-                        Completed
-                        <div className="max-h-[200px] overflow-y-auto">{doneChats}</div>
-                    </div>
-                </HistoryContext.Provider>
-
-                {/* Divider */}
-                <hr className="absolute bottom-20 w-full bg-[#eeeeee] opacity-20" />
-
-
-                {/* Menu items */}
-=======
 
                         {/* Completed */}
                         <div className="flex flex-col ml-8 mt-8 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
@@ -309,7 +245,6 @@ export default function SideBar() {
                     <hr className="absolute bottom-20 w-full bg-[#eeeeee] opacity-20" />
 
                     {/* Menu items */}
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                     <div
                         className={`flex absolute bottom-8 w-full h-fit p-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "useterms") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
                             }`}

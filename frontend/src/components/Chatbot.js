@@ -377,13 +377,8 @@ export default function Chatbot() {
                 ) : (
                     <div>
                         
-<<<<<<< HEAD
                         <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-screen">
                             <div className="w-full mb-4 h-[80%] sm:h-[85%] overflow-y-auto" ref={containerRef}>
-=======
-                        <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-[90%]">
-                            <div className="w-full mb-4 h-[85%] overflow-y-auto" ref={containerRef}>
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                                 {getAllMessages().map((message, index) => (
                                     <div>{message.type === 'newStage' ? <StageLine key={globalStage} text={message.message} /> :
                                         <div className={`flex flex-col basis-3/5" ${message.type === 'user' ? "items-end" : "items-start"}`}>
@@ -422,13 +417,13 @@ export default function Chatbot() {
                                     <input
                                         type="text"
                                         name="userInput"
-                                        className="absolute w-4/5 mt-12 ml-2 sm:ml-6 md:ml-24 pl-2 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
+                                        className="absolute w-4/5 mt-12 ml-2 sm:ml-8 md:ml-24 pl-2 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
                                         placeholder="Send your message here"
                                     />
                                     <span>
                                         <button
                                             type="submit"
-                                            className="mt-12 sm:ml-8 absolute right-[14%] md:right-[12%] rounded-full transform translate-y-1/2">
+                                            className="mt-12 sm:ml-8 absolute right-[16%] md:right-[12%] rounded-full transform translate-y-1/2">
                                             <img src={send} className="w-6 h-6" />
                                         </button>
                                     </span>

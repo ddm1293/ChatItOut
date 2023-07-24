@@ -19,11 +19,7 @@ export default function Welcome() {
 
     return (
         <>
-<<<<<<< HEAD
-            <SideBarContext.Provider>
-=======
         <SideBarContext.Provider>
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                 <div className= "bg-[#0E0E10] grid grid-rows-8 fixed h-screen lg:w-4/5 sm:w-full top-0 right-0 justify-center">
                     <div className="mt-20 text-center text-3xl lg:text-4xl font-medium text-[#9adbff] font-calibri">
                             Welcome to Chat IT Out
@@ -40,11 +36,7 @@ export default function Welcome() {
 
                     <div id="startnewchat">
                     <div className="flex row-span-1 align-top justify-center">
-<<<<<<< HEAD
-                        <button onClick={() => setCurrentPage('home')} className="text-center text-lg font-calibri font-medium text-white bg-[#1993D6] px-24 py-2 rounded-xl hover:bg-[#4EB7F0]">
-=======
                         <button onClick={() => setCurrentPage('newchat')} className="text-center text-lg font-calibri font-medium text-white bg-[#1993D6] px-24 py-2 rounded-xl hover:bg-[#4EB7F0]">
->>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                             Start New Chat
                         </button>
                     </div>
