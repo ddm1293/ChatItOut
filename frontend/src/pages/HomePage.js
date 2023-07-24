@@ -55,7 +55,7 @@ export default function HomePage() {
                                 <div>
 
                                 <button onClick={() => handleButtonOpen()} className={"block sm:hidden"}>
-                                    <img src={ham} className="z-10 absolute top-0 right-0 mt-6 mr-10" alt="Hamburger menu bar"/>
+                                    <img src={ham} className="z-10 absolute top-0 right-0 mt-6 mr-10 h-5" alt="Hamburger menu bar"/>
                                 </button>
 
                                 <div className={`sm:block z-20 ${(hamOpen === true? "visible" : "hidden")}`}>

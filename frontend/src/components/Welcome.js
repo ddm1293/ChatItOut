@@ -29,7 +29,7 @@ export default function Welcome() {
                     </div>
 
                     <div className="row-span-2 sm:px-36 md:px-24 flex justify-center">
-                        <img className="w-4/5 h-full" src={(window.innerWidth < 768? welcome2 : welcome1)} alt="Welcome page picture" />
+                        <img className="w-4/5 h-4/5 sm:h-full" src={(window.innerWidth < 768? welcome2 : welcome1)} alt="Welcome page picture" />
                     </div>
 
                     <div className="row-span-1" />
