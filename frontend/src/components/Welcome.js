@@ -20,7 +20,7 @@ export default function Welcome() {
     return (
         <>
         <SideBarContext.Provider>
-                <div className= "bg-[#0E0E10] grid grid-rows-8 fixed h-screen lg:w-4/5 sm:w-full top-0 right-0 justify-center">
+                <div className= "bg-[#0E0E10] grid grid-rows-8 fixed h-screen w-full sm:w-4/5 top-0 right-0 justify-center">
                     <div className="mt-20 text-center text-3xl lg:text-4xl font-medium text-[#9adbff] font-calibri">
                             Welcome to Chat IT Out
                         <div className="mt-6 mx-16 text-center text-lg lg:text-xl font-normal text-white font-calibri">
@@ -32,7 +32,7 @@ export default function Welcome() {
                         <img className="w-4/5 h-4/5 sm:h-full" src={(window.innerWidth < 768? welcome2 : welcome1)} alt="Welcome page picture" />
                     </div>
 
-                    <div className="row-span-1" />
+                    <div className="grid row-span-1 hidden sm:block" />
 
                     <div id="startnewchat">
                     <div className="flex row-span-1 align-top justify-center">
