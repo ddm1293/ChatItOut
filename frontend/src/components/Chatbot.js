@@ -417,7 +417,7 @@ export default function Chatbot() {
                             </div>
                             </SideBarContext.Provider>
 
-                            <div className={`absolute bottom-28 sm:bottom-20 w-full sm:w-4/5 ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
+                            <div className={`absolute bottom-28 sm:bottom-20 w-full ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
                                 <form onSubmit={handleUserInput}>
                                     <input
                                         type="text"
@@ -428,7 +428,7 @@ export default function Chatbot() {
                                     <span>
                                         <button
                                             type="submit"
-                                            className="mt-12 sm:ml-8 absolute right-[20%] md:right-[12%] rounded-full transform translate-y-1/2">
+                                            className="mt-12 sm:ml-8 absolute right-[20%] md:right-[14%] rounded-full transform translate-y-1/2">
                                             <img src={send} className="w-6 h-6" />
                                         </button>
                                     </span>
