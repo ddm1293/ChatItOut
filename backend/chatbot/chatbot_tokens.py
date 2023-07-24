@@ -2,9 +2,10 @@
 import openai
 import en_textcat_demo
 import tiktoken
+import os
 
 # set API key
-openai.api_key="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"
+openai.api_key=os.environ.get('OPEN_API_KEY')
 
 # load intent classifier
 nlp = en_textcat_demo.load()
