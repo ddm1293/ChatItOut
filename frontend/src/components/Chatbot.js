@@ -7,6 +7,7 @@ import stagecomplete from "../assets/icon_stagecomplete.png";
 import ailogo from "../assets/icon_ailogo.png";
 import pencil from "../assets/icon_pencil.png";
 import home from "../assets/icon_home.png";
+import offline from "../assets/icon_nowifi.png";
 import ChatStage from '../ChatStage';
 import Loading from './Loading';
 import StageLine from './StageLine';
@@ -363,12 +364,21 @@ export default function Chatbot() {
             <div>
                 {!isOnline ? (
                     /* TODO: Offline page goes here */
-                    <p>You are offline *sadge*</p>
+                    <div className="flex flex-col items-center justify-center absolute top-24 md:top-12 right-0 w-full sm:w-4/5 h-[90%]">
+                        <img src={offline} className="z-10 w-32 h-32 mb-8" alt="Lost connection" />
+                        <p className="text-white font-calibri font-medium text-3xl mb-4 "> Ooops... </p>
+                        <p className="text-white font-calibri text-xl w-[40%] text-center mb-12"> 
+                            There is a connection error. Please check your Internet and try again. 
+                        </p>
+                        <button className="bg-[#1993D6] hover:bg-[#4EB7F0] rounded-xl py-2 px-16 text-black font-medium text-xl">
+                            Try again
+                        </button>
+                        </div>
                 ) : (
                     <div>
                         
-                        <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-[90%]">
-                            <div className="w-full mb-4 h-[85%] overflow-y-auto" ref={containerRef}>
+                        <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-screen">
+                            <div className="w-full mb-4 h-[80%] sm:h-[85%] overflow-y-auto" ref={containerRef}>
                                 {getAllMessages().map((message, index) => (
                                     <div>{message.type === 'newStage' ? <StageLine key={globalStage} text={message.message} /> :
                                         <div className={`flex flex-col basis-3/5" ${message.type === 'user' ? "items-end" : "items-start"}`}>
@@ -402,18 +412,18 @@ export default function Chatbot() {
                                 </div> : <></>}
                             </div>
 
-                            <div className={`flex w-full items-center ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
+                            <div className={`flex w-full sm:w-4/5 right-0 bottom-4 items-center ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
                                 <form onSubmit={handleUserInput}>
                                     <input
                                         type="text"
                                         name="userInput"
-                                        className="mt-12 ml-8 flex absolute w-11/12 px-4 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
+                                        className="absolute w-4/5 mt-12 ml-2 sm:ml-8 md:ml-24 pl-2 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
                                         placeholder="Send your message here"
                                     />
                                     <span>
                                         <button
                                             type="submit"
-                                            className="mt-12 ml-8 absolute right-[4%] rounded-full transform translate-y-1/2">
+                                            className="mt-12 sm:ml-8 absolute right-[16%] md:right-[12%] rounded-full transform translate-y-1/2">
                                             <img src={send} className="w-6 h-6" />
                                         </button>
                                     </span>
