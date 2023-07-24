@@ -377,8 +377,13 @@ export default function Chatbot() {
                 ) : (
                     <div>
                         
+<<<<<<< HEAD
+                        <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-screen">
+                            <div className="w-full mb-4 h-[80%] sm:h-[85%] overflow-y-auto" ref={containerRef}>
+=======
                         <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-[90%]">
                             <div className="w-full mb-4 h-[85%] overflow-y-auto" ref={containerRef}>
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                                 {getAllMessages().map((message, index) => (
                                     <div>{message.type === 'newStage' ? <StageLine key={globalStage} text={message.message} /> :
                                         <div className={`flex flex-col basis-3/5" ${message.type === 'user' ? "items-end" : "items-start"}`}>

@@ -1,6 +1,9 @@
+<<<<<<< HEAD
+import { useContext, useEffect, useState, useRef} from "react";
+=======
 import { useContext, useEffect, useState, useRef, createContext } from "react";
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 import React from 'react';
-import { Link, useLocation } from "react-router-dom";
 import newchat from "../assets/icon_newchat.png";
 import stageexp from "../assets/icon_stageexp.png";
 import ChatHistory from "./ChatHistory";
@@ -8,7 +11,10 @@ import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatC
 import ChatStage from "../ChatStage";
 import { SideBarContext } from '../components/PageRoute';
 import close from '../assets/icon_close.png';
+<<<<<<< HEAD
+=======
 
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
 export default function SideBar() {
     const [currChats, setCurrChats] = useState([]);
@@ -16,12 +22,24 @@ export default function SideBar() {
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
     const currChatHistValue = { currChatHist, setCurrChatHist };
 
+
     const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
     const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
 
     let isInitialMount = useRef(true);
     const containerRef = useRef(null);
 
+<<<<<<< HEAD
+
+    const [clickedButton, setClickedButton] = useState(false);
+
+    const { currentPage, setCurrentPage } = useContext(SideBarContext);
+
+
+    const handleButtonClick = () => {
+        setClickedButton(true);
+    };
+=======
     // const [clickedButton, setClickedButton] = useState(false);
 
     const { currentPage, setCurrentPage } = useContext(SideBarContext);
@@ -41,7 +59,11 @@ export default function SideBar() {
     // const handleButtonClose = () => {
     //     setHamOpen(close);
     // };
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
+
+    const [hamOpen, setHamOpen] = useState(false);
+   
     const loadDbReq = indexedDB.open("chathistory", 1);
     const delDbReq = indexedDB.open("chathistory", 1);
 
@@ -52,6 +74,7 @@ export default function SideBar() {
             if (!db.objectStoreNames.contains('chats')) {
                 return;
             }
+
 
             // load chats
             const tx = await db.transaction('chats', 'readonly');
@@ -86,6 +109,7 @@ export default function SideBar() {
         //   - pass the ChatHist the object from db (to set its startState)
     }
 
+
     const newChat = () => {
         let today = new Date();
         let emptyStart = { messages: { invitation: [{ type: 'newStage', message: 'invitation' }, { type: 'chatbot', message: "I'm an AI conflict coach here to help you with any conflicts or issues you may be facing. How can I assist you today?" }], connection: [], exchange: [], agreement: [], reflection: [] }, time: today, stage: new ChatStage(), atStartRef: false };
@@ -96,15 +120,18 @@ export default function SideBar() {
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
 
+
     const completeChat = () => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
             return;
         }
 
+
         let chatToCompleteTime = chatToComplete.getTime();
         let completedChat;
         let newCurrChats = [];
+
 
         for (let currChat of currChats) {
             if (currChat.key != chatToCompleteTime) {
@@ -113,6 +140,7 @@ export default function SideBar() {
                 completedChat = currChat;
             }
         }
+
 
         setCurrChats(newCurrChats);
         setDoneChats(doneChats.concat([completedChat]));
@@ -125,7 +153,9 @@ export default function SideBar() {
             return;
         }
 
+
         let chatToDeleteTime = chatToDelete.time.getTime();
+
 
         // Update UI
         let newChats = [];
@@ -145,6 +175,7 @@ export default function SideBar() {
             setCurrChats(newChats);
         }
 
+
         // Update DB
         delDbReq.onsuccess = async function (evt) {
             let db = delDbReq.result;
@@ -162,25 +193,43 @@ export default function SideBar() {
         loadChats();
     }, []);
 
+
     useEffect(() => {
         completeChat();
     }, [chatToComplete]);
+
 
     useEffect(() => {
         deleteChat();
     }, [chatToDelete]);
 
+<<<<<<< HEAD
+
+=======
     useEffect(() => {
         if (currentPage === 'newchat') {
             newChat();
         }
     }, [currentPage]);
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
 
     return (
         <>
             <div className={`sm:flex flex-col h-screen bg-[#333333] absolute top-0 sm:left-0 sm:w-1/5 w-4/5 right-0 z-10`}>
                 {/* Title */}
+<<<<<<< HEAD
+                <SideBarContext.Provider>
+                <div>
+                    <button onClick={() => setCurrentPage('welcome')} className="m-8 font-bold hidden sm:block md:text-lg lg:text-2xl text-white font-calibri">
+                        Chat IT Out
+                    </button>
+                </div>
+
+                {/* Divider */}
+                <hr class="-my-4 w-full bg-[#eeeeee] opacity-20 hidden sm:block" />
+
+=======
                 <SideBarContext.Provider value={currentPageValue}>
                     <div>
                         <button onClick={() => setCurrentPage('welcome')} className="m-8 font-bold hidden sm:block md:text-lg lg:text-2xl text-white font-calibri">
@@ -190,8 +239,13 @@ export default function SideBar() {
 
                     {/* Divider */}
                     <hr class="-my-4 w-full bg-[#eeeeee] opacity-20 hidden sm:block" />
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
 
+<<<<<<< HEAD
+
+                {/* What are 5 stages? */}
+=======
                     {/* New Chat */}
                     <div className='flex w-full h-fit p-2 mt-24 sm:mt-10 hover:bg-[#1e1e1e] rounded-lg'>
                         <button onClick={() => newChat()} className="flex items-center ml-5 font-normal text-lg text-white font-calibri">
@@ -201,6 +255,7 @@ export default function SideBar() {
                     </div>
 
                     {/* What are 5 stages? */}
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                     <div
                         className={`flex w-full h-fit p-2 mt-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "stageexp") ? 'bg-[#1e1e1e] rounded-lg' : ''
                             }`}
@@ -210,16 +265,38 @@ export default function SideBar() {
                             <span>What are the 5 stages?</span>
                         </button>
                     </div>
+<<<<<<< HEAD
+=======
 
                     <HistoryContext.Provider value={currChatHistValue}>
                         {/* In Progress */}
                         <div className="flex flex-col ml-8 mt-10 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
                             In Progress
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
 
 
                             <div className="max-h-[180px] overflow-y-auto" ref={containerRef}>{currChats}</div>
                         </div>
 
+<<<<<<< HEAD
+
+                        <div className="max-h-[180px] overflow-y-auto">{currChats}</div>
+                    </div>
+
+
+                    {/* Completed */}
+                    <div className="flex flex-col ml-8 mt-8 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
+                        Completed
+                        <div className="max-h-[200px] overflow-y-auto">{doneChats}</div>
+                    </div>
+                </HistoryContext.Provider>
+
+                {/* Divider */}
+                <hr className="absolute bottom-20 w-full bg-[#eeeeee] opacity-20" />
+
+
+                {/* Menu items */}
+=======
 
                         {/* Completed */}
                         <div className="flex flex-col ml-8 mt-8 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
@@ -232,6 +309,7 @@ export default function SideBar() {
                     <hr className="absolute bottom-20 w-full bg-[#eeeeee] opacity-20" />
 
                     {/* Menu items */}
+>>>>>>> a95eade76d20cfff2d76ec312ebbe1d08e22a134
                     <div
                         className={`flex absolute bottom-8 w-full h-fit p-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "useterms") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
                             }`}

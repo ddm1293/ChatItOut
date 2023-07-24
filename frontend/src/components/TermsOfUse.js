@@ -1,7 +1,5 @@
-import { React, useState} from 'react';
-import SideBar from '../components/SideBar';
+import { React } from 'react';
 
-// TODO: Make a page that shows privacy policy and user agreement, goes to home page upon user's agreement
 export default function TermsOfUse() {
 
     return (
