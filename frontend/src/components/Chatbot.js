@@ -365,7 +365,7 @@ export default function Chatbot() {
                 {!isOnline ? (
                     /* TODO: Offline page goes here */
                     <div className="flex flex-col items-center justify-center absolute top-24 md:top-12 right-0 w-full sm:w-4/5 h-[90%]">
-                        <img src={offline} className="z-10 w-32 h-32 mb-8" alt="Lost connection" />
+                        <img src={offline} className="w-32 h-32 mb-8" alt="Lost connection" />
                         <p className="text-white font-calibri font-medium text-3xl mb-4 "> Ooops... </p>
                         <p className="text-white font-calibri text-xl w-[40%] text-center mb-12"> 
                             There is a connection error. Please check your Internet and try again. 
@@ -412,18 +412,18 @@ export default function Chatbot() {
                                 </div> : <></>}
                             </div>
 
-                            <div className={`flex w-full sm:w-4/5 right-0 bottom-4 items-center ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
+                            <div className={`absolute bottom-28 sm:bottom-20 w-full sm:w-4/5 ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
                                 <form onSubmit={handleUserInput}>
                                     <input
                                         type="text"
                                         name="userInput"
-                                        className="absolute w-4/5 mt-12 ml-2 sm:ml-8 md:ml-24 pl-2 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
+                                        className="w-4/5 mt-12 ml-2 sm:ml-8 md:ml-12 lg:ml-24 pl-2 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
                                         placeholder="Send your message here"
                                     />
                                     <span>
                                         <button
                                             type="submit"
-                                            className="mt-12 sm:ml-8 absolute right-[16%] md:right-[12%] rounded-full transform translate-y-1/2">
+                                            className="mt-12 sm:ml-8 absolute right-[20%] md:right-[12%] rounded-full transform translate-y-1/2">
                                             <img src={send} className="w-6 h-6" />
                                         </button>
                                     </span>
