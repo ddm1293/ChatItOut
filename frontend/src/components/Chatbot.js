@@ -33,7 +33,7 @@ export default function Chatbot() {
     const [refStage, setRefStage] = useState("notStarted");
     const containerRef = useRef(null);
 
-    const dbReq = indexedDB.open("chathistory", 1);
+    const dbReq = indexedDB.open("chathistory", 2);
 
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [chatbotLoading, setChatbotLoading] = useState(false);

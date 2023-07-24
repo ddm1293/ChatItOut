@@ -145,7 +145,7 @@ export default function ChatHistory(props) {
     }
 
     useEffect(() => {
-        let dbReq = indexedDB.open("chathistory", 1);
+        let dbReq = indexedDB.open("chathistory", 2);
 
         dbReq.onsuccess = function (evt) {
             let db = dbReq.result;

@@ -42,8 +42,8 @@ export default function SideBar() {
     //     setHamOpen(close);
     // };
 
-    const loadDbReq = indexedDB.open("chathistory", 1);
-    const delDbReq = indexedDB.open("chathistory", 1);
+    const loadDbReq = indexedDB.open("chathistory", 2);
+    const delDbReq = indexedDB.open("chathistory", 2);
 
 
     const loadChats = () => {
