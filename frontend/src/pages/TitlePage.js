@@ -18,7 +18,7 @@ export default function HomePage() {
 
             <div class="flex flex-col h-screen bg-[#024DA1] justify-center items-center">
 
-                <img className= "h-60 w-56 mb-6" src={logo} alt="logo" />
+                <img className= "h-60 w-56 mb-4" src={logo} alt="logo" />
 
                 <div className="text-4xl sm:text-5xl font-medium text-[#9adbff]">
                     Chat IT Out
