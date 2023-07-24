@@ -3,6 +3,7 @@ import send from "../assets/icon_send.png";
 import axios from 'axios';
 import stagearrow from "../assets/icon_stagearrow.png";
 import { ChatCompleteContext, HistoryContext, HistoryContextProvider } from '../ChatContexts';
+import { SideBarContext } from '../components/PageRoute';
 import stagecomplete from "../assets/icon_stagecomplete.png";
 import ailogo from "../assets/icon_ailogo.png";
 import pencil from "../assets/icon_pencil.png";
@@ -18,6 +19,8 @@ const serverURL = "https://chatitout-chatbot.onrender.com";
 export default function Chatbot() {
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
     const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
+    const { currentPage, setCurrentPage } = useContext(SideBarContext);
+    const currentPageValue = {currentPage, setCurrentPage};
 
     const [messages, setMessages] = useState(currChatHist.messages);
     const globalStage = currChatHist.stage;
@@ -31,7 +34,7 @@ export default function Chatbot() {
     const [refStage, setRefStage] = useState("notStarted");
     const containerRef = useRef(null);
 
-    const dbReq = indexedDB.open("chathistory", 1);
+    const dbReq = indexedDB.open("chathistory", 2);
 
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [chatbotLoading, setChatbotLoading] = useState(false);
@@ -378,6 +381,7 @@ export default function Chatbot() {
                     <div>
                         
                         <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-screen">
+                        <SideBarContext.Provider value={currentPageValue}>
                             <div className="w-full mb-4 h-[80%] sm:h-[85%] overflow-y-auto" ref={containerRef}>
                                 {getAllMessages().map((message, index) => (
                                     <div>{message.type === 'newStage' ? <StageLine key={globalStage} text={message.message} /> :
@@ -405,12 +409,13 @@ export default function Chatbot() {
                                         <img className='w-4 h-4 mr-2' src={pencil} alt="Reflection pencil" />
                                         <span>Start Reflection Now</span>
                                     </button>
-                                    <button onClick={() => {window.location.href = '/welcome'}} className="bg-transparent hover:bg-[#1993D6] text-white py-2 px-4 mx-3 border border-[#494949] hover:border-transparent rounded-full inline-flex items-center">
+                                    <button onClick={() => setCurrentPage('welcome')} className="bg-transparent hover:bg-[#1993D6] text-white py-2 px-4 mx-3 border border-[#494949] hover:border-transparent rounded-full inline-flex items-center">
                                         <img className='w-4 h-4 mr-2' src={home} alt="Home icon" />
                                         <span>Back to Homepage</span>
                                     </button>
                                 </div> : <></>}
                             </div>
+                            </SideBarContext.Provider>
 
                             <div className={`flex w-full sm:w-4/5 right-0 bottom-4 items-center ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
                                 <form onSubmit={handleUserInput}>

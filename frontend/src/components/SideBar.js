@@ -44,8 +44,8 @@ export default function SideBar() {
 
     const [hamOpen, setHamOpen] = useState(false);
    
-    const loadDbReq = indexedDB.open("chathistory", 1);
-    const delDbReq = indexedDB.open("chathistory", 1);
+    const loadDbReq = indexedDB.open("chathistory", 2);
+    const delDbReq = indexedDB.open("chathistory", 2);
 
 
     const loadChats = () => {

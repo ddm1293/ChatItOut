@@ -1,6 +1,6 @@
 from flask import Flask, make_response
 from flask import request
-from chatbot.chatbot import *
+from chatbot.chatbot_tokens import *
 
 app = Flask(__name__)
 
@@ -26,4 +26,4 @@ def after_request(response):
   return response
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=False)
