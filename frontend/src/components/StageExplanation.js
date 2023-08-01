@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 export default function StageExp() {
     const [clickedButton, setClickedButton] = useState('stage1');
 
+    // Scroll to desired stage
     const scrollToSection = (sectionId) => {
         const section = document.getElementById(sectionId);
         if (section) {
@@ -19,6 +20,7 @@ export default function StageExp() {
         <>
                 <div className= "grid grid-rows-10 fixed h-screen top-0 right-0 w-full sm:w-4/5 justify-center items-center overflow-y-scroll">
                     <div className="mt-6 mx-4 sm:mx-12 md:mx-12 lg:mx-36">
+                        {/* Top Scroll Bar */}
                         <ul className="fixed grid grid-cols-5 bg-gray-700 justify-items-center items-center rounded-xl w-11/12 sm:w-3/5 top-16 md:top-10 h-14">
                         <li>
                         <button className={`text-sm sm:text-base sm:text-lg ${clickedButton === 'stage1' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
@@ -53,6 +55,7 @@ export default function StageExp() {
                     </ul>
                     </div>
 
+                    {/* Stage Explanation Text */}
                     <div id='stage1'>
                         <div className= "mt-28 text-center mt-12 text-2xl text-white font-calibri font-medium">
                             Stage 1: Invitation

@@ -65,6 +65,7 @@ export default function SideBar() {
     }
 
 
+    // Start a new chat
     const newChat = () => {
         let today = new Date();
         let emptyStart = { messages: { invitation: [{ type: 'newStage', message: 'invitation' }, { type: 'chatbot', message: "I'm an AI conflict coach here to help you with any conflicts or issues you may be facing. How can I assist you today?" }], connection: [], exchange: [], agreement: [], reflection: [] }, time: today, stage: new ChatStage(), atStartRef: false };
@@ -75,7 +76,7 @@ export default function SideBar() {
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
 
-
+    // Move the chat to complete section
     const completeChat = () => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
@@ -101,7 +102,7 @@ export default function SideBar() {
         setDoneChats(doneChats.concat([completedChat]));
     }
 
-
+    // Delete chat history
     const deleteChat = () => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
@@ -144,6 +145,7 @@ export default function SideBar() {
     }
 
 
+    // Load chat history in the side bar
     useEffect(() => {
         loadChats();
     }, []);
