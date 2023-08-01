@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import send from "../assets/icon_send.png";
 import axios from 'axios';
 import stagearrow from "../assets/icon_stagearrow.png";
-import { ChatCompleteContext, HistoryContext, HistoryContextProvider } from '../ChatContexts';
+import { ChatCompleteContext, HistoryContext} from '../ChatContexts';
 import { SideBarContext } from '../components/PageRoute';
 import stagecomplete from "../assets/icon_stagecomplete.png";
 import ailogo from "../assets/icon_ailogo.png";
@@ -61,14 +61,16 @@ export default function Chatbot() {
         };
     }, []);
 
-    const generateResponse = async (msg) => {
-        // let responses = ["Hello, how are you?", "That is a bad idea.", "You are very intelligent!"];
-        // let i = Math.floor((Math.random() * 3));
-        // if (i === 2) {
-        //     advanceStage();
-        // }
-        // return responses[i];
+    // Update component when a new or different chat is opened
+    useEffect(() => {
+        setMessages(currChatHist.messages);
+        setAtStartRef(currChatHist.atStartRef);
+        setStageProgress(currChatHist.stage);
+        setLocalStage(currChatHist.stage);
+    }, [currChatHist])
 
+    // Send user input to chatbot and receive response
+    const generateResponse = async (msg) => {
         let context = getAllMessages();
         let input = { context: context, newMsg: msg, stage: getStageNum() };
 
@@ -85,13 +87,7 @@ export default function Chatbot() {
         }
     }
 
-    useEffect(() => {
-        setMessages(currChatHist.messages);
-        setAtStartRef(currChatHist.atStartRef);
-        setStageProgress(currChatHist.stage);
-        setLocalStage(currChatHist.stage);
-    }, [currChatHist])
-
+    // Messaging logic
     const handleUserInput = async (content) => {
         if (globalStage.name === "complete") {
             return;
@@ -99,6 +95,7 @@ export default function Chatbot() {
 
         let stageMessages = messages[globalStage.name];
 
+        // Get user input
         content.preventDefault();
         const userInput = content.target.userInput.value;
         content.target.userInput.value = "";
@@ -109,6 +106,7 @@ export default function Chatbot() {
             [globalStage.name]: stageMessages
         });
 
+        // Update chat history and UI depending on chatbot response
         generateResponse(userInput).then((chatbotResp) => {
             setChatbotLoading(false);
             if (chatbotResp.stage === undefined) {
@@ -158,6 +156,7 @@ export default function Chatbot() {
         })
     }
 
+    // Translate chatbot's reprsentation of stages to frontend's
     const getStage = (stage) => {
         switch (stage) {
             case 1:
@@ -177,6 +176,7 @@ export default function Chatbot() {
         }
     }
 
+    // Translate UI's reprsentation of stages to chatbot's
     const getStageNum = () => {
         switch (globalStage.name) {
             case "invitation":
@@ -196,6 +196,7 @@ export default function Chatbot() {
         }
     }
 
+    // Updates the state of the variables used for stage UI
     const advanceStage = () => {
         switch (globalStage.name) {
             case "invitation":
@@ -229,6 +230,7 @@ export default function Chatbot() {
         setLocalStage(new ChatStage(globalStage.name));
     }
 
+    // Set the state of the variables used for stage UI
     const setStageProgress = (stage) => {
         switch (stage.name) {
             case "invitation":
@@ -278,6 +280,7 @@ export default function Chatbot() {
         }
     }
 
+    // Update the UI to show that reflection stage has started
     const startReflection = () => {
         let agrMsgs = messages.agreement.slice(0, -1);
         let newMsgs = {
@@ -292,16 +295,12 @@ export default function Chatbot() {
         addRefLine.current = true;
     }
 
+    // Scrolls to the stage line for the specified stage
     const scrollToStage = (stage) => {
-        // just scroll to top for Invitation stage?
-        // unless we have a not started and then the chatbot transitions into the invitation stage...
-        // if (stage === "invitation") {
-        //     containerRef.current.scrollTop = 0;
-        //     return;
-        // }
         document.getElementById(`stageLine-${stage}`).scrollIntoView({ behavior: 'smooth' });
     }
 
+    // Save new messages and/or stage to IndexedDB
     useEffect(() => {
         if (isOnline) containerRef.current.scrollTop = containerRef.current.scrollHeight;
 
@@ -336,6 +335,7 @@ export default function Chatbot() {
         }
     }, [messages, localStage]);
 
+    // Returns all of the messages in the current chat as an array
     const getAllMessages = () => {
         let arr = [];
         let results = arr.concat(Object.values(messages));
@@ -366,7 +366,7 @@ export default function Chatbot() {
         <>
             <div>
                 {!isOnline ? (
-                    /* TODO: Offline page goes here */
+                    /* Offline page */
                     <div className="flex flex-col items-center justify-center absolute top-24 md:top-12 right-0 w-full sm:w-4/5 h-[90%]">
                         <img src={offline} className="w-32 h-32 mb-8" alt="Lost connection" />
                         <p className="text-white font-calibri font-medium text-3xl mb-4 "> Ooops... </p>
@@ -403,7 +403,9 @@ export default function Chatbot() {
                                     }
                                     </div>
                                 ))}
+                                {/* Message loading animation appears while waiting for chatbot response */}
                                 {chatbotLoading ? <Loading /> : <></>}
+                                {/* Start reflection and homepage options appear after completing Agreement stage */}
                                 {atStartRef ? <div className='flex justify-center'>
                                     <button onClick={() => startReflection()} className="bg-transparent hover:bg-[#1993D6] text-white py-2 px-4 mx-3 border border-[#494949] hover:border-transparent rounded-full inline-flex items-center">
                                         <img className='w-4 h-4 mr-2' src={pencil} alt="Reflection pencil" />

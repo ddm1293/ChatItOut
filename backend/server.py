@@ -1,22 +1,17 @@
-from flask import Flask, make_response
+from flask import Flask
 from flask import request
 from chatbot.chatbot_tokens import *
 
 app = Flask(__name__)
 
-# @app.route('/home/chat', methods=['POST'])
-# def talk_to_ai():
-#     if request.method == 'POST':
-#         ai_resp = generate_response(request.body)
-#     response = make_response()
-#     return response
-
+# Passes user input to chatbot and passes response to frontend
 @app.post('/home/chat')
 def talk_to_ai():
     data = request.json
     ai_resp = generate_response(data)
     return ai_resp
 
+# Add headers that prevent requests being blocked
 @app.after_request
 def after_request(response):
   response.headers.add('Access-Control-Allow-Origin', 'https://chatitout.onrender.com')

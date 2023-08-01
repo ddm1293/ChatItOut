@@ -1,3 +1,5 @@
+// A representation of the the 5 stages
+
 class ChatStage {
     constructor(name) {
       this.name = name || "invitation";

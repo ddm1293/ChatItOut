@@ -1,5 +1,7 @@
 import ailogo from "../assets/icon_ailogo.png";
 
+// Message loading animation
+
 export default function Loading() {
     return (
         <div className="flex">

@@ -24,11 +24,6 @@ export default function HomePage() {
 
     const [currentPage, setCurrentPage] = useState('welcome');
     const currentPageValue = {currentPage, setCurrentPage};
-
-    // const [home, setHome] = useState(true);
-    // const [welcome, setWelcome] = useState(false);
-    // const [stageexp, setStageExp] = useState(false);
-    // const [useterms, setUseTerms] = useState(false);
     
     const handleButtonOpen= () => {
         setHamOpen(true);
