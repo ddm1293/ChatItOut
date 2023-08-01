@@ -9,7 +9,7 @@ import { openDB } from 'idb';
 function App() {
 
   useEffect(() => {
-    // make chat history persistent
+    // Make chat history persistent
     async function persistData() {
       if (navigator.storage && navigator.storage.persist) {
         const result = await navigator.storage.persist();
@@ -17,33 +17,8 @@ function App() {
       }
     }
 
-    // Open DB
-    async function createDB() { // TODO: CHECK IF BROWSER SUPPORTS INDEXEDDB
-
-      // const dbRequest = indexedDB.open('chathistory', 1);
-
-      // dbRequest.onsuccess = () => {
-      //   let db = dbRequest.result;
-      //   if (!db.objectStoreNames.contains('chats')) {
-      //     console.log('in succesful');
-      //     indexedDB.deleteDatabase('chathistory');
-      //     createDB();
-      //   }
-      // }
-
-      // dbRequest.onupgradeneeded = () => {
-      //   let db = dbRequest.result;
-      //   const currStore = db.createObjectStore('chats', {
-      //         // The `time` property of the object will be the key, and be incremented automatically
-      //     autoIncrement: true,
-      //     keyPath: 'time'
-      //     });
-      //   const doneStore = db.createObjectStore('completed', {
-      //       autoIncrement: true,
-      //       keyPath: 'time'
-      //   });
-      // }
-
+    // Open and setup DB
+    async function createDB() {
       // Using https://github.com/jakearchibald/idb
       return await openDB('chathistory', 2, {
         upgrade(db, oldVersion, newVersion, transaction) {
@@ -53,24 +28,6 @@ function App() {
             autoIncrement: true,
             keyPath: 'time'
           });
-          // Switch over the oldVersion, *without breaks*, to allow the database to be incrementally upgraded.
-          // switch(oldVersion) {
-          //     // case 0:
-          //     //     // Placeholder to execute when database is created (oldVersion is 0)
-          //     default:
-          //       // Create a store of objects
-          //       const chatStore = db.createObjectStore('chats', {
-          //         // The `time` property of the object will be the key, and be incremented automatically
-          //         autoIncrement: true,
-          //         keyPath: 'time'
-          //     });
-          // case 1:
-          //     // Create a store of objects
-          //     const chatStore = db.createObjectStore('chats', {
-          //         // The `time` property of the object will be the key, and be incremented automatically
-          //         autoIncrement: true,
-          //         keyPath: 'time'
-          //     });
         }
       }
       );

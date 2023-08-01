@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import chathist from "../assets/icon_chathist.png";
 import email from "../assets/icon_sendemail.png";
 import download from "../assets/icon_download.png";
@@ -19,6 +19,7 @@ export default function ChatHistory(props) {
     const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
     const { currentPage, setCurrentPage } = useContext(SideBarContext);
 
+    // Returns date as a formatted string (hh:mm am/pm M DD, YYYY)
     const getTime = (today) => {
         let hours = today.getHours();
         let mins = today.getMinutes();
@@ -33,6 +34,7 @@ export default function ChatHistory(props) {
         return `${hours}:${minsString}${timeOfDay} ${month} ${day}, ${year}`;
     }
 
+    // Returns a formatted string of all the messages within a stage
     const getStageMessages = (stageMsgs) => {
         let output = '';
         if (stageMsgs.length === 0) {
@@ -48,6 +50,7 @@ export default function ChatHistory(props) {
         return output;
     }
 
+    // Returns a formatted string of all of the messages in the conversation
     const formatData = () => {
         let messages = startState.messages;
         let output = '-- INVITATION STAGE --\n\n';
@@ -64,6 +67,7 @@ export default function ChatHistory(props) {
         return output;
     }
 
+    // Shares the conversation via Web Share
     const sendEmail = async () => {
         let chat = formatData();
         const shareData = {
@@ -77,6 +81,7 @@ export default function ChatHistory(props) {
         }
     }
 
+    // Creates and saves a formatted PDF file of the conversation
     const downloadChatPDF = () => {
         let chat = formatData();
 
@@ -102,6 +107,7 @@ export default function ChatHistory(props) {
         doc.save("chat.pdf");
     }
 
+     // Creates and saves a txt file of the conversation *unused*
     const downloadChatTXT = () => {
         let chat = formatData();
 
@@ -115,6 +121,7 @@ export default function ChatHistory(props) {
         document.body.removeChild(link);
     }
 
+    // Sets this chat to be deleted from SideBar.js
     const deleteChat = () => {
         setChatToDelete({ stage: startState.stage, time: time });
         if (time.getTime() == currChatHist.time.getTime()) {
@@ -123,6 +130,7 @@ export default function ChatHistory(props) {
         setConfirmDelete(false);
     }
 
+    // Determines if the chat icon should be the in progress icon or the completed icon
     const determineChatIcon = () => {
         if (startState.stage.name === 'complete') {
             return chatdone;
@@ -133,6 +141,7 @@ export default function ChatHistory(props) {
         }
     }
 
+    // Changes homepage to display this chat
     const setChat = () => {
         setCurrChatHist(startState); 
         if (currentPage !== 'home') {
@@ -140,10 +149,12 @@ export default function ChatHistory(props) {
         }
     }
 
+    // Determines if this chat is currently open
     const onChat = () => {
         return time.getTime() == currChatHist.time.getTime() && currentPage == 'home';
     }
 
+    // Creates a new object in IndexedDB when a new chat is first created
     useEffect(() => {
         let dbReq = indexedDB.open("chathistory", 2);
 
@@ -164,6 +175,7 @@ export default function ChatHistory(props) {
     return (
         <>
             <div className={`group flex items-center hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#1e1e1e]' : ''}`}>
+                {/* Chat history widget */}
                 <button onClick={() => setChat()} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
                     <div className="flex items-center">
                         <img className="w-5 h-5" src={determineChatIcon()} alt="Chat History" />
@@ -171,18 +183,23 @@ export default function ChatHistory(props) {
                     </div>
                 </button>
                 {!confirmDelete ?
+                    // Hide these buttons when delete button is clicked 
                     <div>
+                        {/* Donwload button */}
                         <button onClick={() => downloadChatPDF()}>
                             <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={download} />
                         </button>
+                        {/* Share button */}
                         <button onClick={() => sendEmail()}>
                             <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={email} />
                         </button>
+                        {/* Delete button */}
                         <button onClick={() => { setConfirmDelete(true) }}>
                             <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={trash} />
                         </button>
                     </div>
                     :
+                    // Delete twice confirmation buttons
                     <div>
                         <button onClick={() => deleteChat()}>
                             <img className={'ml-2 px-1 w-7 opacity-70 hover:opacity-100'} src={confirm} />
@@ -197,12 +214,3 @@ export default function ChatHistory(props) {
     )
 }
 
-
-// each ChatHistory can be associated with a key for the IndexedDB.
-// - so when it passes its info to ChatBot to display the messages, msgs are
-//   saved to the key in IndexedDB assoaciated with the current ChatHistory
-// - so maybe ChatHistory doesn't even need the list of messages, it just needs
-//   the IndexedDB key which it sends to ChatBot which can then update its message
-//   state
-// - so loading would be going through all keys in IndexedDB and creating
-//   a new component accordingly (done in LeftSideBar on startup + reload?)

@@ -6,7 +6,6 @@ import ChatHistory from "./ChatHistory";
 import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatContexts';
 import ChatStage from "../ChatStage";
 import { SideBarContext } from '../components/PageRoute';
-import close from '../assets/icon_close.png';
 
 export default function SideBar() {
     const [currChats, setCurrChats] = useState([]);
@@ -21,28 +20,8 @@ export default function SideBar() {
     let isInitialMount = useRef(true);
     const containerRef = useRef(null);
 
-    // const [clickedButton, setClickedButton] = useState(false);
-
     const { currentPage, setCurrentPage } = useContext(SideBarContext);
     const currentPageValue = { currentPage, setCurrentPage };
-
-    // const handleButtonClick = () => {
-    //     setClickedButton(true);
-    // };
-
-    // const [hamOpen, setHamOpen] = useState(false);
-    // const [positionBar, setpositionBar] = useState("left");
-
-    // const handleButtonOpen = () => {
-    //     setHamOpen(true);
-    // };
-
-    // const handleButtonClose = () => {
-    //     setHamOpen(close);
-    // };
-
-
-    const [hamOpen, setHamOpen] = useState(false);
    
     const loadDbReq = indexedDB.open("chathistory", 2);
     const delDbReq = indexedDB.open("chathistory", 2);
@@ -83,10 +62,6 @@ export default function SideBar() {
         loadDbReq.onerror = (err) => {
             console.log(err);
         }
-        // read from db
-        // for each object, add a new ChatHistory to the correct array
-        //   - if stage is complete, it goes in doneChats
-        //   - pass the ChatHist the object from db (to set its startState)
     }
 
 

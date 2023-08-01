@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { disableReactDevTools } from '@fvilers/disable-react-devtools';
 
+// Turn off development tools in production mode
 if (process.env.NODE_ENV === 'production') {
   disableReactDevTools();
 }

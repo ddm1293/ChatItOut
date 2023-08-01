@@ -1,12 +1,12 @@
 @tailwind base;
 
-/* Firefox */
+/* Firefox scrollbar styling */
 * {
   scrollbar-width: thin;
   scrollbar-color: #676767;
 }
 
-/* Chrome, Edge, and Safari */
+/* Chrome, Edge, and Safari scrollbar styling */
 *::-webkit-scrollbar {
   width: 7px;
 }

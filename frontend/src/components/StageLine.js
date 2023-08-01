@@ -5,6 +5,7 @@ export default function StageLine(props) {
     const [text, setText] = useState();
     const { currentPage, setCurrentPage } = useContext(SideBarContext);
 
+    // The text depends on the stage of the conversation
     useEffect(() => {
         if (props.text.length > 10) {
             setText(props.text);
@@ -15,7 +16,7 @@ export default function StageLine(props) {
         }
     }, [])
 
-    // https://stackoverflow.com/questions/70203473/creating-a-horizontal-rule-hr-divider-that-contains-text-with-tailwind-css
+    // Stage line
     return (
         <div className="relative flex py-5 items-center" id={`stageLine-${props.text}`}>
             <div className="flex-grow border-t border-[#494949]"></div>

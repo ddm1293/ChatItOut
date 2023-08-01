@@ -4,13 +4,6 @@ from chatbot.chatbot_tokens import *
 
 app = Flask(__name__)
 
-# @app.route('/home/chat', methods=['POST'])
-# def talk_to_ai():
-#     if request.method == 'POST':
-#         ai_resp = generate_response(request.body)
-#     response = make_response()
-#     return response
-
 @app.post('/home/chat')
 def talk_to_ai():
     data = request.json
