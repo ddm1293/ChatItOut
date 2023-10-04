@@ -4,6 +4,7 @@ meta.json
 setup.py
 en_textcat_demo/__init__.py
 en_textcat_demo/meta.json
+en_textcat_demo.egg-info/.gitkeep
 en_textcat_demo.egg-info/PKG-INFO
 en_textcat_demo.egg-info/SOURCES.txt
 en_textcat_demo.egg-info/dependency_links.txt

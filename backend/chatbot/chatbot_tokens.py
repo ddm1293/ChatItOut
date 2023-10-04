@@ -3,6 +3,10 @@ import openai
 import en_textcat_demo
 import tiktoken
 import os
+from dotenv import load_dotenv
+
+# load .env file
+load_dotenv()
 
 # set API key
 openai.api_key=os.environ.get('OPEN_API_KEY')

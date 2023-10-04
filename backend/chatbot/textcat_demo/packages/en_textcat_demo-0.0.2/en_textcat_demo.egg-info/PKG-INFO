@@ -4,6 +4,7 @@ Version: 0.0.2
 Home-page: 
 Author: 
 Author-email: 
+Requires-Dist: spacy<3.7.0,>=3.6.0
 
 | Feature | Description |
 | --- | --- |

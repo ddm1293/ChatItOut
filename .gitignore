@@ -39,3 +39,5 @@ yarn-error.log*
 **/*.egg-info/
 
 **/storage/
+
+**/.env

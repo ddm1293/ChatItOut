@@ -3,7 +3,7 @@ import logo from '../assets/icon_logo.png';
 import collab from '../assets/icon_collab.png';
 import { useNavigate } from 'react-router-dom';
 
-export default function HomePage() {
+export default function TitlePage() {
 
     const navigate = useNavigate();
 

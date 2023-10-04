@@ -13,7 +13,7 @@ import ChatStage from '../ChatStage';
 import Loading from './Loading';
 import StageLine from './StageLine';
 
-const serverURL = "https://chatitout-chatbot.onrender.com";
+const serverURL = "http://127.0.0.1:5000";
 
 
 export default function Chatbot() {
@@ -44,10 +44,12 @@ export default function Chatbot() {
     // Offline handling
     useEffect(() => {
         function onlineHandler() {
+            console.log('onlineHandler: true')
             setIsOnline(true);
         }
 
         function offlineHandler() {
+            console.log('offlineHandler: false')
             setIsOnline(false);
         }
 
@@ -59,6 +61,10 @@ export default function Chatbot() {
             window.removeEventListener("online", onlineHandler);
             window.removeEventListener("offline", offlineHandler);
         };
+    }, []);
+
+    useEffect(() => {
+        console.log('see current history context: ', currChatHist);
     }, []);
 
     // Update component when a new or different chat is opened
