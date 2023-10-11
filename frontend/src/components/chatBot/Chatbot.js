@@ -305,11 +305,6 @@ export default function Chatbot() {
         addRefLine.current = true;
     }
 
-    // Scrolls to the stage line for the specified stage
-    const scrollToStage = (stage) => {
-        document.getElementById(`stageLine-${stage}`).scrollIntoView({ behavior: 'smooth' });
-    }
-
     // Save new messages and/or stage to IndexedDB
     useEffect(() => {
         if (isOnline) containerRef.current.scrollTop = containerRef.current.scrollHeight;

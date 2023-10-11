@@ -1,39 +1,25 @@
 import React from 'react'
 import stagearrow from "../../assets/icon_stagearrow.png"
-import stagecomplete from "../../assets/icon_stagecomplete.png"
+import { StageButton, StageSeparator } from './StageButton';
 
 export default function StatusBar({ invStage, conStage, excStage, agrStage, refStage }) {
     // Scrolls to the stage line for the specified stage
     const scrollToStage = (stage) => {
-        document.getElementById(`stageLine-${stage}`).scrollIntoView({ behavior: 'smooth' });
+        document.getElementById(`stageLine-${stage}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-
-    const wordColor = (stage) => {
-        if (stage === "notStarted") {
-            return 'text-white opacity-50 font-normal';
-        } else if (stage === "inProgress") {
-            return 'text-white font-medium';
-        } else {
-            return 'text-white font-normal';
-        }
-    }
-
-    const buttonColor = (stage) => {
-        if (stage == "notStarted") {
-            return 'opacity-50 bg-white';
-        } else if (stage == "inProgress") {
-            return 'opacity-100 bg-[#1993D6] text-black';
-        } else {
-            return 'hidden';
-        }
-    };
 
     return (
         <div>
             {/* Top Status Bar */}
             <div className="flex flex-row w-full sm:w-4/5 h-20 bg-[#242424] absolute right-0 md:top-0 top-16">
 
-                <button onClick={() => scrollToStage('invitation')} className='w-[18%] justify-center group'>
+                <StageButton stage={invStage} stageName={"Invitation"} stageNum={1} onClick={(event) => 
+                    {
+                        event.preventDefault();
+                        console.log("click invitation stage button")
+                        scrollToStage('invitation')
+                    }} isDisabled={invStage === "notStarted"} />
+                {/* <button onClick={() => scrollToStage('invitation')} className='w-[18%] justify-center group'>
                     <div className={`flex flex-col justify-center items-center w-full h-20 ${invStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} group-hover:border-b-4 group-hover:border-[#1993D6]`}>
                         <div className='p-4'>
                             <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
@@ -47,13 +33,15 @@ export default function StatusBar({ invStage, conStage, excStage, agrStage, refS
                             </div>
                         </div>
                     </div>
-                </button>
+                </button> */}
 
-                <div className="flex max-w-xs items-center">
+                <StageSeparator />
+                {/* <div className="flex max-w-xs items-center">
                     <img src={stagearrow} className="w-4" alt="Stage Arrow" />
-                </div>
+                </div> */}
 
-                <button onClick={() => scrollToStage('connection')} className='w-[18%] group justify-center' disabled={conStage === "notStarted"}>
+                <StageButton stage={conStage} stageName={"Connection"} stageNum={2} onClick={() => scrollToStage('connection')} isDisabled={conStage === "notStarted"} />
+                {/* <button onClick={() => scrollToStage('connection')} className='w-[18%] group justify-center' disabled={conStage === "notStarted"}>
                     <div className={`flex flex-col justify-center items-center w-full h-20 ${conStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${conStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}>
                         <div className='p-4'>
                             <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
@@ -67,13 +55,15 @@ export default function StatusBar({ invStage, conStage, excStage, agrStage, refS
                             </div>
                         </div>
                     </div>
-                </button>
+                </button> */}
 
-                <div className="flex max-w-xs items-center">
+                <StageSeparator />
+                {/* <div className="flex max-w-xs items-center">
                     <img src={stagearrow} className="w-4" alt="Stage Arrow" />
-                </div>
+                </div> */}
 
-                <button onClick={() => scrollToStage('exchange')} className='w-[18%] justify-center group' disabled={excStage === "notStarted"}>
+                <StageButton stage={excStage} stageName={"Exchange"} stageNum={3} onClick={() => scrollToStage('exchange')} isDisabled={excStage === "notStarted"} />
+                {/* <button onClick={() => scrollToStage('exchange')} className='w-[18%] justify-center group' disabled={excStage === "notStarted"}>
                     <div className={`flex flex-col justify-center items-center w-full h-20 ${excStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${excStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}>
                         <div className='p-4'>
                             <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
@@ -87,13 +77,15 @@ export default function StatusBar({ invStage, conStage, excStage, agrStage, refS
                             </div>
                         </div>
                     </div>
-                </button>
+                </button> */}
 
-                <div className="flex max-w-xs items-center">
+                <StageSeparator />
+                {/* <div className="flex max-w-xs items-center">
                     <img src={stagearrow} className="w-4" alt="Stage Arrow" />
-                </div>
+                </div> */}
 
-                <button onClick={() => scrollToStage('agreement')} className='w-[18%] justify-center group' disabled={agrStage === "notStarted"}>
+                <StageButton stage={agrStage} stageName={"Agreement"} stageNum={4} onClick={() => scrollToStage('agreement')} isDisabled={agrStage === "notStarted"} />
+                {/* <button onClick={() => scrollToStage('agreement')} className='w-[18%] justify-center group' disabled={agrStage === "notStarted"}>
                     <div className={`flex flex-col justify-center items-center w-full h-20 ${agrStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${agrStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}>
                         <div className='p-4'>
                             <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
@@ -107,13 +99,15 @@ export default function StatusBar({ invStage, conStage, excStage, agrStage, refS
                             </div>
                         </div>
                     </div>
-                </button>
+                </button> */}
 
-                <div className="flex max-w-xs items-center">
+                <StageSeparator />
+                {/* <div className="flex max-w-xs items-center">
                     <img src={stagearrow} className="w-4" alt="Stage Arrow" />
-                </div>
+                </div> */}
 
-                <button onClick={() => scrollToStage('reflection')} className='w-[18%] justify-center group' disabled={refStage === "notStarted"}>
+                <StageButton stage={refStage} stageName={"Reflection"} stageNum={5} onClick={() => scrollToStage('reflection')} isDisabled={refStage === "notStarted"} />
+                {/* <button onClick={() => scrollToStage('reflection')} className='w-[18%] justify-center group' disabled={refStage === "notStarted"}>
                     <div className={`flex flex-col justify-center items-center w-full h-20 ${refStage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${refStage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}>
                         <div className='p-4'>
                             <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
@@ -127,7 +121,7 @@ export default function StatusBar({ invStage, conStage, excStage, agrStage, refS
                             </div>
                         </div>
                     </div>
-                </button>
+                </button> */}
             </div>
         </div>
     )
