@@ -21,11 +21,10 @@ function App() {
     async function createDB() {
       try {
           // Using https://github.com/jakearchibald/idb
-          console.log("Attempting to create or open DB");
-          console.log("try a");
+          // console.log("Attempting to create or open DB");
           const db = await openDB('chathistory', 2, { 
             upgrade(db, oldVersion, newVersion, transaction) {
-              console.log(`Upgrade triggered. Old version: ${oldVersion}, New version: ${newVersion}`);
+              // console.log(`Upgrade triggered. Old version: ${oldVersion}, New version: ${newVersion}`);
               
               if(!db.objectStoreNames.contains('chats')) {
                   console.log("Creating 'chats' object store");
@@ -48,8 +47,7 @@ function App() {
               console.log("The database connection is terminated");
             }
           });
-          console.log("try here");
-          console.log('Database opened successfully:', db);
+          // console.log('Database opened successfully:', db);
       } catch (error) {
           console.error('Error occurred while opening or upgrading the database:', error);
       }

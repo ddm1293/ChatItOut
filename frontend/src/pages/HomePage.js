@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import SideBar from "../components/SideBar"
-import Chatbot from "../components/Chatbot"
+import Chatbot from "../components/chatBot/Chatbot"
 import Welcome from "../components/Welcome"
 import StageExp from "../components/StageExplanation";
 import TermsOfUse from "../components/TermsOfUse"

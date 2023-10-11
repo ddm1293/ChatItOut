@@ -171,7 +171,7 @@ export default function SideBar() {
         <>
             <div className={`sm:flex flex-col h-screen bg-[#333333] absolute top-0 sm:left-0 sm:w-1/5 w-4/5 right-0 z-10`}>
                 {/* Title */}
-                <SideBarContext.Provider value={currentPageValue}>
+                
                     <div>
                         <button onClick={() => setCurrentPage('welcome')} className="m-8 font-bold hidden sm:block md:text-lg lg:text-2xl text-white font-calibri">
                             Chat IT Out
@@ -179,7 +179,7 @@ export default function SideBar() {
                     </div>
 
                     {/* Divider */}
-                    <hr class="-my-4 w-full bg-[#eeeeee] opacity-20 hidden sm:block" />
+                    <hr className="-my-4 w-full bg-[#eeeeee] opacity-20 hidden sm:block" />
 
 
                     {/* New Chat */}
@@ -201,7 +201,7 @@ export default function SideBar() {
                         </button>
                     </div>
 
-                    <HistoryContext.Provider value={currChatHistValue}>
+                    
                         {/* In Progress */}
                         <div className="flex flex-col ml-8 mt-10 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
                             In Progress
@@ -216,7 +216,7 @@ export default function SideBar() {
                             Completed
                             <div className="max-h-[200px] overflow-y-auto">{doneChats}</div>
                         </div>
-                    </HistoryContext.Provider>
+                    
 
                     {/* Divider */}
                     <hr className="absolute bottom-20 w-full bg-[#eeeeee] opacity-20" />
@@ -230,7 +230,7 @@ export default function SideBar() {
                             Terms of use
                         </button>
                     </div>
-                </SideBarContext.Provider>
+                
             </div>
         </>
     )

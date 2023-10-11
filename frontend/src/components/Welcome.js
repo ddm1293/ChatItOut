@@ -20,7 +20,6 @@ export default function Welcome() {
 
     return (
         <>
-        <SideBarContext.Provider>
                 <div className= "bg-[#0E0E10] grid grid-rows-8 fixed h-screen w-full sm:w-4/5 top-0 right-0 justify-center">
                     {/* Welcome Text */}
                     <div className="mt-20 text-center text-3xl lg:text-4xl font-medium text-[#9adbff] font-calibri">
@@ -47,7 +46,6 @@ export default function Welcome() {
                     </div>
                     </div>
                 </div>
-            </SideBarContext.Provider>
         </>
     )
 }
