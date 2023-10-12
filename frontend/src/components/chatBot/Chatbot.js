@@ -11,6 +11,7 @@ import ChatStage from '../../ChatStage';
 import Loading from '../Loading';
 import StageLine from '../StageLine';
 import StatusBar from '../../components/chatBot/StatusBar'
+import MoveStagePopUp from './MoveStagePopUp';
 
 const serverURL = "http://127.0.0.1:5000";
 
@@ -41,6 +42,11 @@ export default function Chatbot() {
     const [chatbotLoading, setChatbotLoading] = useState(false);
     const isInitialMount = useRef(true);
     const addRefLine = useRef(false);
+
+    const [readyToShowPopup, setReadyToShowPopup] = useState(false);
+    const [showMoveStagePopUp, setShowPopup] = useState(false);
+    const [currMessageNum, setMessageNum] = useState(0);
+    const messageCap = 1;
 
     // Offline handling
     useEffect(() => {
@@ -76,6 +82,7 @@ export default function Chatbot() {
         console.log('see current history context: ', currChatHist);
         console.log('see current localStage: ', localStage);
         console.log('see current messages: ', messages);
+        console.log('see current stages: ', stages);
     }, [currChatHist, localStage, messages]);
 
     // Send user input to chatbot and receive response
@@ -108,11 +115,12 @@ export default function Chatbot() {
 
         // Get user input
         content.preventDefault();
+
         const userInput = content.target.userInput.value;
         content.target.userInput.value = "";
         setChatbotLoading(true);
-        console.log("which push is wrong: 1")
         stageMessages.push({ type: 'user', message: userInput });
+        setMessageNum(prev => prev + 1);
         setMessages({
             ...messages,
             [globalStage.name]: stageMessages
@@ -122,7 +130,6 @@ export default function Chatbot() {
         generateResponse(userInput).then((chatbotResp) => {
             setChatbotLoading(false);
             if (chatbotResp.stage === undefined) {
-                console.log("which push is wrong: 2")
                 stageMessages.push({ type: 'chatbot', message: chatbotResp });
                 setMessages({
                     ...messages,
@@ -139,7 +146,6 @@ export default function Chatbot() {
                 addLine = true;
                 if (chatbotStage === 'reflection') {
                     setAtStartRef(true);
-                    console.log("which push is wrong: 3")
                     stageMessages.push({ type: 'newStage', message: 'The chat is over for now. Please come back and start reflection once you are ready!' });
                     addLine = false;
                     addMsg = false;
@@ -153,19 +159,13 @@ export default function Chatbot() {
             // Add stage line break
             let msg = chatbotResp.ai;
             if (addLine && chatbotStage === 'complete') { // add msg before line
-                console.log("which push is wrong: 4")
                 stageMessages.push({ type: 'chatbot', message: msg });
-                console.log("which push is wrong: 5")
                 stageMessages.push({ type: 'newStage', message: chatbotStage });
-                console.log("lets see if it worked here 2")
                 advanceStage();
             } else if (addLine) { // add line before msg
-                console.log("which push is wrong: 6")
                 stageMessages.push({ type: 'newStage', message: chatbotStage });
-                console.log("which push is wrong: 7")
                 stageMessages.push({ type: 'chatbot', message: msg });
             } else if (addMsg) { // no line
-                console.log("which push is wrong: 8")
                 stageMessages.push({ type: 'chatbot', message: msg });
             }
 
@@ -216,19 +216,19 @@ export default function Chatbot() {
         setStages([...stages]);
     
         setLocalStage(new ChatStage(globalStage.name));
+
+        setMessageNum(0);
     }
 
 
     const setStageProgress = (stage) => {
-        // Find the index of the current stage in the stages array
         const currentStageIndex = stages.findIndex(s => s.name === stage.name);
     
         if (currentStageIndex === -1) {
             console.error('Invalid current stage');
             return;
         }
-    
-        // Update the status of each stage based on its position relative to the current stage
+
         const updatedStages = stages.map((s, index) => {
             if (index < currentStageIndex) {
                 return { ...s, status: 'completed' };
@@ -239,12 +239,10 @@ export default function Chatbot() {
             }
         });
     
-        // If the current stage is reflection and atStartRef is true, set its status to notStarted
         if (stage.name === 'reflection' && currChatHist.atStartRef) {
             updatedStages[currentStageIndex].status = 'notStarted';
         }
     
-        // Update the stages state with the modified stages array
         setStages(updatedStages);
     };
     
@@ -317,6 +315,29 @@ export default function Chatbot() {
         return results.flat();
     }
 
+    useEffect(() => {
+        if (messages[globalStage.name]) {
+            // pop up a window if the current message number exceeds the cap
+            const currUserMsgNum = messages[globalStage.name].filter(msg => msg.type === 'user').length;
+            console.log(`current message number in ${globalStage.name} is ${currUserMsgNum}`);
+            console.log(`see currMessageNum: ${currMessageNum}`);
+            if (globalStage.name !== 'complete' && currMessageNum > messageCap) {
+                setReadyToShowPopup(true);
+                console.log("setReadyToShowPopup is true");
+            } else {
+                setReadyToShowPopup(false);
+            }
+        }
+    }, [messages, globalStage]);
+    
+    const handleInputFocus = () => {
+        if (readyToShowPopup) {
+            console.log("pop up")
+            setShowPopup(true);
+            setReadyToShowPopup(false);
+        }
+    };
+    
     return (
         <>
             <div>
@@ -361,6 +382,9 @@ export default function Chatbot() {
                                 ))}
                                 {/* Message loading animation appears while waiting for chatbot response */}
                                 {chatbotLoading ? <Loading /> : <></>}
+
+                                {showMoveStagePopUp ? <MoveStagePopUp setShowPopup={setShowPopup} setMessageNum={setMessageNum} /> : <></>}
+
                                 {/* Start reflection and homepage options appear after completing Agreement stage */}
                                 {atStartRef ? <div className='flex justify-center'>
                                     <button onClick={() => startReflection()} className="bg-transparent hover:bg-[#1993D6] text-white py-2 px-4 mx-3 border border-[#494949] hover:border-transparent rounded-full inline-flex items-center">
@@ -377,12 +401,13 @@ export default function Chatbot() {
                             
                             {/* Chat input container */}
                             <div className={`absolute bottom-28 sm:bottom-20 w-full ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
-                                <form onSubmit={handleUserInput}>
+                                <form onSubmit={handleUserInput} >
                                     <input
                                         type="text"
                                         name="userInput"
                                         className="w-4/5 mt-12 ml-2 sm:ml-8 md:ml-12 lg:ml-24 pl-2 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
                                         placeholder="Send your message here"
+                                        onFocus={handleInputFocus}
                                     />
                                     <span>
                                         <button
