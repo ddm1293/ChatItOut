@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import send from "../../assets/icon_send.png";
 import axios from 'axios';
-import stagearrow from "../../assets/icon_stagearrow.png";
 import { ChatCompleteContext, HistoryContext} from '../../ChatContexts';
 import { SideBarContext } from '../PageRoute';
-import stagecomplete from "../../assets/icon_stagecomplete.png";
 import ailogo from "../../assets/icon_ailogo.png";
 import pencil from "../../assets/icon_pencil.png";
 import home from "../../assets/icon_home.png";
@@ -15,7 +13,6 @@ import StageLine from '../StageLine';
 import StatusBar from '../../components/chatBot/StatusBar'
 
 const serverURL = "http://127.0.0.1:5000";
-
 
 export default function Chatbot() {
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
@@ -28,11 +25,14 @@ export default function Chatbot() {
     const [localStage, setLocalStage] = useState(globalStage);
     const [atStartRef, setAtStartRef] = useState(currChatHist.atStartRef);
 
-    const [invStage, setInvStage] = useState("inProgress");
-    const [conStage, setConStage] = useState("notStarted");
-    const [excStage, setExcStage] = useState("notStarted");
-    const [agrStage, setAgrStage] = useState("notStarted");
-    const [refStage, setRefStage] = useState("notStarted");
+    const [stages, setStages] = useState([
+        { key: 1, name: "invitation", status: "inProgress" },
+        { key: 2, name: "connection", status: "notStarted" },
+        { key: 3, name: "exchange", status: "notStarted" },
+        { key: 4, name: "agreement", status: "notStarted" },
+        { key: 5, name: "reflection", status: "notStarted" },
+        { key: 6, name: "complete", status: "notStarted" }
+    ]);
     const containerRef = useRef(null);
 
     const dbReq = indexedDB.open("chathistory", 2);
@@ -89,6 +89,7 @@ export default function Chatbot() {
                     'Content-Type': 'application/json',
                 }
             });
+            console.log("see response data: ", resp.data)
             return resp.data;
         } catch (err) {
             console.log(err);
@@ -110,6 +111,7 @@ export default function Chatbot() {
         const userInput = content.target.userInput.value;
         content.target.userInput.value = "";
         setChatbotLoading(true);
+        console.log("which push is wrong: 1")
         stageMessages.push({ type: 'user', message: userInput });
         setMessages({
             ...messages,
@@ -120,6 +122,7 @@ export default function Chatbot() {
         generateResponse(userInput).then((chatbotResp) => {
             setChatbotLoading(false);
             if (chatbotResp.stage === undefined) {
+                console.log("which push is wrong: 2")
                 stageMessages.push({ type: 'chatbot', message: chatbotResp });
                 setMessages({
                     ...messages,
@@ -136,6 +139,7 @@ export default function Chatbot() {
                 addLine = true;
                 if (chatbotStage === 'reflection') {
                     setAtStartRef(true);
+                    console.log("which push is wrong: 3")
                     stageMessages.push({ type: 'newStage', message: 'The chat is over for now. Please come back and start reflection once you are ready!' });
                     addLine = false;
                     addMsg = false;
@@ -149,13 +153,19 @@ export default function Chatbot() {
             // Add stage line break
             let msg = chatbotResp.ai;
             if (addLine && chatbotStage === 'complete') { // add msg before line
+                console.log("which push is wrong: 4")
                 stageMessages.push({ type: 'chatbot', message: msg });
+                console.log("which push is wrong: 5")
                 stageMessages.push({ type: 'newStage', message: chatbotStage });
+                console.log("lets see if it worked here 2")
                 advanceStage();
             } else if (addLine) { // add line before msg
+                console.log("which push is wrong: 6")
                 stageMessages.push({ type: 'newStage', message: chatbotStage });
+                console.log("which push is wrong: 7")
                 stageMessages.push({ type: 'chatbot', message: msg });
             } else if (addMsg) { // no line
+                console.log("which push is wrong: 8")
                 stageMessages.push({ type: 'chatbot', message: msg });
             }
 
@@ -167,131 +177,81 @@ export default function Chatbot() {
     }
 
     // Translate chatbot's reprsentation of stages to frontend's
-    const getStage = (stage) => {
-        switch (stage) {
-            case 1:
-                return "invitation";
-            case 2:
-                return "connection";
-            case 3:
-                return "exchange";
-            case 4:
-                return "agreement";
-            case 5:
-                return "reflection";
-            case 6:
-                return "complete";
-            default:
-                return "";
-        }
+    const getStage = (stageNum) => {
+        const foundStage = stages.find(stage => stage.key === stageNum);
+        console.log("see getStage: ", foundStage);
+        return foundStage ? foundStage.name : "";
     }
 
     // Translate UI's reprsentation of stages to chatbot's
     const getStageNum = () => {
-        switch (globalStage.name) {
-            case "invitation":
-                return 1;
-            case "connection":
-                return 2;
-            case "exchange":
-                return 3;
-            case "agreement":
-                return 4;
-            case "reflection":
-                return 5;
-            case "complete":
-                return 6;
-            default:
-                return -1;
+        const stage = stages.find(stage => stage.name === globalStage.name);
+        if (!stage) {
+            console.error("something wrong with the getStageNum");
         }
+        return stage ? stage.key : -1;
     }
 
-    // Updates the state of the variables used for stage UI
     const advanceStage = () => {
-        switch (globalStage.name) {
-            case "invitation":
-                globalStage.setConnection();
-                setInvStage("completed");
-                setConStage("inProgress");
-                break;
-            case "connection":
-                globalStage.setExchange();
-                setConStage("completed");
-                setExcStage("inProgress");
-                break;
-            case "exchange":
-                globalStage.setAgreement();
-                setExcStage("completed");
-                setAgrStage("inProgress");
-                break;
-            case "agreement":
-                globalStage.setReflection();
-                setAgrStage("completed");
-                break;
-            case "reflection":
-                globalStage.setComplete();
-                setRefStage("completed");
-                // move this chat to doneChats in LeftSideBar
-                setChatToComplete(currChatHist.time);
-                break;
-            default:
-                console.log('something bad happened in advanceStage')
+        console.log("triggering advanceStage, see global stage: ", globalStage.name);
+        const currentStageIndex = stages.findIndex(stage => stage.name === globalStage.name);
+    
+        if (currentStageIndex === -1) {
+            console.error('Invalid current stage');
+            return;
         }
+    
+        // Setting the status of the current stage to "completed"
+        stages[currentStageIndex].status = 'completed';
+    
+        if (currentStageIndex === stages.length - 1) { 
+            console.log('The chat is already at the last stage', stages[currentStageIndex].name);
+            setChatToComplete(currChatHist.time);
+        } else if (stages[currentStageIndex].name !== 'agreement') {
+            stages[currentStageIndex + 1].status = 'inProgress';
+        }
+    
+        globalStage.setNextStage();
+    
+        setStages([...stages]);
+    
         setLocalStage(new ChatStage(globalStage.name));
     }
 
-    // Set the state of the variables used for stage UI
+
     const setStageProgress = (stage) => {
-        switch (stage.name) {
-            case "invitation":
-                setInvStage("inProgress");
-                setConStage("notStarted");
-                setExcStage("notStarted");
-                setAgrStage("notStarted");
-                setRefStage("notStarted");
-                break;
-            case "connection":
-                setInvStage("completed");
-                setConStage("inProgress");
-                setExcStage("notStarted");
-                setAgrStage("notStarted");
-                setRefStage("notStarted");
-                break;
-            case "exchange":
-                setInvStage("completed");
-                setConStage("completed");
-                setExcStage("inProgress");
-                setAgrStage("notStarted");
-                setRefStage("notStarted");
-                break;
-            case "agreement":
-                setInvStage("completed");
-                setConStage("completed");
-                setExcStage("completed");
-                setAgrStage("inProgress");
-                setRefStage("notStarted");
-                break;
-            case "reflection":
-                setInvStage("completed");
-                setConStage("completed");
-                setExcStage("completed");
-                setAgrStage("completed");
-                currChatHist.atStartRef ? setRefStage("notStarted") : setRefStage("inProgress");
-                break;
-            case "complete":
-                setInvStage("completed");
-                setConStage("completed");
-                setExcStage("completed");
-                setAgrStage("completed");
-                setRefStage("completed");
-                break;
-            default:
-                console.log('something bad happened in setStageProgress');
+        // Find the index of the current stage in the stages array
+        const currentStageIndex = stages.findIndex(s => s.name === stage.name);
+    
+        if (currentStageIndex === -1) {
+            console.error('Invalid current stage');
+            return;
         }
-    }
+    
+        // Update the status of each stage based on its position relative to the current stage
+        const updatedStages = stages.map((s, index) => {
+            if (index < currentStageIndex) {
+                return { ...s, status: 'completed' };
+            } else if (index === currentStageIndex) {
+                return { ...s, status: 'inProgress' };
+            } else {
+                return { ...s, status: 'notStarted' };
+            }
+        });
+    
+        // If the current stage is reflection and atStartRef is true, set its status to notStarted
+        if (stage.name === 'reflection' && currChatHist.atStartRef) {
+            updatedStages[currentStageIndex].status = 'notStarted';
+        }
+    
+        // Update the stages state with the modified stages array
+        setStages(updatedStages);
+    };
+    
 
     // Update the UI to show that reflection stage has started
     const startReflection = () => {
+        console.log("triggering startReflection()");
         let agrMsgs = messages.agreement.slice(0, -1);
         let newMsgs = {
             ...messages,
@@ -300,7 +260,17 @@ export default function Chatbot() {
 
         setMessages(newMsgs);
 
-        setRefStage("inProgress");
+        const updatedStages = stages.map(stage => {
+            if (stage.name === 'reflection') {
+                return {
+                    ...stage,
+                    status: 'inProgress',
+                };
+            }
+            return stage;
+        });
+        setStages(updatedStages);
+
         setAtStartRef(false); 
         addRefLine.current = true;
     }
@@ -427,7 +397,7 @@ export default function Chatbot() {
 
 
                         {/* Top Status Bar */}
-                        <StatusBar invStage={invStage} conStage={conStage} excStage={excStage} agrStage={agrStage} refStage={refStage} />
+                        <StatusBar stages={stages} />
                     </div>
                 )}
             </div>

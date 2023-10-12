@@ -3,6 +3,10 @@ import stagearrow from "../../assets/icon_stagearrow.png"
 import stagecomplete from "../../assets/icon_stagecomplete.png"
 
 export function StageButton({ stage, stageName, stageNum, onClick, isDisabled }) {
+    if (stageName.toLowerCase() === "complete") {
+        return <></>
+    }
+
     const wordColor = (stage) => {
         if (stage === "notStarted") {
             return 'text-white opacity-50 font-normal';
