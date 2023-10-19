@@ -80,9 +80,9 @@ export default function Chatbot() {
 
     useEffect(() => {
         console.log('see current history context: ', currChatHist);
-        console.log('see current localStage: ', localStage);
+        // console.log('see current localStage: ', localStage);
         console.log('see current messages: ', messages);
-        console.log('see current stages: ', stages);
+        // console.log('see current stages: ', stages);
     }, [currChatHist, localStage, messages]);
 
     // Send user input to chatbot and receive response
@@ -111,7 +111,7 @@ export default function Chatbot() {
             return;
         }
 
-        let stageMessages = messages[globalStage.name];
+        const stageMessages = messages[globalStage.name];
 
         // Get user input
         content.preventDefault();
@@ -179,7 +179,6 @@ export default function Chatbot() {
     // Translate chatbot's reprsentation of stages to frontend's
     const getStage = (stageNum) => {
         const foundStage = stages.find(stage => stage.key === stageNum);
-        console.log("see getStage: ", foundStage);
         return foundStage ? foundStage.name : "";
     }
 
@@ -193,7 +192,7 @@ export default function Chatbot() {
     }
 
     const advanceStage = () => {
-        console.log("triggering advanceStage, see global stage: ", globalStage.name);
+        // console.log("triggering advanceStage, see global stage: ", globalStage.name);
         const currentStageIndex = stages.findIndex(stage => stage.name === globalStage.name);
     
         if (currentStageIndex === -1) {
@@ -205,7 +204,7 @@ export default function Chatbot() {
         stages[currentStageIndex].status = 'completed';
     
         if (currentStageIndex === stages.length - 1) { 
-            console.log('The chat is already at the last stage', stages[currentStageIndex].name);
+            // console.log('The chat is already at the last stage', stages[currentStageIndex].name);
             setChatToComplete(currChatHist.time);
         } else if (stages[currentStageIndex].name !== 'agreement') {
             stages[currentStageIndex + 1].status = 'inProgress';
@@ -249,7 +248,7 @@ export default function Chatbot() {
 
     // Update the UI to show that reflection stage has started
     const startReflection = () => {
-        console.log("triggering startReflection()");
+        // console.log("triggering startReflection()");
         let agrMsgs = messages.agreement.slice(0, -1);
         let newMsgs = {
             ...messages,
@@ -319,7 +318,7 @@ export default function Chatbot() {
         if (messages[globalStage.name]) {
             // pop up a window if the current message number exceeds the cap
             const currUserMsgNum = messages[globalStage.name].filter(msg => msg.type === 'user').length;
-            console.log(`current message number in ${globalStage.name} is ${currUserMsgNum}`);
+            // console.log(`current message number in ${globalStage.name} is ${currUserMsgNum}`);
             console.log(`see currMessageNum: ${currMessageNum}`);
             if (globalStage.name !== 'complete' && currMessageNum > messageCap) {
                 setReadyToShowPopup(true);
@@ -383,7 +382,7 @@ export default function Chatbot() {
                                 {/* Message loading animation appears while waiting for chatbot response */}
                                 {chatbotLoading ? <Loading /> : <></>}
 
-                                {showMoveStagePopUp ? <MoveStagePopUp setShowPopup={setShowPopup} setMessageNum={setMessageNum} /> : <></>}
+                                {showMoveStagePopUp ? <MoveStagePopUp advanceStage={advanceStage} setShowPopup={setShowPopup} setMessageNum={setMessageNum} /> : <></>}
 
                                 {/* Start reflection and homepage options appear after completing Agreement stage */}
                                 {atStartRef ? <div className='flex justify-center'>

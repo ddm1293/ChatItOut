@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function MoveStagePopUp({ setShowPopup, setMessageNum }) {
+export default function MoveStagePopUp({ advanceStage, setShowPopup, setMessageNum }) {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="absolute inset-0 bg-black opacity-60"></div>
@@ -12,7 +12,10 @@ export default function MoveStagePopUp({ setShowPopup, setMessageNum }) {
         </p>
         <div className="flex justify-between">
           <button 
-            onClick={() => {}}
+            onClick={() => {
+                advanceStage();
+                setShowPopup(false);
+            }}
             className="px-6 py-2 bg-[#1e1e1e] text-white border border-white rounded-lg hover:bg-[#444] focus:outline-none focus:border-[#555]"
           >
             Yes
