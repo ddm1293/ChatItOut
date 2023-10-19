@@ -111,7 +111,7 @@ export default function Chatbot() {
             return;
         }
 
-        const stageMessages = messages[globalStage.name];
+        let stageMessages = messages[globalStage.name];
 
         // Get user input
         content.preventDefault();
