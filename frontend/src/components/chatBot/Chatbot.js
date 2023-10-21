@@ -78,12 +78,12 @@ export default function Chatbot() {
         setLocalStage(currChatHist.stage);
     }, [currChatHist])
 
-    useEffect(() => {
-        console.log('see current history context: ', currChatHist);
-        // console.log('see current localStage: ', localStage);
-        console.log('see current messages: ', messages);
-        // console.log('see current stages: ', stages);
-    }, [currChatHist, localStage, messages]);
+    // useEffect(() => {
+    //     console.log('see current history context: ', currChatHist);
+    //     console.log('see current localStage: ', localStage);
+    //     console.log('see current messages: ', messages);
+    //     console.log('see current stages: ', stages);
+    // }, [currChatHist, localStage, messages]);
 
     // Send user input to chatbot and receive response
     const generateResponse = async (msg) => {
@@ -104,20 +104,19 @@ export default function Chatbot() {
         }
     }
 
-    // Messaging logic
     const handleUserInput = async (content) => {
         if (globalStage.name === "complete") {
-            console.log("this stage is complete, conversation complete");
             return;
         }
 
         let stageMessages = messages[globalStage.name];
 
-        // Get user input
+        // Deal with user input
         content.preventDefault();
-
         const userInput = content.target.userInput.value;
         content.target.userInput.value = "";
+
+        // Add user input into chat messages
         setChatbotLoading(true);
         stageMessages.push({ type: 'user', message: userInput });
         setMessageNum(prev => prev + 1);
@@ -126,60 +125,18 @@ export default function Chatbot() {
             [globalStage.name]: stageMessages
         });
 
-        // Update chat history and UI depending on chatbot response
-        generateResponse(userInput).then((chatbotResp) => {
-            setChatbotLoading(false);
-            if (chatbotResp.stage === undefined) {
-                stageMessages.push({ type: 'chatbot', message: chatbotResp });
-                setMessages({
-                    ...messages,
-                    [globalStage.name]: stageMessages
-                });
-                return;
-            }
-            let chatbotStage = getStage(chatbotResp.stage);
-            let addLine = false;
-            let addMsg = true;
+        // Send the user input to backend
+        const chatbotResp = await generateResponse(userInput);
 
-            // Transition stage
-            if (chatbotStage !== globalStage.name) {
-                addLine = true;
-                if (chatbotStage === 'reflection') {
-                    setAtStartRef(true);
-                    stageMessages.push({ type: 'newStage', message: 'The chat is over for now. Please come back and start reflection once you are ready!' });
-                    addLine = false;
-                    addMsg = false;
-                }
-                if (chatbotStage !== 'complete') {
-                    stageMessages = messages[chatbotStage];
-                    advanceStage();
-                }
-            }
-
-            // Add stage line break
-            let msg = chatbotResp.ai;
-            if (addLine && chatbotStage === 'complete') { // add msg before line
-                stageMessages.push({ type: 'chatbot', message: msg });
-                stageMessages.push({ type: 'newStage', message: chatbotStage });
-                advanceStage();
-            } else if (addLine) { // add line before msg
-                stageMessages.push({ type: 'newStage', message: chatbotStage });
-                stageMessages.push({ type: 'chatbot', message: msg });
-            } else if (addMsg) { // no line
-                stageMessages.push({ type: 'chatbot', message: msg });
-            }
-
-            setMessages({
-                ...messages,
-                [globalStage.name === "complete" ? "reflection" : globalStage.name]: stageMessages
-            });
-        })
-    }
-
-    // Translate chatbot's reprsentation of stages to frontend's
-    const getStage = (stageNum) => {
-        const foundStage = stages.find(stage => stage.key === stageNum);
-        return foundStage ? foundStage.name : "";
+        // Add chatGPT response to chat messages
+        setChatbotLoading(false);
+        const chatbotMessage = chatbotResp.ai;
+        stageMessages.push({ type: 'chatbot', message: chatbotMessage });
+        // console.log("see handleUserInput globalStage: ", globalStage.name);
+        setMessages({
+            ...messages,
+            [globalStage.name]: stageMessages
+        });
     }
 
     // Translate UI's reprsentation of stages to chatbot's
@@ -192,9 +149,10 @@ export default function Chatbot() {
     }
 
     const advanceStage = () => {
-        // console.log("triggering advanceStage, see global stage: ", globalStage.name);
         const currentStageIndex = stages.findIndex(stage => stage.name === globalStage.name);
     
+        // console.log("triggering advanceStage, see global stage: ", globalStage.name);
+        // console.log("see currentStage name: ", stages[currentStageIndex].name);
         if (currentStageIndex === -1) {
             console.error('Invalid current stage');
             return;
@@ -202,14 +160,22 @@ export default function Chatbot() {
     
         // Setting the status of the current stage to "completed"
         stages[currentStageIndex].status = 'completed';
-    
-        if (currentStageIndex === stages.length - 1) { 
+        if (stages[currentStageIndex].name === 'reflection') { 
             // console.log('The chat is already at the last stage', stages[currentStageIndex].name);
             setChatToComplete(currChatHist.time);
-        } else if (stages[currentStageIndex].name !== 'agreement') {
-            stages[currentStageIndex + 1].status = 'inProgress';
+            messages.reflection.push({ type: 'newStage', message: "This is the end of this conversation."})
+            return;
+        } else if (stages[currentStageIndex].name === 'agreement') {
+            // console.log("ready to go to reflection") 
+            setAtStartRef(true);
         }
-    
+
+        // setting the next stage messages;
+        const nextStage = stages[currentStageIndex + 1];
+        nextStage.status = 'inProgress';
+        let nextStageMessages = messages[nextStage.name];
+        nextStageMessages.push({ type: 'newStage', message: `Starting the new stage: ${nextStage.name} now` });
+              
         globalStage.setNextStage();
     
         setStages([...stages]);
@@ -217,6 +183,7 @@ export default function Chatbot() {
         setLocalStage(new ChatStage(globalStage.name));
 
         setMessageNum(0);
+
     }
 
 
@@ -314,15 +281,13 @@ export default function Chatbot() {
         return results.flat();
     }
 
+    // pop up a window if the current message number exceeds the cap
     useEffect(() => {
         if (messages[globalStage.name]) {
-            // pop up a window if the current message number exceeds the cap
-            const currUserMsgNum = messages[globalStage.name].filter(msg => msg.type === 'user').length;
-            // console.log(`current message number in ${globalStage.name} is ${currUserMsgNum}`);
-            console.log(`see currMessageNum: ${currMessageNum}`);
+            // console.log(`see currMessageNum: ${currMessageNum}`);
             if (globalStage.name !== 'complete' && currMessageNum > messageCap) {
                 setReadyToShowPopup(true);
-                console.log("setReadyToShowPopup is true");
+                // console.log("setReadyToShowPopup is true");
             } else {
                 setReadyToShowPopup(false);
             }
@@ -331,7 +296,7 @@ export default function Chatbot() {
     
     const handleInputFocus = () => {
         if (readyToShowPopup) {
-            console.log("pop up")
+            // console.log("pop up")
             setShowPopup(true);
             setReadyToShowPopup(false);
         }
@@ -382,7 +347,7 @@ export default function Chatbot() {
                                 {/* Message loading animation appears while waiting for chatbot response */}
                                 {chatbotLoading ? <Loading /> : <></>}
 
-                                {showMoveStagePopUp ? <MoveStagePopUp advanceStage={advanceStage} setShowPopup={setShowPopup} setMessageNum={setMessageNum} /> : <></>}
+                                {showMoveStagePopUp ? <MoveStagePopUp globalStage={globalStage} advanceStage={advanceStage} setShowPopup={setShowPopup} setMessageNum={setMessageNum} /> : <></>}
 
                                 {/* Start reflection and homepage options appear after completing Agreement stage */}
                                 {atStartRef ? <div className='flex justify-center'>
