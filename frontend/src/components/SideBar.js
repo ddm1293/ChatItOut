@@ -6,6 +6,7 @@ import ChatHistory from "./ChatHistory";
 import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatContexts';
 import ChatStage from "../ChatStage";
 import { SideBarContext } from '../components/PageRoute';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function SideBar() {
     const [currChats, setCurrChats] = useState([]);
@@ -68,7 +69,23 @@ export default function SideBar() {
     // Start a new chat
     const newChat = () => {
         let today = new Date();
-        let emptyStart = { messages: { invitation: [{ type: 'newStage', message: 'invitation' }, { type: 'chatbot', message: "I'm an AI conflict coach here to help you with any conflicts or issues you may be facing. How can I assist you today?" }], connection: [], exchange: [], agreement: [], reflection: [] }, time: today, stage: new ChatStage(), atStartRef: false };
+        const sessionId = uuidv4();
+        let emptyStart = { 
+            sessionId: sessionId,
+            messages: {
+                invitation: [
+                    { type: 'newStage', message: 'invitation' }, 
+                    { type: 'chatbot', message: "I'm an AI conflict coach here to help you with any conflicts or issues you may be facing. How can I assist you today?" }
+                ], 
+                connection: [],
+                exchange: [], 
+                agreement: [], 
+                reflection: [] 
+            }, 
+            time: today, 
+            stage: new ChatStage(), 
+            atStartRef: false 
+        };
         setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
         if (currentPage !== 'home') {
             setCurrentPage('home');

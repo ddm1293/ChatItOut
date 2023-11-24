@@ -1,15 +1,19 @@
 from flask import Flask
 from flask import request
-from chatbot.chatbot_tokens import *
+from gpt import *
+from init_db import init_db
 
 app = Flask(__name__)
+
+init_db()
 
 # Passes user input to chatbot and passes response to frontend
 @app.post('/home/chat')
 def talk_to_ai():
     data = request.json
-    ai_resp = generate_response(data)
-    return ai_resp
+    response = get_response(data)
+    print(f"see ai_resp complete: {response}")
+    return response
 
 # Add headers that prevent requests being blocked
 @app.after_request
