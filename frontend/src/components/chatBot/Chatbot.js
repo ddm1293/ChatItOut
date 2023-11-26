@@ -12,7 +12,7 @@ import StartReflectionLine from './StartReflectionLine';
 import Message from './Message';
 import InputBar from './InputBar';
 
-const serverURL = "http://127.0.0.1:5000";
+const serverURL = "https://chatitout-backend.onrender.com";
 
 export default function Chatbot() {
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
