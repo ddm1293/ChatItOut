@@ -19,19 +19,35 @@ stage_guides = {
     },
     2: {
         "stageName": "Connection",
-        "stageGuide": ""
+        "stageGuide": """
+            your goal of this stage is to firstly check the client's and the other party's state of mind and point of view about the conflict;\
+            and clarify what needs to be resolved or discussed in the conversation;\
+            you need to help the client depersonalize the conflict by stating topics in a neutral way that does not assign blame or specify an outcome.
+            """
     },
     3: {
         "stageName": "Exchange",
-        "stageGuide": ""
+        "stageGuide": """
+            your goal of this stage is to prepare the client for the actual conversation with the other party on how to exchange relevant information and build shared meaning about the conflict;\
+            you need to guide the client to look for common ground, explore what is important in terms of each other's perspective.
+            Be descriptive rather than judgmental.
+            Ask open-ended questions.
+            """
     },
     4: {
         "stageName": "Agreement",
-        "stageGuide": ""
+        "stageGuide": """
+                your goal of this stage is to help the client co-create possible solutions with the other party;\
+                More specifically, Invite brainstorming to mutually generate options based on what is important to both parites;\
+                Evaluate the options and check for fairness to ensure that the needs of both people are met.
+                Form an action plan: who, what, when, where, how, and work out the details.
+            """
     },
     5: {
         "stageName": "Reflection",
-        "stageGuide": ""
+        "stageGuide": """
+                your goal in this final stage is to check how satisfied both parites about the outcomes and the relationship; establish follow-up steps and future check in.
+            """
     }
 }
 
