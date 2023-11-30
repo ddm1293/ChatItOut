@@ -3,7 +3,7 @@ from flask import request
 from gpt import *
 from init_db import init_db
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend/build')
 
 init_db()
 
@@ -14,6 +14,11 @@ def talk_to_ai():
     response = get_response(data)
     print(f"see ai_resp complete: {response}")
     return response
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return app.send_static_file("index.html")
 
 # Add headers that prevent requests being blocked
 @app.after_request
