@@ -1,5 +1,4 @@
-from flask import Flask
-from flask import request
+from flask import Flask, request, send_from_directory
 from gpt import *
 from init_db import init_db
 
@@ -17,8 +16,11 @@ def talk_to_ai():
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
-def catch_all(path):
-    return app.send_static_file("index.html")
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
 # Add headers that prevent requests being blocked
 @app.after_request
