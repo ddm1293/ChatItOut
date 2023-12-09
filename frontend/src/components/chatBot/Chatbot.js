@@ -74,6 +74,10 @@ export default function Chatbot() {
         };
     }, []);
 
+    useEffect(() => {
+        console.log("testing!!!!")
+    }, [])
+
     // Update component when a new or different chat is opened
     useEffect(() => {
         setMessages(currChatHist.messages);
