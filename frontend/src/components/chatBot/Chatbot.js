@@ -271,6 +271,7 @@ export default function Chatbot() {
         }
 
         let updatedContext = { sessionId: currChatHist.sessionId, messages: messages, time: currChatHist.time, stage: globalStage, atStartRef: atStartRef }
+        console.log("see updatedContext:", updatedContext);
         
         dbReq.onsuccess = function (evt) {
             let db = dbReq.result;
