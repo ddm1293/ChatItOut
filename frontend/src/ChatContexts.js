@@ -9,7 +9,7 @@ const HistoryContext = createContext({
 });
 
 const ChatDeleteContext = createContext({
-  chatToDelete: {stage: new ChatStage(), time: new Date()},
+  chatToDelete: {stage: new ChatStage(), time: new Date(), sessionId: String},
   setChatToDelete: () => {}
 });
 

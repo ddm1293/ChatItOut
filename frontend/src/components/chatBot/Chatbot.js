@@ -12,7 +12,8 @@ import StartReflectionLine from './StartReflectionLine';
 import Message from './Message';
 import InputBar from './InputBar';
 
-const serverURL = "https://chatitout-backend.onrender.com";
+// export const serverURL = "https://chatitout-backend.onrender.com";
+export const serverURL = "http://127.0.0.1:5000";
 
 export default function Chatbot() {
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
@@ -272,7 +273,7 @@ export default function Chatbot() {
         }
 
         // console.log("trigger data persistence")
-        let updatedContext = { messages: messages, time: currChatHist.time, stage: globalStage, atStartRef: atStartRef }
+        let updatedContext = { sessionId: currChatHist.sessionId, messages: messages, time: currChatHist.time, stage: globalStage, atStartRef: atStartRef }
         
         dbReq.onsuccess = function (evt) {
             let db = dbReq.result;

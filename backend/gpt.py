@@ -34,6 +34,21 @@ def fetch_chat_history(session_id):
         )
     return test_history.messages
 
+def delete_session_in_db(session_id):
+    try: 
+        conn = sqlite3.connect('chat_history.db')
+        cursor = conn.cursor()
+        query = f"delete from test_message_store where session_id = ?"
+        cursor.execute(query, (session_id,))
+        conn.commit()
+        return True
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
 memory = ConversationSummaryBufferMemory(llm=llm, max_token_limit=MAX_TOKENS, memory_key="history", return_messages=True)
 
 def get_response(input):
@@ -43,7 +58,11 @@ def get_response(input):
         new_user_message = input["newMsg"]
         session_id = input["sessionId"]
 
-        chat_message_history = SQLChatMessageHistory(session_id=session_id, connection_string="sqlite:///chat_history.db")
+        chat_message_history = SQLChatMessageHistory(session_id=session_id,
+                                                        table_name="test_message_store",
+                                                        connection_string="sqlite:///chat_history.db",
+                                                        custom_message_converter=CustomMessageConverter())
+        print(f"see chat_message_history.messages: {chat_message_history.messages}")
         memory.chat_memory.messages = chat_message_history.messages
         prompt = load_prompt(stage)
         

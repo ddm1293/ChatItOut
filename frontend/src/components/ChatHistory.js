@@ -14,6 +14,7 @@ export default function ChatHistory(props) {
     const [startState, setStartState] = useState(props.startState);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const time = props.startState.time;
+    const sessionId = props.startState.sessionId;
 
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
     const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
@@ -123,7 +124,7 @@ export default function ChatHistory(props) {
 
     // Sets this chat to be deleted from SideBar.js
     const deleteChat = () => {
-        setChatToDelete({ stage: startState.stage, time: time });
+        setChatToDelete({ stage: startState.stage, time: time, sessionId: sessionId });
         if (time.getTime() == currChatHist.time.getTime()) {
             setCurrentPage('welcome');
         }

@@ -7,6 +7,8 @@ import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatC
 import ChatStage from "../ChatStage";
 import { SideBarContext } from '../components/PageRoute';
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
+import { serverURL } from '../components/chatBot/Chatbot'
 
 export default function SideBar() {
     const [currChats, setCurrChats] = useState([]);
@@ -119,16 +121,25 @@ export default function SideBar() {
         setDoneChats(doneChats.concat([completedChat]));
     }
 
+    const deleteSession = async (session_id) => {
+        try {
+            console.log("see chatToDelete.sessionId:", session_id)
+            let resp = await axios.delete(`${serverURL}/chat/${session_id}`);
+            console.log("see response data: ", resp.data)
+        } catch (err) {
+            console.log(err);
+            return "An error occured. Please try again later."
+        }
+    }
+
     // Delete chat history
-    const deleteChat = () => {
+    const deleteChat = async () => {
         if (isInitialMount.current) {
             isInitialMount.current = false;
             return;
         }
 
-
         let chatToDeleteTime = chatToDelete.time.getTime();
-
 
         // Update UI
         let newChats = [];
@@ -148,7 +159,6 @@ export default function SideBar() {
             setCurrChats(newChats);
         }
 
-
         // Update DB
         delDbReq.onsuccess = async function (evt) {
             let db = delDbReq.result;
@@ -159,6 +169,9 @@ export default function SideBar() {
             const store = tx.objectStore('chats');
             store.delete(chatToDelete.time);
         }
+
+        console.log('see chatToDelete', chatToDelete)
+        await deleteSession(chatToDelete.sessionId)
     }
 
 
