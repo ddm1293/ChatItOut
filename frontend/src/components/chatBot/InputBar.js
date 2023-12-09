@@ -9,7 +9,7 @@ export default function InputBar({ atStartRef, globalStage, handleUserInput, han
                 name="userInput"
                 className="w-4/5 mt-12 ml-2 sm:ml-8 md:ml-12 lg:ml-24 pl-2 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
                 placeholder="Send your message here"
-                onFocus={handleInputFocus}
+                onBlur={handleInputFocus}
             />
             <span>
                 <button

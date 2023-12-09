@@ -5,12 +5,13 @@ import { SideBarContext } from '../PageRoute';
 import ChatStage from '../../ChatStage';
 import Loading from '../Loading';
 import StageLine from '../StageLine';
-import StatusBar from '../../components/chatBot/StatusBar'
+import StatusBar from '../../components/chatBot/StatusBar';
 import MoveStagePopUp from './MoveStagePopUp';
 import OfflinePage from './OfflinePage';
 import StartReflectionLine from './StartReflectionLine';
 import Message from './Message';
 import InputBar from './InputBar';
+import CompulsoryJumpPopUp from './CompulsoryJumpPopUp';
 
 // export const serverURL = "https://chatitout-backend.onrender.com";
 export const serverURL = "http://127.0.0.1:5000";
@@ -46,7 +47,10 @@ export default function Chatbot() {
     const [readyToShowPopup, setReadyToShowPopup] = useState(false);
     const [showMoveStagePopUp, setShowPopup] = useState(false);
     const [currMessageNum, setMessageNum] = useState(0);
+    const [refusalCount, setrefusalCount] = useState(0);
+    const [showCompusoryJump, setShowCompulsoryJump] = useState(false);
     const messageCap = 1;
+    const refusalCap = 1;
 
     // Offline handling
     useEffect(() => {
@@ -159,22 +163,17 @@ export default function Chatbot() {
     const advanceStage = () => {
         const currentStageIndex = stages.findIndex(stage => stage.name === globalStage.name);
     
-        // console.log("triggering advanceStage, see global stage: ", globalStage.name);
-        // console.log("see currentStage name: ", stages[currentStageIndex].name);
         if (currentStageIndex === -1) {
             console.error('Invalid current stage');
             return;
         }
-    
-        // Setting the status of the current stage to "completed"
+
         stages[currentStageIndex].status = 'completed';
         if (stages[currentStageIndex].name === 'reflection') { 
-            // console.log('The chat is already at the last stage', stages[currentStageIndex].name);
             setChatToComplete(currChatHist.time);
             messages.reflection.push({ type: 'newStage', message: "This is the end of this conversation."})
             return;
         } else if (stages[currentStageIndex].name === 'agreement') {
-            // console.log("ready to go to reflection") 
             setAtStartRef(true);
         }
 
@@ -191,7 +190,6 @@ export default function Chatbot() {
         setLocalStage(new ChatStage(globalStage.name));
 
         setMessageNum(0);
-
     }
 
 
@@ -272,7 +270,6 @@ export default function Chatbot() {
           });
         }
 
-        // console.log("trigger data persistence")
         let updatedContext = { sessionId: currChatHist.sessionId, messages: messages, time: currChatHist.time, stage: globalStage, atStartRef: atStartRef }
         
         dbReq.onsuccess = function (evt) {
@@ -282,7 +279,6 @@ export default function Chatbot() {
             }
             const tx = db.transaction('chats', 'readwrite');
             const store = tx.objectStore('chats');
-            // console.log("see updatedContext: ", updatedContext)
             store.put(updatedContext);
         }
     }, [messages]);
@@ -313,6 +309,12 @@ export default function Chatbot() {
             setReadyToShowPopup(false);
         }
     };
+
+    useEffect(() => {
+        if (refusalCount > refusalCap) {
+            setShowCompulsoryJump(true);
+        }
+    }, [refusalCount])
     
     return (
         <>
@@ -336,7 +338,8 @@ export default function Chatbot() {
                                 {/* Message loading animation appears while waiting for chatbot response */}
                                 {chatbotLoading ? <Loading /> : <></>}
 
-                                {showMoveStagePopUp ? <MoveStagePopUp globalStage={globalStage} advanceStage={advanceStage} setShowPopup={setShowPopup} setMessageNum={setMessageNum} /> : <></>}
+                                {showMoveStagePopUp ? <MoveStagePopUp globalStage={globalStage} advanceStage={advanceStage} setShowPopup={setShowPopup} setMessageNum={setMessageNum} setrefusalCount={setrefusalCount} /> : <></>}
+                                {showCompusoryJump ? <CompulsoryJumpPopUp setShowCompulsoryJump={setShowCompulsoryJump} setrefusalCount={setrefusalCount} advanceStage={advanceStage} /> : <></>}
 
                                 {/* Start reflection and homepage options appear after completing Agreement stage */}
                                 {atStartRef ? <StartReflectionLine startReflection={startReflection} setCurrentPage={setCurrentPage} /> : <></>}
