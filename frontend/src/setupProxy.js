@@ -5,9 +5,9 @@ module.exports = function(app) {
   app.use(
     '/api/**',
     createProxyMiddleware({
-      target: 'https://chatitout-backend.onrender.com',
+      target: 'https://chatitout-server-26d52a60d625.herokuapp.com/',
       onProxyRes: function (proxyRes, req, res) {
-        proxyRes.headers['Access-Control-Allow-Origin'] = 'https://chatitout-7byl.onrender.com';
+        proxyRes.headers['Access-Control-Allow-Origin'] = 'https://chatitout-9cdbe9dff1b0.herokuapp.com/';
       },
     })
   );
