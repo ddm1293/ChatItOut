@@ -86,7 +86,9 @@ export default function SideBar() {
             }, 
             time: today, 
             stage: new ChatStage(), 
-            atStartRef: false 
+            atStartRef: false,
+            messageCapCount: 0,
+            refusalCapCount: 0
         };
         setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
         if (currentPage !== 'home') {

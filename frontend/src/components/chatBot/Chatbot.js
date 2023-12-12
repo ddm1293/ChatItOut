@@ -46,8 +46,8 @@ export default function Chatbot() {
 
     const [readyToShowPopup, setReadyToShowPopup] = useState(false);
     const [showMoveStagePopUp, setShowPopup] = useState(false);
-    const [currMessageNum, setMessageNum] = useState(0);
-    const [refusalCount, setrefusalCount] = useState(0);
+    const [currMessageNum, setMessageNum] = useState(currChatHist.messageCapCount);
+    const [refusalCount, setRefusalCount] = useState(currChatHist.refusalCapCount);
     const [showCompusoryJump, setShowCompulsoryJump] = useState(false);
     const messageCap = 1;
     const refusalCap = 1;
@@ -74,24 +74,24 @@ export default function Chatbot() {
         };
     }, []);
 
-    useEffect(() => {
-        console.log("testing!!!!")
-    }, [])
-
     // Update component when a new or different chat is opened
     useEffect(() => {
         setMessages(currChatHist.messages);
         setAtStartRef(currChatHist.atStartRef);
         setStageProgress(currChatHist.stage);
         setLocalStage(currChatHist.stage);
+        setMessageNum(currChatHist.messageCapCount);
+        setRefusalCount(currChatHist.refusalCapCount)
     }, [currChatHist])
 
     useEffect(() => {
         console.log('see current history context: ', currChatHist);
-        console.log('see current localStage: ', localStage);
-        console.log('see current messages: ', messages);
-        console.log('see current stages: ', stages);
-    }, [currChatHist, localStage, messages]);
+        console.log('see current currMessageNum: ', currMessageNum);
+        console.log("see current refusalCapCount", refusalCount)
+        // console.log('see current localStage: ', localStage);
+        // console.log('see current messages: ', messages);
+        // console.log('see current stages: ', stages);
+    }, [currChatHist, localStage, messages, currMessageNum, refusalCount]);
 
     // Send user input to chatbot and receive response
     const generateResponse = async (msg) => {
@@ -274,7 +274,15 @@ export default function Chatbot() {
           });
         }
 
-        let updatedContext = { sessionId: currChatHist.sessionId, messages: messages, time: currChatHist.time, stage: globalStage, atStartRef: atStartRef }
+        let updatedContext = { 
+            sessionId: currChatHist.sessionId,
+            messages: messages,
+            time: currChatHist.time,
+            stage: globalStage, 
+            atStartRef: atStartRef,
+            messageCapCount: currMessageNum,
+            refusalCapCount: refusalCount
+        }
         console.log("see updatedContext:", updatedContext);
         
         dbReq.onsuccess = function (evt) {
@@ -298,10 +306,8 @@ export default function Chatbot() {
     // pop up a window if the current message number exceeds the cap
     useEffect(() => {
         if (messages[globalStage.name]) {
-            // console.log(`see currMessageNum: ${currMessageNum}`);
             if (globalStage.name !== 'complete' && currMessageNum > messageCap) {
                 setReadyToShowPopup(true);
-                // console.log("setReadyToShowPopup is true");
             } else {
                 setReadyToShowPopup(false);
             }
@@ -343,8 +349,8 @@ export default function Chatbot() {
                                 {/* Message loading animation appears while waiting for chatbot response */}
                                 {chatbotLoading ? <Loading /> : <></>}
 
-                                {showMoveStagePopUp ? <MoveStagePopUp globalStage={globalStage} advanceStage={advanceStage} setShowPopup={setShowPopup} setMessageNum={setMessageNum} setrefusalCount={setrefusalCount} /> : <></>}
-                                {showCompusoryJump ? <CompulsoryJumpPopUp setShowCompulsoryJump={setShowCompulsoryJump} setrefusalCount={setrefusalCount} advanceStage={advanceStage} /> : <></>}
+                                {showMoveStagePopUp ? <MoveStagePopUp globalStage={globalStage} advanceStage={advanceStage} setShowPopup={setShowPopup} setMessageNum={setMessageNum} setrefusalCount={setRefusalCount} /> : <></>}
+                                {showCompusoryJump ? <CompulsoryJumpPopUp setShowCompulsoryJump={setShowCompulsoryJump} setrefusalCount={setRefusalCount} advanceStage={advanceStage} /> : <></>}
 
                                 {/* Start reflection and homepage options appear after completing Agreement stage */}
                                 {atStartRef ? <StartReflectionLine startReflection={startReflection} setCurrentPage={setCurrentPage} /> : <></>}
