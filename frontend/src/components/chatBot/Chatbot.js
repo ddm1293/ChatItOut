@@ -13,8 +13,8 @@ import Message from './Message';
 import InputBar from './InputBar';
 import CompulsoryJumpPopUp from './CompulsoryJumpPopUp';
 
-export const serverURL = "https://chatitout-server-26d52a60d625.herokuapp.com";
-// export const serverURL = "http://127.0.0.1:5000";
+// export const serverURL = "https://chatitout-server-26d52a60d625.herokuapp.com";
+export const serverURL = "http://127.0.0.1:5000";
 
 export default function Chatbot() {
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
@@ -251,7 +251,6 @@ export default function Chatbot() {
 
     // Save new messages and/or stage to IndexedDB
     useEffect(() => {
-        console.log("see messages in data persistence: ", messages)
         if (isOnline) containerRef.current.scrollTop = containerRef.current.scrollHeight;
 
         if (isInitialMount.current) {
