@@ -18,36 +18,36 @@ export default function StageExp() {
 
     return (
         <>
-                <div className= "grid grid-rows-10 fixed h-screen top-0 right-0 w-full sm:w-4/5 justify-center items-center overflow-y-scroll">
-                    <div className="mt-6 mx-4 sm:mx-12 md:mx-12 lg:mx-36">
+                <div className= "grid grid-rows-10 fixed h-screen top-0 right-0 w-full custom-width-lg justify-center items-center overflow-y-scroll">
+                    <div className="mt-16">
                         {/* Top Scroll Bar */}
-                        <ul className="fixed grid grid-cols-5 bg-gray-700 justify-items-center items-center rounded-xl w-11/12 sm:w-3/5 top-16 md:top-10 h-14">
+                        <ul className="fixed w-full lg:w-3/5 left-1/2 transform -translate-x-1/2 translate-x-lg grid grid-cols-5 bg-[#3E3E40] justify-items-center items-center rounded-xl top-16 lg:top-10 h-14">
                         <li>
-                        <button className={`text-sm sm:text-base sm:text-lg ${clickedButton === 'stage1' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
+                        <button className={`text-sm sm:text-base ${clickedButton === 'stage1' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-6 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage1')}>
                                 Invitation
                         </button>
                         </li>
                         <li>
-                        <button className={`text-sm sm:text-lg ${clickedButton === 'stage2' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
+                        <button className={`text-sm sm:text-base ${clickedButton === 'stage2' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-6 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage2')}>
                                 Connection
                         </button>
                         </li>
                         <li>
-                        <button className={`text-sm sm:text-lg ${clickedButton === 'stage3' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
+                        <button className={`text-sm sm:text-base ${clickedButton === 'stage3' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-6 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage3')}>
                                 Exchange
                         </button>
                         </li>
                         <li>
-                        <button className={`text-sm sm:text-lg ${clickedButton === 'stage4' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
+                        <button className={`text-sm sm:text-base ${clickedButton === 'stage4' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-6 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage4')}>
                                 Agreement
                         </button>
                         </li>
                         <li>
-                        <button className={`text-sm sm:text-lg ${clickedButton === 'stage5' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-8 py-2' : 'text-[#c6c6c6]'}`}
+                        <button className={`text-sm sm:text-base ${clickedButton === 'stage5' ? 'bg-[#1993D6] text-white font-bold rounded-lg px-1 sm:px-6 py-2' : 'text-[#c6c6c6]'}`}
                             onClick={() => handleButtonClick('stage5')}>
                                 Reflection
                         </button>

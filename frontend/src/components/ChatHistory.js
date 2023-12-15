@@ -67,19 +67,6 @@ export default function ChatHistory(props) {
         return output;
     }
 
-    // // Shares the conversation via Web Share
-    // const sendEmail = async () => {
-    //     let chat = formatData();
-    //     const shareData = {
-    //         text: chat
-    //     }
-    //     try {
-    //         await navigator.share(shareData);
-    //         console.log('Chat shared succesfully');
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // }
 
     // Shares the conversation via email
     const sendEmail = () => {

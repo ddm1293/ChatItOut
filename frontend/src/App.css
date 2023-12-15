@@ -29,7 +29,12 @@
   .custom-width-lg {
     width: calc(100% - 320px);
   }
+
+  .translate-x-lg {
+    transform: translateX(calc(-50% + 160px));
 }
+}
+
 .App {
   text-align: center;
 }

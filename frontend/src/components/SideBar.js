@@ -184,7 +184,7 @@ export default function SideBar() {
 
                     <div className="mt-20 lg:mt-0">
                         {/* New Chat */}
-                        <div className='flex w-full h-fit p-1.5 mt-6 hover:bg-[#1e1e1e] rounded-lg'>
+                        <div className='flex w-full h-fit p-1.5 mt-6 py-2 hover:bg-[#1e1e1e] rounded-lg'>
                             <button onClick={() => newChat()} className="flex items-center ml-5 font-normal text-base text-white font-calibri">
                                 <img src={newchat} className="square-full mr-3 w-4 h-4" alt="New Chat Icon" />
                                 <span>New Chat</span>
@@ -193,7 +193,7 @@ export default function SideBar() {
 
                         {/* What are 5 stages? */}
                         <div
-                            className={`flex w-full h-fit p-1.5 mt-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "stageexp") ? 'bg-[#1e1e1e] rounded-lg' : ''
+                            className={`flex w-full h-fit p-1.5 mt-2 py-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "stageexp") ? 'bg-[#1e1e1e] rounded-lg' : ''
                                 }`}
                         >
                             <button onClick={() => setCurrentPage('stageexp')} className="flex items-center ml-5 font-normal text-base text-white font-calibri">
@@ -221,14 +221,14 @@ export default function SideBar() {
                     
 
                     {/* Divider */}
-                    <hr className="absolute bottom-20 w-full bg-[#eeeeee] opacity-20" />
+                    <hr className="absolute bottom-20 left-3 w-11/12 mx-auto bg-[#eeeeee] opacity-20" />
 
                     {/* Menu items */}
                     <div
                         className={`flex absolute bottom-7 w-full h-fit p-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "useterms") ? 'bg-[#1e1e1e] rounded-lg pr-28 p1-6 pt-1' : ''
                             }`}
                     >
-                        <button onClick={() => setCurrentPage('useterms')} className="ml-5 font-normal text-base leading-5 text-white font-calibri">
+                        <button onClick={() => setCurrentPage('useterms')} className="ml-5 font-normal text-base leading-7 text-white font-calibri">
                             Terms of use
                         </button>
                     </div>
