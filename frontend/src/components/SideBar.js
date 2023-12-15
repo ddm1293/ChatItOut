@@ -169,53 +169,53 @@ export default function SideBar() {
 
     return (
         <>
-            <div className={`sm:flex flex-col h-screen bg-[#333333] absolute top-0 sm:left-0 sm:w-1/5 w-4/5 right-0 z-10`}>
+            <div className={`sm:flex flex-col h-screen bg-[#333333] absolute top-0 sm:left-0 sm:w-72 right-0 z-10`}>
                 {/* Title */}
                 
                     <div>
-                        <button onClick={() => setCurrentPage('welcome')} className="m-8 font-bold hidden sm:block md:text-lg lg:text-2xl text-white font-calibri">
+                        <button onClick={() => setCurrentPage('welcome')} className="m-6 font-bold text-2xl hidden sm:block text-white font-calibri">
                             Chat IT Out
                         </button>
                     </div>
 
                     {/* Divider */}
-                    <hr className="-my-4 w-full bg-[#eeeeee] opacity-20 hidden sm:block" />
+                    <hr className="sm:w-11/12 mx-auto w-full bg-[#eeeeee] opacity-20 hidden sm:block" />
 
 
                     {/* New Chat */}
-                    <div className='flex w-full h-fit p-2 mt-24 sm:mt-10 hover:bg-[#1e1e1e] rounded-lg'>
-                        <button onClick={() => newChat()} className="flex items-center ml-5 font-normal text-lg text-white font-calibri">
-                            <img src={newchat} className="square-full mx-3 w-4 h-4" alt="New Chat Icon" />
+                    <div className='flex w-full h-fit p-1.5 mt-6 hover:bg-[#1e1e1e] rounded-lg'>
+                        <button onClick={() => newChat()} className="flex items-center ml-5 font-normal text-base text-white font-calibri">
+                            <img src={newchat} className="square-full mr-3 w-4 h-4" alt="New Chat Icon" />
                             <span>New Chat</span>
                         </button>
                     </div>
 
                     {/* What are 5 stages? */}
                     <div
-                        className={`flex w-full h-fit p-2 mt-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "stageexp") ? 'bg-[#1e1e1e] rounded-lg' : ''
+                        className={`flex w-full h-fit p-1.5 mt-2 hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "stageexp") ? 'bg-[#1e1e1e] rounded-lg' : ''
                             }`}
                     >
-                        <button onClick={() => setCurrentPage('stageexp')} className="flex items-center ml-5 font-normal text-lg text-white font-calibri">
-                            <img src={stageexp} className="square-full mx-3 w-4 h-4" alt="Stage Icon" />
+                        <button onClick={() => setCurrentPage('stageexp')} className="flex items-center ml-5 font-normal text-base text-white font-calibri">
+                            <img src={stageexp} className="square-full mr-3 w-4 h-4" alt="Stage Icon" />
                             <span>What are the 5 stages?</span>
                         </button>
                     </div>
 
                     
-                        {/* In Progress */}
-                        <div className="flex flex-col ml-8 mt-10 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
-                            In Progress
+                    {/* In Progress */}
+                    <div className="flex flex-col ml-6 mt-10 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
+                        In Progress
+                    </div>
+
+                    <div className="pt-3 max-h-[180px] overflow-y-auto" ref={containerRef}>{currChats}</div>
 
 
-                            <div className="max-h-[180px] overflow-y-auto" ref={containerRef}>{currChats}</div>
-                        </div>
-
-
-                        {/* Completed */}
-                        <div className="flex flex-col ml-8 mt-8 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
-                            Completed
-                            <div className="max-h-[200px] overflow-y-auto">{doneChats}</div>
-                        </div>
+                    {/* Completed */}
+                    <div className="flex flex-col ml-6 mt-8 font-normal text-base leading-5 text-[#ababad] text-opacity-80 font-calibri">
+                        Completed
+                    </div>
+                    
+                    <div className="pt-3 max-h-[200px] overflow-y-auto">{doneChats}</div>
                     
 
                     {/* Divider */}

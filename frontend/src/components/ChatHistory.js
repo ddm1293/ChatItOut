@@ -176,9 +176,9 @@ export default function ChatHistory(props) {
         <>
             <div className={`group flex items-center hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#1e1e1e]' : ''}`}>
                 {/* Chat history widget */}
-                <button onClick={() => setChat()} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
+                <button onClick={() => setChat()} className='font-normal text-base leading-5 text-white font-calibri py-2'>
                     <div className="flex items-center">
-                        <img className="w-5 h-5" src={determineChatIcon()} alt="Chat History" />
+                        <img className="ml-6 w-5 h-5" src={determineChatIcon()} alt="Chat History" />
                         <span className="px-2"> {getTime(time)} </span>
                     </div>
                 </button>
