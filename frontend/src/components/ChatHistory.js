@@ -67,19 +67,39 @@ export default function ChatHistory(props) {
         return output;
     }
 
-    // Shares the conversation via Web Share
-    const sendEmail = async () => {
-        let chat = formatData();
-        const shareData = {
-            text: chat
-        }
-        try {
-            await navigator.share(shareData);
-            console.log('Chat shared succesfully');
-        } catch (err) {
-            console.log(err);
-        }
+    // // Shares the conversation via Web Share
+    // const sendEmail = async () => {
+    //     let chat = formatData();
+    //     const shareData = {
+    //         text: chat
+    //     }
+    //     try {
+    //         await navigator.share(shareData);
+    //         console.log('Chat shared succesfully');
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // }
+
+    // Shares the conversation via email
+    const sendEmail = () => {
+        downloadChatPDF();
+    
+        // Create email subject and body
+        const emailSubject = encodeURIComponent("My Chat History");
+        const emailBody = encodeURIComponent("Hi, thanks for using Chat IT Out! \n\nPlease find attached my chat history.\n\nNote: Due to privacy limit, please manually attach the 'chat.pdf' file from your downloads.");
+    
+        // Create the mailto link
+        const mailtoLink = `mailto:?subject=${emailSubject}&body=${emailBody}`;
+    
+        // Open the link in the current window
+        window.location.href = mailtoLink;
+
+        // Display alert
+        alert("Your email client has been opened. Please attach the 'chat.pdf' file from your downloads.");
+
     }
+    
 
     // Creates and saves a formatted PDF file of the conversation
     const downloadChatPDF = () => {
