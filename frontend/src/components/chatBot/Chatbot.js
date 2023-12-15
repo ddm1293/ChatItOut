@@ -307,7 +307,7 @@ export default function Chatbot() {
             <div>
                 {!isOnline ? (
                     /* Offline page */
-                    <div className="flex flex-col items-center justify-center absolute top-24 md:top-12 right-0 w-full sm:w-4/5 h-[90%]">
+                    <div className="flex flex-col items-center justify-center absolute top-24 md:top-12 right-0 w-full custom-width lg:w-full h-[90%]">
                         <img src={offline} className="w-32 h-32 mb-8" alt="Lost connection" />
                         <p className="text-white font-calibri font-medium text-3xl mb-4 "> Ooops... </p>
                         <p className="text-white font-calibri text-xl w-[40%] text-center mb-12"> 
@@ -320,10 +320,10 @@ export default function Chatbot() {
                 ) : (
                     <div>
                         
-                        <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-screen">
+                        <div className="flex flex-col absolute top-24 lg:top-12 right-0 w-full custom-width-lg px-8 py-12 h-screen">
                         {/* Chatbot container */}
                         <SideBarContext.Provider value={currentPageValue}>
-                            <div className="w-full mb-4 h-[80%] sm:h-[85%] overflow-y-auto" ref={containerRef}>
+                            <div className="w-full mb-4 h-[80%] lg:h-[85%] overflow-y-auto" ref={containerRef}>
                                 {getAllMessages().map((message, index) => (
                                     <div>{message.type === 'newStage' ? <StageLine key={globalStage} text={message.message} /> :
                                         <div className={`flex flex-col basis-3/5" ${message.type === 'user' ? "items-end" : "items-start"}`}>
@@ -364,19 +364,19 @@ export default function Chatbot() {
                             </SideBarContext.Provider>
                             
                             {/* Chat input container */}
-                            <div className={`absolute bottom-28 sm:bottom-20 w-full ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
+                            <div className={`absolute bottom-20 w-full ${atStartRef || globalStage.name === "complete" ? 'hidden' : ''}`}>
                                 <form onSubmit={handleUserInput} >
                                     <input
                                         type="text"
                                         name="userInput"
-                                        className="w-4/5 mt-12 ml-2 sm:ml-8 md:ml-12 lg:ml-24 pl-2 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
+                                        className="w-4/5 ml-8 md:w-4/5 mt-12 md:ml-20 mb-10 lg:ml-24 lg:mb-0 pl-2 py-2 font-calibri font-sm rounded-xl border text-[#bbbbbb] border-[#bbbbbb] bg-[#1e1e1e] focus:outline-none focus:ring focus:border-blue-500"
                                         placeholder="Send your message here"
                                         onFocus={handleInputFocus}
                                     />
                                     <span>
                                         <button
                                             type="submit"
-                                            className="mt-12 sm:ml-8 absolute right-[20%] md:right-[14%] rounded-full transform translate-y-1/2">
+                                            className="mt-11 md:ml-6 absolute right-[20%] md:right-[14%] rounded-full transform translate-y-1/2">
                                             <img src={send} className="w-6 h-6" />
                                         </button>
                                     </span>

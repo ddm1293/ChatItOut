@@ -9,7 +9,7 @@ export default function StatusBar({ stages }) {
 
     return (
         <div>
-            <div className="flex flex-row w-full sm:w-4/5 h-20 bg-[#242424] absolute right-0 md:top-0 top-16">
+            <div className="flex flex-row w-full custom-width-lg mt-16 lg:mt-0 h-20 bg-[#242424] absolute right-0 md:top-0">
                 
                 {stages.map((stage, index) => {
                     return (

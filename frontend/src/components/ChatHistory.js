@@ -177,35 +177,36 @@ export default function ChatHistory(props) {
             <div className={`group flex items-center hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#1e1e1e]' : ''}`}>
                 {/* Chat history widget */}
                 <button onClick={() => setChat()} className='font-normal text-base leading-5 text-white font-calibri py-2'>
-                    <div className="flex items-center">
-                        <img className="ml-6 w-5 h-5" src={determineChatIcon()} alt="Chat History" />
-                        <span className="px-2"> {getTime(time)} </span>
+                    <div className="flex items-center z-10">
+                        <img className="ml-6 w-4 h-4" src={determineChatIcon()} alt="Chat History" />
+                        <span className="px-2 whitespace-nowrap"> {getTime(time)} </span>
                     </div>
                 </button>
+                
                 {!confirmDelete ?
                     // Hide these buttons when delete button is clicked 
-                    <div>
+                    <div className='buttons flex h-11 z-40' style={{ background: 'linear-gradient(to right, rgba(51, 51, 51, 0) 0%, rgba(51, 51, 51, 0.97) 100%, rgba(51, 51, 51, 0.98) 100%, #333333 100%)' }}>
                         {/* Donwload button */}
                         <button onClick={() => downloadChatPDF()}>
-                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={download} />
+                            <img className={`px-1 w-6 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={download} />
                         </button>
                         {/* Share button */}
                         <button onClick={() => sendEmail()}>
-                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={email} />
+                            <img className={`px-1 w-6 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={email} />
                         </button>
                         {/* Delete button */}
                         <button onClick={() => { setConfirmDelete(true) }}>
-                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={trash} />
+                            <img className={`px-1 w-6 mr-9 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={trash} />
                         </button>
                     </div>
                     :
                     // Delete twice confirmation buttons
-                    <div>
+                    <div className='buttons flex h-11 z-40' style={{ background: 'linear-gradient(to right, rgba(51, 51, 51, 0) 0%, rgba(51, 51, 51, 0.97) 100%, rgba(51, 51, 51, 0.98) 100%, #333333 100%)' }}>
                         <button onClick={() => deleteChat()}>
-                            <img className={'ml-2 px-1 w-7 opacity-70 hover:opacity-100'} src={confirm} />
+                            <img className={'ml-2 ml-9 px-1 w-6 opacity-70 hover:opacity-100'} src={confirm} />
                         </button>
                         <button onClick={() => { setConfirmDelete(false) }}>
-                            <img className={'ml-1 px-1 w-6 opacity-70 hover:opacity-100'} src={cancel} />
+                            <img className={'ml-1 mr-9 px-1 w-5 opacity-70 hover:opacity-100'} src={cancel} />
                         </button>
                     </div>
                 }

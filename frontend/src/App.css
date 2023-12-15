@@ -24,6 +24,12 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@media (min-width: 1024px) { 
+  .custom-width-lg {
+    width: calc(100% - 320px);
+  }
+}
 .App {
   text-align: center;
 }
