@@ -57,7 +57,7 @@ export default function HomePage() {
                                     <SideBar />
 
                                     <button onClick={() => handleButtonClose()} className={`${(hamOpen == true? "block" : "hidden")}`}>
-                                        <img src={close} className="lg:hidden absolute z-10 right-0 top-0 m-8 w-5"/>
+                                        <img src={close} className="lg:hidden absolute z-10 right-0 -top-4 m-10 w-5"/>
                                     </button>
                                 </div>
 
