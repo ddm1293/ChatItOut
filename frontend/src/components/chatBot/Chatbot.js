@@ -49,7 +49,7 @@ export default function Chatbot() {
     const [currMessageNum, setMessageNum] = useState(currChatHist.messageCapCount);
     const [refusalCount, setRefusalCount] = useState(currChatHist.refusalCapCount);
     const [showCompusoryJump, setShowCompulsoryJump] = useState(false);
-    const messageCap = 1;
+    const messageCap = 6;
     const refusalCap = 1;
 
     // Offline handling
