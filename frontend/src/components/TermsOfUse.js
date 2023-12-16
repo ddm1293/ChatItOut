@@ -4,7 +4,7 @@ export default function TermsOfUse() {
 
     return (
         <>
-            <div className= "grid grid-rows-10 fixed h-screen lg:mt-0 right-0 w-full custom-width-lg justify-center overflow-y-scroll">
+            <div className= "grid grid-rows-10 fixed h-screen lg:mt-0 right-0 w-full custom-width-lg justify-center overflow-y-scroll custom-scrollbar">
                 {/* Terms of use text */}
                 <div className="text-center mt-28 lg:mt-20 text-3xl text-white font-calibri font-medium">
                     Terms of use

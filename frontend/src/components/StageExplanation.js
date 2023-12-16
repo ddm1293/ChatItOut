@@ -18,7 +18,7 @@ export default function StageExp() {
 
     return (
         <>
-                <div className= "grid grid-rows-10 fixed h-screen top-0 right-0 w-full custom-width-lg justify-center items-center overflow-y-scroll">
+                <div className= "grid grid-rows-10 fixed h-screen top-0 right-0 w-full custom-width-lg justify-center items-center overflow-y-scroll custom-scrollbar">
                     <div className="mt-16">
                         {/* Top Scroll Bar */}
                         <ul className="fixed w-full lg:w-3/5 left-1/2 transform -translate-x-1/2 translate-x-lg grid grid-cols-5 bg-[#3E3E40] justify-items-center items-center rounded-xl top-16 lg:top-10 h-14">
