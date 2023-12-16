@@ -22,6 +22,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (min-width: 1024px) {
+  .bg-gradient-lg {
+    background: linear-gradient(to right, rgba(51, 51, 51, 0) 0%, rgba(51, 51, 51, 0.97) 100%, rgba(51, 51, 51, 0.98) 100%, #333333 100%)
+  }
+}
+
+.bg-gradient-sm {
+  background: linear-gradient(to right, rgba(255,255, 255, 0) 0%, rgba(255,255, 255, 0.97) 100%, rgba(255,255, 255, 0.98) 100%, #ffffff 100%)
+} 
 
 @media (min-width: 1024px) { 
   .custom-width-lg {
@@ -32,6 +41,7 @@
     transform: translateX(calc(-50% + 160px));
 }
 }
+
 
 .App {
   text-align: center;
