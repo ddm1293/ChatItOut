@@ -20,11 +20,11 @@ export default function TitlePage() {
 
                 <img className= "h-60 w-56 mb-4" src={logo} alt="logo" />
 
-                <div className="text-4xl sm:text-5xl font-medium text-[#9adbff]">
+                <div className="text-4xl sm:text-5xl mb-36 font-medium text-[#FFFFFF]">
                     Chat IT Out
                 </div>
 
-                <img className= "absolute bottom-16 h-12 w-72" src={collab} alt="JIBC x Center for Digital Media" />
+                <img className= "absolute bottom-16 h-10 w-68 lg:h-12 lg:w-72" src={collab} alt="JIBC x Center for Digital Media" />
             </div>
 
         </>

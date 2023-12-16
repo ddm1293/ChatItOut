@@ -239,7 +239,7 @@ export default function SideBar() {
                     
 
                     {/* Divider */}
-                    <hr className="absolute bottom-20 left-3 w-11/12 mx-auto bg-[#eeeeee] opacity-20" />
+                    <hr className="absolute bottom-20 left-3 w-11/12 mx-auto bg-[#000000] lg:bg-[#eeeeee] lg:opacity-20" />
 
                     {/* Menu items */}
                     <div
