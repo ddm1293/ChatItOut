@@ -169,7 +169,7 @@ export default function SideBar() {
 
     return (
         <>
-            <div className={`lg:flex flex-col h-screen bg-[#333333] absolute top-0 lg:left-0 lg:w-80 right-0 z-10`}>
+            <div className={`lg:flex flex-col h-screen bg-[#333333] absolute top-0 lg:left-0 w-80 right-0 z-10`}>
                 {/* Title */}
                 
                     <div>
@@ -209,7 +209,7 @@ export default function SideBar() {
                         In Progress
                     </div>
 
-                    <div className="pt-3 max-h-[180px] overflow-y-auto" ref={containerRef}>{currChats}</div>
+                    <div className="pt-3 max-h-[180px] overflow-y-auto custom-scrollbar" ref={containerRef}>{currChats}</div>
 
 
                     {/* Completed */}
@@ -217,7 +217,7 @@ export default function SideBar() {
                         Completed
                     </div>
                     
-                    <div className="pt-3 max-h-[200px] overflow-y-auto">{doneChats}</div>
+                    <div className="pt-3 max-h-[200px] overflow-y-auto custom-scrollbar">{doneChats}</div>
                     
 
                     {/* Divider */}

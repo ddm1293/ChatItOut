@@ -181,43 +181,47 @@ export default function ChatHistory(props) {
 
     return (
         <>
-            <div className={`group flex items-center hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#1e1e1e]' : ''}`}>
-                {/* Chat history widget */}
-                <button onClick={() => setChat()} className='font-normal text-base leading-5 text-white font-calibri py-2'>
+            <div className={`group grid grid-cols-6 items-center justify-end hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#1e1e1e]' : ''}`}>
+             {/* Chat history widget */}
+                <button onClick={() => setChat()} className='font-normal text-base leading-5 text-white font-calibri py-2 col-span-2'>
                     <div className="flex items-center z-10">
-                        <img className="ml-6 w-4 h-4" src={determineChatIcon()} alt="Chat History" />
+                        <img className="ml-7 w-4 h-4" src={determineChatIcon()} alt="Chat History" />
                         <span className="px-2 whitespace-nowrap"> {getTime(time)} </span>
                     </div>
                 </button>
-                
+
+        
                 {!confirmDelete ?
-                    // Hide these buttons when delete button is clicked 
-                    <div className='buttons flex h-11 z-40' style={{ background: 'linear-gradient(to right, rgba(51, 51, 51, 0) 0%, rgba(51, 51, 51, 0.97) 100%, rgba(51, 51, 51, 0.98) 100%, #333333 100%)' }}>
-                        {/* Donwload button */}
-                        <button onClick={() => downloadChatPDF()}>
-                            <img className={`px-1 w-6 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={download} />
+                // Hide these buttons when delete button is clicked 
+                <div className='buttons grid grid-cols-3 col-span-3 col-start-4 h-11 z-40 mr-0' style={{ background: 'linear-gradient(to right, rgba(51, 51, 51, 0) 0%, rgba(51, 51, 51, 0.97) 100%, rgba(51, 51, 51, 0.98) 100%, #333333 100%)' }}>
+                    {/* Download button */}
+                        <button onClick={() => downloadChatPDF()} className='justify-self-center'>
+                            <img className={`ml-20 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={download} />
                         </button>
                         {/* Share button */}
-                        <button onClick={() => sendEmail()}>
-                            <img className={`px-1 w-6 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={email} />
+                        <button onClick={() => sendEmail()} className='justify-self-center'>
+                        <img className={`ml-11 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={email} />
                         </button>
                         {/* Delete button */}
-                        <button onClick={() => { setConfirmDelete(true) }}>
-                            <img className={`px-1 w-6 mr-9 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={trash} />
-                        </button>
-                    </div>
-                    :
+                    <button onClick={() => { setConfirmDelete(true) }} className='justify-self-center'>
+                        <img className={`mr-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={trash} />
+                    </button>
+
+                </div>
+                 :
                     // Delete twice confirmation buttons
-                    <div className='buttons flex h-11 z-40' style={{ background: 'linear-gradient(to right, rgba(51, 51, 51, 0) 0%, rgba(51, 51, 51, 0.97) 100%, rgba(51, 51, 51, 0.98) 100%, #333333 100%)' }}>
-                        <button onClick={() => deleteChat()}>
-                            <img className={'ml-2 ml-9 px-1 w-6 opacity-70 hover:opacity-100'} src={confirm} />
+                    <div className='buttons grid grid-cols-2 col-start-5 col-span-2 h-11 z-40' style={{ background: 'linear-gradient(to right, rgba(51, 51, 51, 0) 0%, rgba(51, 51, 51, 0.97) 100%, rgba(51, 51, 51, 0.98) 100%, #333333 100%)' }}>
+                        <button onClick={() => deleteChat()} className='justify-self-center'>
+                            <img className={'ml-10  px-1 w-6 opacity-70 hover:opacity-100'} src={confirm} />
                         </button>
-                        <button onClick={() => { setConfirmDelete(false) }}>
-                            <img className={'ml-1 mr-9 px-1 w-5 opacity-70 hover:opacity-100'} src={cancel} />
+
+                        <button onClick={() => { setConfirmDelete(false) }} className='justify-self-center'>
+                            <img className={'mr-0 px-1 w-5 opacity-70 hover:opacity-100'} src={cancel} />
                         </button>
-                    </div>
-                }
+                     </div>
+                 }
             </div>
+
         </>
     )
 }

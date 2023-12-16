@@ -31,12 +31,12 @@ export function StageButton({ stage, stageName, stageNum, onClick, isDisabled })
         <button onClick={onClick} className='w-[18%] justify-center group' disabled={isDisabled}>
             <div className={`flex flex-col justify-center items-center w-full h-20 ${stage === "inProgress" ? "border-b-4 border-[#1993D6]" : ""} ${stage !== "notStarted" ? "group-hover:border-b-4 group-hover:border-[#1993D6]" : ""}`}>
                 <div className='p-4'>
-                    <div className={`flex flex-col md:flex-row items-center md:inline-flex pl-3`}>
+                    <div className={`flex flex-col md:flex-row items-center md:inline-flex`}>
                         <div className={`w-6 h-6 md:w-5 md:h-5 rounded-full justify-center flex items-center ${buttonColor(stage)}`}> 
                             <p className="-top-1 font-calibri text-base text-center"> {stageNum} </p>
                         </div>
                         <img className={`w-6 h-6 md:w-5 md:h-5 rounded-full bg-[#1993D6] ${stage === "completed" ? "block" : "hidden"}`} src={stagecomplete} alt="Stage Complete" /> 
-                        <p className={`md:ml-2 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(stage)}`}>
+                        <p className={`sm:ml-0 md:ml-2 text-sm sm:text-base md:text-lg leading-22 font-calibri ${wordColor(stage)}`}>
                             {stageName}
                         </p>
                     </div>

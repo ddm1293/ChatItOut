@@ -57,7 +57,7 @@ export default function StageExp() {
 
                     {/* Stage Explanation Text */}
                     <div id='stage1'>
-                        <div className= "mt-28 text-center mt-12 text-2xl text-white font-calibri font-medium">
+                        <div className= "mt-28 text-center text-2xl text-white font-calibri font-medium">
                             Stage 1: Invitation
                         </div>
                         
@@ -184,7 +184,7 @@ export default function StageExp() {
                             ·	How satisfied are you with the outcomes or agreements you made in this conversation? <br />
                             ·	How satisfied is the other party with the outcomes or agreements you made in this conversation? <br />
                             ·	What would you do differently in the next conversation when you have a disagreement? <br />
-                            <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br /> <br />
+                            <br /> <br /> <br /> 
                         </div>
                     </div>
                 </div>

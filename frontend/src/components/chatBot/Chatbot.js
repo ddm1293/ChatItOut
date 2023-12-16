@@ -307,13 +307,13 @@ export default function Chatbot() {
             <div>
                 {!isOnline ? (
                     /* Offline page */
-                    <div className="flex flex-col items-center justify-center absolute top-24 md:top-12 right-0 w-full custom-width lg:w-full h-[90%]">
+                    <div className="flex flex-col items-center justify-center absolute top-24 md:top-12 right-0 w-full custom-width-lg h-[90%]">
                         <img src={offline} className="w-32 h-32 mb-8" alt="Lost connection" />
                         <p className="text-white font-calibri font-medium text-3xl mb-4 "> Ooops... </p>
-                        <p className="text-white font-calibri text-xl w-[40%] text-center mb-12"> 
+                        <p className="text-white font-calibri text-base w-[40%] text-center mb-12"> 
                             There is a connection error. Please check your Internet and try again. 
                         </p>
-                        <button className="bg-[#1993D6] hover:bg-[#4EB7F0] rounded-xl py-2 px-16 text-black font-medium text-xl">
+                        <button className="text-center text-lg font-calibri font-medium text-white hover:text-black bg-[#1993D6] px-24 py-2 rounded-xl hover:bg-[#4EB7F0]">
                             Try again
                         </button>
                         </div>
@@ -323,7 +323,7 @@ export default function Chatbot() {
                         <div className="flex flex-col absolute top-24 lg:top-12 right-0 w-full custom-width-lg px-8 py-12 h-screen">
                         {/* Chatbot container */}
                         <SideBarContext.Provider value={currentPageValue}>
-                            <div className="w-full mb-4 h-[80%] lg:h-[85%] overflow-y-auto" ref={containerRef}>
+                            <div className="custom-scrollbar w-full mb-4 h-[80%] lg:h-[85%] overflow-y-auto" ref={containerRef}>
                                 {getAllMessages().map((message, index) => (
                                     <div>{message.type === 'newStage' ? <StageLine key={globalStage} text={message.message} /> :
                                         <div className={`flex flex-col basis-3/5" ${message.type === 'user' ? "items-end" : "items-start"}`}>
