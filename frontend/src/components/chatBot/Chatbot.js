@@ -324,10 +324,10 @@ export default function Chatbot() {
                 ) : (
                     <div>
                         
-                        <div className="flex flex-col absolute top-24 md:top-12 right-0 w-full sm:w-4/5 px-8 py-12 h-screen">
+                        <div className="flex flex-col absolute top-24 lg:top-12 right-0 w-full custom-width-lg px-8 py-12 h-screen">
                         {/* Chatbot container */}
                         <SideBarContext.Provider value={currentPageValue}>
-                            <div className="w-full mb-4 h-[80%] sm:h-[85%] overflow-y-auto" ref={containerRef}>
+                            <div className="custom-scrollbar w-full mb-4 h-[80%] lg:h-[85%] overflow-y-auto" ref={containerRef}>
                                 {getAllMessages().map((message, index) => (
                                     <div>
                                         {

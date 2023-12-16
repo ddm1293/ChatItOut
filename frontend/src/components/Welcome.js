@@ -20,7 +20,7 @@ export default function Welcome() {
 
     return (
         <>
-                <div className= "bg-[#0E0E10] grid grid-rows-8 fixed h-screen w-full sm:w-4/5 top-0 right-0 justify-center">
+                <div className= "bg-[#0E0E10] grid grid-rows-8 fixed h-screen w-full custom-width-lg top-0 right-0 justify-center">
                     {/* Welcome Text */}
                     <div className="mt-20 text-center text-3xl lg:text-4xl font-medium text-[#9adbff] font-calibri">
                             Welcome to Chat IT Out
@@ -40,7 +40,7 @@ export default function Welcome() {
                     {/* Button to start a new chat */}
                     <div id="startnewchat">
                     <div className="flex row-span-1 align-top justify-center">
-                        <button onClick={() => setCurrentPage('newchat')} className="text-center text-lg font-calibri font-medium text-white bg-[#1993D6] px-24 py-2 rounded-xl hover:bg-[#4EB7F0]">
+                        <button onClick={() => setCurrentPage('newchat')} className="text-center text-lg font-calibri font-medium text-white hover:text-black bg-[#1993D6] px-24 py-2 rounded-xl hover:bg-[#4EB7F0]">
                             Start New Chat
                         </button>
                     </div>

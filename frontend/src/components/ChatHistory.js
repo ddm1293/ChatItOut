@@ -1,11 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
 import chathist from "../assets/icon_chathist.png";
+import chathistDark from "../assets/icon_chathist_dark.png";
 import email from "../assets/icon_sendemail.png";
+import emailDark from "../assets/icon_sendemail_dark.png";
 import download from "../assets/icon_download.png";
+import downloadDark from "../assets/icon_download_dark.png";
 import trash from "../assets/icon_trashchat.png";
+import trashDark from "../assets/icon_trashchat_dark.png";
 import chatdone from "../assets/icon_chatdone.png";
 import confirm from "../assets/icon_confirm.png";
+import confirmDark from "../assets/icon_confirm_dark.png";
 import cancel from "../assets/icon_cancel.png";
+import cancelDark from "../assets/icon_cancel_dark.png";
 import { ChatDeleteContext, HistoryContext } from '../ChatContexts';
 import { SideBarContext } from '../components/PageRoute';
 import { jsPDF } from 'jspdf';
@@ -19,6 +25,18 @@ export default function ChatHistory(props) {
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
     const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
     const { currentPage, setCurrentPage } = useContext(SideBarContext);
+
+    //check if the screen width is larger than 1024px
+    const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
+
+    useEffect(() => {
+        function handleResize() {
+            setIsLargeScreen(window.innerWidth >= 1024);
+        }
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Returns date as a formatted string (hh:mm am/pm M DD, YYYY)
     const getTime = (today) => {
@@ -68,19 +86,26 @@ export default function ChatHistory(props) {
         return output;
     }
 
-    // Shares the conversation via Web Share
-    const sendEmail = async () => {
-        let chat = formatData();
-        const shareData = {
-            text: chat
-        }
-        try {
-            await navigator.share(shareData);
-            console.log('Chat shared succesfully');
-        } catch (err) {
-            console.log(err);
-        }
+
+    // Shares the conversation via email
+    const sendEmail = () => {
+        downloadChatPDF();
+    
+        // Create email subject and body
+        const emailSubject = encodeURIComponent("My Chat History");
+        const emailBody = encodeURIComponent("Hi, thanks for using Chat IT Out! \n\nPlease find attached my chat history.\n\nNote: Due to privacy limit, please manually attach the 'chat.pdf' file from your downloads.");
+    
+        // Create the mailto link
+        const mailtoLink = `mailto:?subject=${emailSubject}&body=${emailBody}`;
+    
+        // Open the link in the current window
+        window.location.href = mailtoLink;
+
+        // Display alert
+        alert("Your email client has been opened. Please attach the 'chat.pdf' file from your downloads.");
+
     }
+    
 
     // Creates and saves a formatted PDF file of the conversation
     const downloadChatPDF = () => {
@@ -141,6 +166,15 @@ export default function ChatHistory(props) {
             return chathist;
         }
     }
+    const determineChatIconDark = () => {
+        if (startState.stage.name === 'complete') {
+            return chatdone;
+        } else if (confirmDelete.current) {
+            return trashDark;
+        } else {
+            return chathistDark;
+        }
+    }
 
     // Changes homepage to display this chat
     const setChat = () => {
@@ -175,42 +209,53 @@ export default function ChatHistory(props) {
 
     return (
         <>
-            <div className={`group flex items-center hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#1e1e1e]' : ''}`}>
-                {/* Chat history widget */}
-                <button onClick={() => setChat()} className='font-normal text-lg leading-5 text-white font-calibri py-2'>
-                    <div className="flex items-center">
-                        <img className="w-5 h-5" src={determineChatIcon()} alt="Chat History" />
-                        <span className="px-2"> {getTime(time)} </span>
+            <div className={`group grid grid-cols-6 items-center justify-end hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#D9D9D9] lg:bg-[#1e1e1e]' : ''}`}>
+             {/* Chat history widget */}
+                <button onClick={() => setChat()} className='font-normal text-base leading-5 text-black lg:text-white font-calibri py-2 col-span-2'>
+                    <div className="flex items-center z-10">
+                        <img className= {`ml-7 w-4 h-4 ${isLargeScreen ? 'visible' : 'hidden'}`} src={determineChatIcon()} alt="Chat History" />
+                        <img className= {`ml-7 w-4 h-4 ${isLargeScreen ? 'hidden' : 'visible'}`} src={determineChatIconDark()} alt="Chat History" />
+                        <span className="px-2 whitespace-nowrap"> {getTime(time)} </span>
                     </div>
                 </button>
+
+        
                 {!confirmDelete ?
-                    // Hide these buttons when delete button is clicked 
-                    <div>
-                        {/* Donwload button */}
-                        <button onClick={() => downloadChatPDF()}>
-                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={download} />
+                // Hide these buttons when delete button is clicked 
+                <div className='buttons grid grid-cols-3 col-span-3 col-start-4 h-11 z-40 mr-0 bg-gradient-lg'>
+                    {/* Download button */}
+                        <button onClick={() => downloadChatPDF()} className='justify-self-center'>
+                            <img className={`ml-20 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={download} />
+                            <img className={`ml-20 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={downloadDark} />
                         </button>
                         {/* Share button */}
-                        <button onClick={() => sendEmail()}>
-                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={email} />
+                        <button onClick={() => sendEmail()} className='justify-self-center'>
+                        <img className={`ml-11 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={email} />
+                        <img className={`ml-11 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={emailDark} />
                         </button>
                         {/* Delete button */}
-                        <button onClick={() => { setConfirmDelete(true) }}>
-                            <img className={`px-1 w-7 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'}`} src={trash} />
-                        </button>
-                    </div>
-                    :
+                    <button onClick={() => { setConfirmDelete(true) }} className='justify-self-center'>
+                        <img className={`mr-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={trash} />
+                        <img className={`mr-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={trashDark} />
+                    </button>
+
+                </div>
+                 :
                     // Delete twice confirmation buttons
-                    <div>
-                        <button onClick={() => deleteChat()}>
-                            <img className={'ml-2 px-1 w-7 opacity-70 hover:opacity-100'} src={confirm} />
+                    <div className='buttons grid grid-cols-2 col-start-5 col-span-2 h-11 z-40 bg-gradient-lg'>
+                        <button onClick={() => deleteChat()} className='justify-self-center'>
+                            <img className={`ml-10  px-1 w-6 opacity-70 hover:opacity-100 ${isLargeScreen ? 'visible' : 'hidden'}`} src={confirm} />
+                            <img className={`ml-10  px-1 w-6 opacity-70 hover:opacity-100 ${isLargeScreen ? 'hidden' : 'visible'}`} src={confirmDark} />
                         </button>
-                        <button onClick={() => { setConfirmDelete(false) }}>
-                            <img className={'ml-1 px-1 w-6 opacity-70 hover:opacity-100'} src={cancel} />
+
+                        <button onClick={() => { setConfirmDelete(false) }} className='justify-self-center'>
+                            <img className={`mr-0 px-1 w-5 opacity-70 hover:opacity-100 ${isLargeScreen ? 'visible' : 'hidden'}`} src={cancel} />
+                            <img className={`mr-0 px-1 w-5 opacity-70 hover:opacity-100 ${isLargeScreen ? 'hidden' : 'visible'}`} src={cancelDark} />
                         </button>
-                    </div>
-                }
+                     </div>
+                 }
             </div>
+
         </>
     )
 }

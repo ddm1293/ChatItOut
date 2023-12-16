@@ -14,6 +14,15 @@ module.exports = {
       'dark-gray': '#ababad',
     },
 
+    // breakpoint
+    screens: {
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+      '2xl': '1536px',
+    },
+
     // set necessary fonts
     fontFamily: {
     }

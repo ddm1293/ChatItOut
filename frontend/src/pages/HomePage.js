@@ -41,23 +41,23 @@ export default function HomePage() {
                     <ChatCompleteContext.Provider value={chatToCompleteValue}>
 
                         <div className="bg-[#1e1e1e] flex h-screen overflow-hidden">
-                                <div className="sm:hidden absolute top-0 w-full h-16 z-10 bg-black">
-                                    <button onClick={() => setCurrentPage('welcome')} className="absolute top-0 left-0 m-4 text-white font-calibri font-medium text-2xl">
+                                <div className="lg:hidden absolute top-0 w-full h-16 z-10 bg-black">
+                                    <button onClick={() => setCurrentPage('welcome')} className="absolute top-0 left-0 m-4 font-bold text-2xl sm:block text-white font-calibri">
                                             Chat IT Out
                                     </button>   
                                 </div>
 
                                 <div>
 
-                                <button onClick={() => handleButtonOpen()} className={"block sm:hidden"}>
+                                <button onClick={() => handleButtonOpen()} className={"block lg:hidden"}>
                                     <img src={ham} className="z-10 absolute top-0 right-0 mt-6 mr-10 h-5" alt="Hamburger menu bar"/>
                                 </button>
 
-                                <div className={`sm:block z-20 ${(hamOpen === true? "visible" : "hidden")}`}>
+                                <div className={`lg:block z-20 ${(hamOpen === true? "visible" : "hidden")}`}>
                                     <SideBar />
 
                                     <button onClick={() => handleButtonClose()} className={`${(hamOpen == true? "block" : "hidden")}`}>
-                                        <img src={close} className="absolute z-10 right-0 top-0 m-8 w-5"/>
+                                        <img src={close} className="lg:hidden absolute z-10 right-0 -top-4 m-10 w-5"/>
                                     </button>
                                 </div>
 
