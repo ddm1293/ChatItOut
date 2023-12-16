@@ -13,8 +13,8 @@ import Message from './Message';
 import InputBar from './InputBar';
 import CompulsoryJumpPopUp from './CompulsoryJumpPopUp';
 
-// export const serverURL = "https://chatitout-server-26d52a60d625.herokuapp.com";
-export const serverURL = "http://127.0.0.1:5000";
+export const serverURL = "https://chatitout-server-26d52a60d625.herokuapp.com";
+// export const serverURL = "http://127.0.0.1:5000";
 
 export default function Chatbot() {
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
@@ -88,16 +88,13 @@ export default function Chatbot() {
         console.log('see current history context: ', currChatHist);
         console.log('see current currMessageNum: ', currMessageNum);
         console.log("see current refusalCapCount", refusalCount)
-        // console.log('see current localStage: ', localStage);
-        // console.log('see current messages: ', messages);
-        // console.log('see current stages: ', stages);
-    }, [currChatHist, localStage, messages, currMessageNum, refusalCount]);
+    }, [currChatHist, currMessageNum, refusalCount]);
 
     // Send user input to chatbot and receive response
     const generateResponse = async (msg) => {
         let context = getAllMessages();
         const sessionId = currChatHist.sessionId;
-        console.log(`see sessionId now: ${sessionId}`);
+        // console.log(`see sessionId now: ${sessionId}`);
         let input = { sessionId: sessionId, context: context, newMsg: msg, stage: getStageNum() };
 
         try {
@@ -106,7 +103,6 @@ export default function Chatbot() {
                     'Content-Type': 'application/json',
                 }
             });
-            console.log("see response data: ", resp.data)
             return resp.data;
         } catch (err) {
             console.log(err);
@@ -114,19 +110,13 @@ export default function Chatbot() {
         }
     }
 
-    const handleUserInput = async (content) => {
-        if (globalStage.name === "complete") {
+    const handleUserInput = async (userInput) => {
+        if (globalStage.name === "complete" || !userInput.trim()) {
             return;
         }
 
         let stageMessages = messages[globalStage.name];
 
-        // Deal with user input
-        content.preventDefault();
-        const userInput = content.target.userInput.value;
-        content.target.userInput.value = "";
-
-        // Add user input into chat messages
         setChatbotLoading(true);
         stageMessages.push({ type: 'user', message: userInput });
         setMessageNum(prev => prev + 1);
@@ -135,7 +125,7 @@ export default function Chatbot() {
             [globalStage.name]: stageMessages
         });
 
-        await getAIResponse(userInput);
+        await getAIResponse(userInput.trim());
     }
 
     const getAIResponse = async (userInput) => {
@@ -145,14 +135,14 @@ export default function Chatbot() {
         const chatbotResp = await generateResponse(userInput);
 
         // Add chatGPT response to chat messages
-        setChatbotLoading(false);
         const chatbotMessage = chatbotResp.ai;
         stageMessages.push({ type: 'chatbot', message: chatbotMessage });
-        console.log("see stageMessages in getAIResponse: ", stageMessages)
+        // console.log("see stageMessages in getAIResponse: ", stageMessages)
         setMessages({
             ...messages,
             [globalStage.name]: stageMessages
         });
+        setChatbotLoading(false);
     }
 
     // Translate UI's reprsentation of stages to chatbot's
@@ -185,7 +175,8 @@ export default function Chatbot() {
         const nextStage = stages[currentStageIndex + 1];
         nextStage.status = 'inProgress';
         let nextStageMessages = messages[nextStage.name];
-        nextStageMessages.push({ type: 'newStage', message: `Starting the new stage: ${nextStage.name} now` });
+        console.log("advance stage here, next stage: ", nextStage.name);
+        nextStageMessages.push({ type: 'newStage', message: nextStage.name });
               
         globalStage.setNextStage();
     
@@ -259,7 +250,6 @@ export default function Chatbot() {
         }
 
         if (addRefLine.current) {
-            console.log('see here')
             addRefLine.current = false;
             let refMsgs = [
                 { type: 'newStage', message: globalStage.name }, 
@@ -282,7 +272,7 @@ export default function Chatbot() {
             messageCapCount: currMessageNum,
             refusalCapCount: refusalCount
         }
-        console.log("see updatedContext:", updatedContext);
+        // console.log("see updatedContext:", updatedContext);
         
         dbReq.onsuccess = function (evt) {
             let db = dbReq.result;
@@ -305,20 +295,20 @@ export default function Chatbot() {
     // pop up a window if the current message number exceeds the cap
     useEffect(() => {
         if (messages[globalStage.name]) {
-            if (globalStage.name !== 'complete' && currMessageNum > messageCap) {
+            if (globalStage.name !== 'complete' && !chatbotLoading && currMessageNum > messageCap) {
                 setReadyToShowPopup(true);
             } else {
                 setReadyToShowPopup(false);
             }
         }
-    }, [messages, globalStage]);
-    
-    const handleInputFocus = () => {
+    }, [messages, globalStage, chatbotLoading]);
+
+    useEffect(() => {
         if (readyToShowPopup) {
             setShowPopup(true);
             setReadyToShowPopup(false);
         }
-    };
+    }, [readyToShowPopup])
 
     useEffect(() => {
         if (refusalCount > refusalCap) {
@@ -357,7 +347,7 @@ export default function Chatbot() {
                             </SideBarContext.Provider>
                             
                             {/* Chat input container */}
-                            <InputBar atStartRef={atStartRef} globalStage={globalStage} handleUserInput={handleUserInput} handleInputFocus={handleInputFocus}/>
+                            <InputBar atStartRef={atStartRef} globalStage={globalStage} handleUserInput={handleUserInput} chatbotLoading={chatbotLoading} />
                         </div>
 
 
