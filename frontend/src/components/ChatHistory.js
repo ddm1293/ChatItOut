@@ -209,7 +209,7 @@ export default function ChatHistory(props) {
 
     return (
         <>
-            <div className={`group grid grid-cols-6 items-center justify-end hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#D9D9D9] lg:bg-[#1e1e1e]' : ''}`}>
+            <div className={`group grid grid-cols-10 items-center justify-end hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#D9D9D9] lg:bg-[#1e1e1e]' : ''}`}>
              {/* Chat history widget */}
                 <button onClick={() => setChat()} className='font-normal text-base leading-5 text-black lg:text-white font-calibri py-2 col-span-2'>
                     <div className="flex items-center z-10">
@@ -222,16 +222,16 @@ export default function ChatHistory(props) {
         
                 {!confirmDelete ?
                 // Hide these buttons when delete button is clicked 
-                <div className='buttons grid grid-cols-3 col-span-3 col-start-4 h-11 z-40 mr-0 bg-gradient-lg'>
+                <div className='buttons grid grid-cols-3 col-span-3 col-start-8 h-11 z-40 mr-0 bg-gradient-lg'>
                     {/* Download button */}
                         <button onClick={() => downloadChatPDF()} className='justify-self-center'>
-                            <img className={`ml-20 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={download} />
-                            <img className={`ml-20 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={downloadDark} />
+                            <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={download} />
+                            <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={downloadDark} />
                         </button>
                         {/* Share button */}
                         <button onClick={() => sendEmail()} className='justify-self-center'>
-                        <img className={`ml-11 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={email} />
-                        <img className={`ml-11 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={emailDark} />
+                        <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={email} />
+                        <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={emailDark} />
                         </button>
                         {/* Delete button */}
                     <button onClick={() => { setConfirmDelete(true) }} className='justify-self-center'>
@@ -242,10 +242,10 @@ export default function ChatHistory(props) {
                 </div>
                  :
                     // Delete twice confirmation buttons
-                    <div className='buttons grid grid-cols-2 col-start-5 col-span-2 h-11 z-40 bg-gradient-lg'>
+                    <div className='buttons grid grid-cols-2 col-start-9 col-span-2 h-11 z-40 bg-gradient-lg'>
                         <button onClick={() => deleteChat()} className='justify-self-center'>
-                            <img className={`ml-10  px-1 w-6 opacity-70 hover:opacity-100 ${isLargeScreen ? 'visible' : 'hidden'}`} src={confirm} />
-                            <img className={`ml-10  px-1 w-6 opacity-70 hover:opacity-100 ${isLargeScreen ? 'hidden' : 'visible'}`} src={confirmDark} />
+                            <img className={`ml-0  px-1 w-6 opacity-70 hover:opacity-100 ${isLargeScreen ? 'visible' : 'hidden'}`} src={confirm} />
+                            <img className={`ml-0  px-1 w-6 opacity-70 hover:opacity-100 ${isLargeScreen ? 'hidden' : 'visible'}`} src={confirmDark} />
                         </button>
 
                         <button onClick={() => { setConfirmDelete(false) }} className='justify-self-center'>
