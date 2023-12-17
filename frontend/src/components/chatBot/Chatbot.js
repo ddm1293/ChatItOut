@@ -49,7 +49,7 @@ export default function Chatbot() {
     const [currMessageNum, setMessageNum] = useState(currChatHist.messageCapCount);
     const [refusalCount, setRefusalCount] = useState(currChatHist.refusalCapCount);
     const [showCompusoryJump, setShowCompulsoryJump] = useState(false);
-    const messageCap = 6;
+    const messageCap = 4;
     const refusalCap = 1;
 
     // Offline handling
@@ -76,6 +76,7 @@ export default function Chatbot() {
 
     // Update component when a new or different chat is opened
     useEffect(() => {
+        console.log("updating currChatHist: ", currChatHist)
         setMessages(currChatHist.messages);
         setAtStartRef(currChatHist.atStartRef);
         setStageProgress(currChatHist.stage);
@@ -88,7 +89,7 @@ export default function Chatbot() {
         console.log('see current history context: ', currChatHist);
         console.log('see current currMessageNum: ', currMessageNum);
         console.log("see current refusalCapCount", refusalCount)
-    }, [currChatHist, currMessageNum, refusalCount]);
+    }, [currChatHist]);
 
     // Send user input to chatbot and receive response
     const generateResponse = async (msg) => {
@@ -272,7 +273,8 @@ export default function Chatbot() {
             messageCapCount: currMessageNum,
             refusalCapCount: refusalCount
         }
-        // console.log("see updatedContext:", updatedContext);
+        console.log("see updatedContext:", updatedContext);
+        setCurrChatHist(updatedContext);
         
         dbReq.onsuccess = function (evt) {
             let db = dbReq.result;

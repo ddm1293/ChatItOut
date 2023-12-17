@@ -178,6 +178,7 @@ export default function ChatHistory(props) {
 
     // Changes homepage to display this chat
     const setChat = () => {
+        console.log("let see if the switch is here", startState)
         setCurrChatHist(startState); 
         if (currentPage !== 'home') {
             setCurrentPage('home');
