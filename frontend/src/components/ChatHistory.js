@@ -15,6 +15,7 @@ import cancelDark from "../assets/icon_cancel_dark.png";
 import { ChatDeleteContext, HistoryContext } from '../ChatContexts';
 import { SideBarContext } from '../components/PageRoute';
 import { jsPDF } from 'jspdf';
+import ChatStage from '../ChatStage'
 
 export default function ChatHistory(props) {
     const [startState, setStartState] = useState(props.startState);
@@ -176,10 +177,39 @@ export default function ChatHistory(props) {
         }
     }
 
+    const loadChatFromDb = async (time) => {
+        return new Promise((resolve, reject) => {
+          const openRequest = indexedDB.open("chathistory", 2);
+      
+          openRequest.onsuccess = function (event) {
+            const db = event.target.result;
+            const transaction = db.transaction('chats', 'readonly');
+            const store = transaction.objectStore('chats');
+            const getRequest = store.get(time);
+      
+            getRequest.onsuccess = function () {
+              resolve(getRequest.result);
+            };
+      
+            getRequest.onerror = function () {
+              reject(getRequest.error);
+            };
+          };
+      
+          openRequest.onerror = function () {
+            reject(openRequest.error);
+          };
+        });
+      };
+
     // Changes homepage to display this chat
-    const setChat = () => {
+    const setChat = async () => {
         console.log("let see if the switch is here", startState)
-        setCurrChatHist(startState); 
+        const chatDataFromDb = await loadChatFromDb(startState.time);
+        if (chatDataFromDb && chatDataFromDb.stage && typeof chatDataFromDb.stage === 'object') {
+            chatDataFromDb.stage = new ChatStage(chatDataFromDb.stage.name);
+        }
+        setCurrChatHist(chatDataFromDb);
         if (currentPage !== 'home') {
             setCurrentPage('home');
         }

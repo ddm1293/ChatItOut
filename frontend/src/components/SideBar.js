@@ -51,8 +51,6 @@ export default function SideBar() {
                 return;
             }
 
-
-            // load chats
             const tx = await db.transaction('chats', 'readonly');
             const store = tx.objectStore('chats');
             let dbChatsObj = await store.getAll();
