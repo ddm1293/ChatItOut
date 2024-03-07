@@ -10,7 +10,7 @@ const stages = [
 ]
 
 const initialState = {
-  sessionId: String, 
+  sessionId: "", 
   messages: {
     invitation: [],
     connection: [], 
@@ -18,7 +18,7 @@ const initialState = {
     agreement: [], 
     reflection: []
   }, 
-  time: new Date().toISOString, 
+  time: new Date().toISOString(), 
   stage: "invitation", 
   atStartRef: false,
   messageCapCount: 0,
@@ -34,7 +34,7 @@ const chatSlice = createSlice({
       state.messages[targetStage].push(message)
     },
     advanceStage: (state) => {
-      const currentStageIndex = stages.findIndex(stage => stage === this.name)
+      const currentStageIndex = stages.findIndex(stage => stage === state.stage)
       if (currentStageIndex === -1 || currentStageIndex === stages.length - 1) {
         console.error('Cannot advance stage');
         return;

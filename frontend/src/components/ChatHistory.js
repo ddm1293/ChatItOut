@@ -13,11 +13,14 @@ import confirmDark from "../assets/icon_confirm_dark.png";
 import cancel from "../assets/icon_cancel.png";
 import cancelDark from "../assets/icon_cancel_dark.png";
 import { ChatDeleteContext, HistoryContext } from '../ChatContexts';
-import { SideBarContext } from '../components/PageRoute';
 import { jsPDF } from 'jspdf';
 import ChatStage from '../ChatStage'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
 
 export default function ChatHistory(props) {
+    const dispatch = useDispatch();
+
     const [startState, setStartState] = useState(props.startState);
     const [confirmDelete, setConfirmDelete] = useState(false);
     const time = props.startState.time;
@@ -25,7 +28,7 @@ export default function ChatHistory(props) {
 
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
     const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
-    const { currentPage, setCurrentPage } = useContext(SideBarContext);
+    const currPage = useSelector(selectCurrentPage);
 
     //check if the screen width is larger than 1024px
     const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
@@ -151,8 +154,8 @@ export default function ChatHistory(props) {
     // Sets this chat to be deleted from SideBar.js
     const deleteChat = () => {
         setChatToDelete({ stage: startState.stage, time: time, sessionId: sessionId });
-        if (time.getTime() == currChatHist.time.getTime()) {
-            setCurrentPage('welcome');
+        if (time.getTime() === currChatHist.time.getTime()) {
+            dispatch(setCurrPage('welcome'));
         }
         setConfirmDelete(false);
     }
@@ -210,14 +213,14 @@ export default function ChatHistory(props) {
             chatDataFromDb.stage = new ChatStage(chatDataFromDb.stage.name);
         }
         setCurrChatHist(chatDataFromDb);
-        if (currentPage !== 'home') {
-            setCurrentPage('home');
+        if (currPage !== 'home') {
+            dispatch(setCurrPage('home'));
         }
     }
 
     // Determines if this chat is currently open
     const onChat = () => {
-        return time.getTime() == currChatHist.time.getTime() && currentPage == 'home';
+        return time.getTime() === currChatHist.time.getTime() && currPage === 'home';
     }
 
     // Creates a new object in IndexedDB when a new chat is first created

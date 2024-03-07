@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
 import { ChatCompleteContext, HistoryContext} from '../../ChatContexts';
-import { SideBarContext } from '../PageRoute';
 import ChatStage from '../../ChatStage';
 import Loading from '../Loading';
 import StageLine from '../StageLine';
@@ -13,14 +12,12 @@ import Message from './Message';
 import InputBar from './InputBar';
 import CompulsoryJumpPopUp from './CompulsoryJumpPopUp';
 
-export const serverURL = "https://chatitout-server-26d52a60d625.herokuapp.com";
-// export const serverURL = "http://127.0.0.1:5000";
+// export const serverURL = "https://chatitout-server-26d52a60d625.herokuapp.com";
+export const serverURL = "http://127.0.0.1:5000";
 
 export default function Chatbot() {
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
     const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
-    const { currentPage, setCurrentPage } = useContext(SideBarContext);
-    const currentPageValue = {currentPage, setCurrentPage};
 
     const [messages, setMessages] = useState(currChatHist.messages);
     const globalStage = currChatHist.stage;
@@ -42,14 +39,13 @@ export default function Chatbot() {
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [chatbotLoading, setChatbotLoading] = useState(false);
     const isInitialMount = useRef(true);
-    const addRefLine = useRef(false);
 
     const [readyToShowPopup, setReadyToShowPopup] = useState(false);
     const [showMoveStagePopUp, setShowPopup] = useState(false);
     const [currMessageNum, setMessageNum] = useState(currChatHist.messageCapCount);
     const [refusalCount, setRefusalCount] = useState(currChatHist.refusalCapCount);
     const [showCompusoryJump, setShowCompulsoryJump] = useState(false);
-    const messageCap = 5;
+    const messageCap = 0;
     const refusalCap = 1;
 
     // Offline handling
@@ -85,11 +81,11 @@ export default function Chatbot() {
         setRefusalCount(currChatHist.refusalCapCount)
     }, [currChatHist])
 
-    useEffect(() => {
-        console.log('see current history context: ', currChatHist);
-        console.log('see current currMessageNum: ', currMessageNum);
-        console.log("see current refusalCapCount", refusalCount)
-    }, [currChatHist]);
+    // useEffect(() => {
+    //     console.log('see current history context: ', currChatHist);
+    //     console.log('see current currMessageNum: ', currMessageNum);
+    //     console.log("see current refusalCapCount", refusalCount)
+    // }, [currChatHist]);
 
     // Send user input to chatbot and receive response
     const generateResponse = async (msg) => {
@@ -235,10 +231,21 @@ export default function Chatbot() {
             }
             return stage;
         });
+        console.log("see updatedStages: ", updatedStages)
         setStages(updatedStages);
 
         setAtStartRef(false); 
-        addRefLine.current = true;
+
+        // let refMsgs = [
+        //     { type: 'newStage', message: "reflection" }, 
+        //     { type: 'chatbot', message: "How satisfied are you with the outcomes or agreements you made in this conversation?"}
+        // ];
+        // setMessages(prevMessages => {
+        //     return {
+        //     ...prevMessages,
+        //     reflection: refMsgs
+        //     };
+        // })
     }
 
     // Save new messages and/or stage to IndexedDB
@@ -250,20 +257,6 @@ export default function Chatbot() {
             return;
         }
 
-        if (addRefLine.current) {
-            addRefLine.current = false;
-            let refMsgs = [
-                { type: 'newStage', message: globalStage.name }, 
-                { type: 'chatbot', message: "How satisfied are you with the outcomes or agreements you made in this conversation?"}
-            ];
-            setMessages(prevMessages => {
-            return {
-              ...prevMessages,
-              [globalStage.name]: refMsgs
-            };
-          });
-        }
-
         let updatedContext = { 
             sessionId: currChatHist.sessionId,
             messages: messages,
@@ -273,7 +266,7 @@ export default function Chatbot() {
             messageCapCount: currMessageNum,
             refusalCapCount: refusalCount
         }
-        console.log("see updatedContext:", updatedContext);
+        // console.log("see updatedContext:", updatedContext);
         setCurrChatHist(updatedContext);
         
         dbReq.onsuccess = function (evt) {
@@ -328,7 +321,7 @@ export default function Chatbot() {
                         
                         <div className="flex flex-col absolute top-24 lg:top-12 right-0 w-full custom-width-lg px-8 py-12 h-screen">
                         {/* Chatbot container */}
-                        <SideBarContext.Provider value={currentPageValue}>
+                        
                             <div className="custom-scrollbar w-full mb-4 h-[80%] lg:h-[85%] overflow-y-auto" ref={containerRef}>
                                 {getAllMessages().map((message, index) => (
                                     <div>
@@ -344,9 +337,9 @@ export default function Chatbot() {
                                 {showCompusoryJump ? <CompulsoryJumpPopUp setShowCompulsoryJump={setShowCompulsoryJump} setrefusalCount={setRefusalCount} advanceStage={advanceStage} /> : <></>}
 
                                 {/* Start reflection and homepage options appear after completing Agreement stage */}
-                                {atStartRef ? <StartReflectionLine startReflection={startReflection} setCurrentPage={setCurrentPage} /> : <></>}
+                                {atStartRef ? <StartReflectionLine startReflection={startReflection} /> : <></>}
                             </div>
-                            </SideBarContext.Provider>
+                           
                             
                             {/* Chat input container */}
                             <InputBar atStartRef={atStartRef} globalStage={globalStage} handleUserInput={handleUserInput} chatbotLoading={chatbotLoading} />

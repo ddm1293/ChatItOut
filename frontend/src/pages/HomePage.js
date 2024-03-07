@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SideBar from "../components/SideBar"
 import Chatbot from "../components/chatBot/Chatbot"
 import Welcome from "../components/Welcome"
@@ -8,9 +8,12 @@ import { ChatDeleteContext, HistoryContext, ChatCompleteContext } from '../ChatC
 import ChatStage from '../ChatStage';
 import ham from '../assets/icon_hamburgermenu.png';
 import close from "../assets/icon_close.png";
-import { SideBarContext  } from '../components/PageRoute';
+import { useSelector, useDispatch } from 'react-redux'
+import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
 
 export default function HomePage() {
+    const dispatch = useDispatch();
+
     const [currChatHist, setCurrChatHist] = useState({messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, time: new Date(), stage: new ChatStage(), atStartRef: false});
     const historyContextValue = {currChatHist, setCurrChatHist};
 
@@ -22,8 +25,7 @@ export default function HomePage() {
 
     const [hamOpen, setHamOpen] = useState(false);
 
-    const [currentPage, setCurrentPage] = useState('welcome');
-    const currentPageValue = {currentPage, setCurrentPage};
+    const currPage = useSelector(selectCurrentPage);
     
     const handleButtonOpen= () => {
         setHamOpen(true);
@@ -35,14 +37,13 @@ export default function HomePage() {
 
     return (
         <>
-        <SideBarContext.Provider value={currentPageValue}>
             <HistoryContext.Provider value={historyContextValue}>
                 <ChatDeleteContext.Provider value={chatToDeleteValue}>
                     <ChatCompleteContext.Provider value={chatToCompleteValue}>
 
                         <div className="bg-[#1e1e1e] flex h-screen overflow-hidden">
                                 <div className="lg:hidden absolute top-0 w-full h-16 z-10 bg-black">
-                                    <button onClick={() => setCurrentPage('welcome')} className="absolute top-0 left-0 m-4 font-bold text-2xl sm:block text-white font-calibri">
+                                    <button onClick={() => dispatch(setCurrPage('welcome'))} className="absolute top-0 left-0 m-4 font-bold text-2xl sm:block text-white font-calibri">
                                             Chat IT Out
                                     </button>   
                                 </div>
@@ -61,18 +62,18 @@ export default function HomePage() {
                                     </button>
                                 </div>
 
-                                <div className= {`${currentPage === 'home' || currentPage === 'newchat' ? "block" : "hidden"}`}>
+                                <div className= {`${currPage === 'home' || currPage === 'newchat' ? "block" : "hidden"}`}>
                                     <Chatbot />
                                 </div>
 
-                                <div className= {`${currentPage === 'welcome'? "block" : "hidden"}`}>
+                                <div className= {`${currPage === 'welcome'? "block" : "hidden"}`}>
                                     <Welcome />
                                 </div>
-                                <div className= {`${currentPage === 'useterms'? "block" : "hidden"}`}>
+                                <div className= {`${currPage === 'useterms'? "block" : "hidden"}`}>
                                     <TermsOfUse />
                                 </div>
 
-                                <div className= {` ${currentPage === 'stageexp'? "visible" : "hidden"}`}>
+                                <div className= {` ${currPage === 'stageexp'? "visible" : "hidden"}`}>
                                     <StageExp />
                                 </div>
                                 </div>
@@ -80,8 +81,6 @@ export default function HomePage() {
                     </ChatCompleteContext.Provider>
                 </ChatDeleteContext.Provider>
             </HistoryContext.Provider>
-            </SideBarContext.Provider>
-        
         </>
     )
 }

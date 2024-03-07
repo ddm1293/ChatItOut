@@ -7,12 +7,15 @@ import stageexpDark from "../assets/icon_stageexp_dark.png";
 import ChatHistory from "./ChatHistory";
 import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatContexts';
 import ChatStage from "../ChatStage";
-import { SideBarContext } from '../components/PageRoute';
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { serverURL } from '../components/chatBot/Chatbot'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
 
 export default function SideBar() {
+    const dispatch = useDispatch();
+
     //check if the screen width is larger than 1024px
     const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
 
@@ -27,9 +30,6 @@ export default function SideBar() {
     
     const [currChats, setCurrChats] = useState([]);
     const [doneChats, setDoneChats] = useState([]);
-    const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
-    const currChatHistValue = { currChatHist, setCurrChatHist };
-
 
     const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
     const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
@@ -37,8 +37,7 @@ export default function SideBar() {
     let isInitialMount = useRef(true);
     const containerRef = useRef(null);
 
-    const { currentPage, setCurrentPage } = useContext(SideBarContext);
-    const currentPageValue = { currentPage, setCurrentPage };
+    const currPage = useSelector(selectCurrentPage);
    
     const loadDbReq = indexedDB.open("chathistory", 2);
     const delDbReq = indexedDB.open("chathistory", 2);
@@ -105,8 +104,8 @@ export default function SideBar() {
             refusalCapCount: 0
         };
         setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
-        if (currentPage !== 'home') {
-            setCurrentPage('home');
+        if (currPage !== 'home') {
+            dispatch(setCurrPage('home'));
         }
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
@@ -207,10 +206,10 @@ export default function SideBar() {
     }, [chatToDelete]);
 
     useEffect(() => {
-        if (currentPage === 'newchat') {
+        if (currPage === 'newchat') {
             newChat();
         }
-    }, [currentPage]);
+    }, [currPage]);
 
 
     return (
@@ -219,7 +218,7 @@ export default function SideBar() {
                 {/* Title */}
                 
                     <div>
-                        <button onClick={() => setCurrentPage('welcome')} className="m-6 font-bold text-2xl hidden lg:block text-white font-calibri">
+                        <button onClick={() => dispatch(setCurrPage('welcome'))} className="m-6 font-bold text-2xl hidden lg:block text-white font-calibri">
                             Chat IT Out
                         </button>
                     </div>
@@ -240,10 +239,10 @@ export default function SideBar() {
 
                         {/* What are 5 stages? */}
                         <div
-                            className={`flex w-full h-fit p-1.5 mt-2 py-2 hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "stageexp") ? 'lg:bg-[#1e1e1e] bg-[#D9D9D9] rounded-lg' : ''
+                            className={`flex w-full h-fit p-1.5 mt-2 py-2 hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${(currPage === "stageexp") ? 'lg:bg-[#1e1e1e] bg-[#D9D9D9] rounded-lg' : ''
                                 }`}
                         >
-                            <button onClick={() => setCurrentPage('stageexp')} className="flex items-center ml-5 font-normal text-base text-black lg:text-white font-calibri">
+                            <button onClick={() => dispatch(setCurrPage('stageexp'))} className="flex items-center ml-5 font-normal text-base text-black lg:text-white font-calibri">
                                 <img src={stageexp} className={`square-full mr-3 w-4 h-4 ${isLargeScreen ? 'visible' : 'hidden'}`} alt="Stage Icon" />
                                 <img src={stageexpDark} className={`square-full mr-3 w-4 h-4 ${isLargeScreen ? 'hidden' : 'visible'}`} alt="Stage Icon" />
                                 <span>What are the 5 stages?</span>
@@ -273,10 +272,10 @@ export default function SideBar() {
 
                     {/* Menu items */}
                     <div
-                        className={`flex absolute bottom-7 w-full h-fit p-2 hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "useterms") ? 'lg:bg-[#1e1e1e] bg-[#D9D9D9] rounded-lg pr-28 p1-6 pt-1' : ''
+                        className={`flex absolute bottom-7 w-full h-fit p-2 hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${(currPage === "useterms") ? 'lg:bg-[#1e1e1e] bg-[#D9D9D9] rounded-lg pr-28 p1-6 pt-1' : ''
                             }`}
                     >
-                        <button onClick={() => setCurrentPage('useterms')} className="ml-5 font-normal text-base leading-7 text-black lg:text-white font-calibri">
+                        <button onClick={() => dispatch(setCurrPage('useterms'))} className="ml-5 font-normal text-base leading-7 text-black lg:text-white font-calibri">
                             Terms of use
                         </button>
                     </div>
