@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
-import { ChatCompleteContext, HistoryContext} from '../../ChatContexts';
+import { HistoryContext} from '../../ChatContexts';
 import ChatStage from '../../ChatStage';
 import Loading from '../Loading';
 import StageLine from '../StageLine';
@@ -11,13 +11,15 @@ import StartReflectionLine from './StartReflectionLine';
 import Message from './Message';
 import InputBar from './InputBar';
 import CompulsoryJumpPopUp from './CompulsoryJumpPopUp';
+import { useSelector, useDispatch } from 'react-redux';
+import { setChatComplete } from '../../slices/chatCompleteSlice'
 
 // export const serverURL = "https://chatitout-server-26d52a60d625.herokuapp.com";
 export const serverURL = "http://127.0.0.1:5000";
 
 export default function Chatbot() {
+    const dispatch = useDispatch()
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
-    const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
 
     const [messages, setMessages] = useState(currChatHist.messages);
     const globalStage = currChatHist.stage;
@@ -161,7 +163,7 @@ export default function Chatbot() {
 
         stages[currentStageIndex].status = 'completed';
         if (stages[currentStageIndex].name === 'reflection') { 
-            setChatToComplete(currChatHist.time);
+            dispatch(setChatComplete(currChatHist.time.toISOString()))
             messages.reflection.push({ type: 'newStage', message: "This is the end of this conversation."})
             return;
         } else if (stages[currentStageIndex].name === 'agreement') {

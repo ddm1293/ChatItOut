@@ -16,9 +16,5 @@ const HistoryContext = createContext({
   setCurrChatHist: () => {}
 });
 
-const ChatCompleteContext = createContext({
-  chatToComplete: new Date(),
-  setChatToComplete: () => {}
-});
 
-export { HistoryContext, ChatCompleteContext };
+export { HistoryContext };

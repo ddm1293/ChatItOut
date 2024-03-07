@@ -5,7 +5,6 @@ import newchatDark from "../assets/icon_newchat_dark.png";
 import stageexp from "../assets/icon_stageexp.png";
 import stageexpDark from "../assets/icon_stageexp_dark.png";
 import ChatHistory from "./ChatHistory";
-import { ChatCompleteContext } from '../ChatContexts';
 import ChatStage from "../ChatStage";
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
@@ -13,6 +12,7 @@ import { serverURL } from '../components/chatBot/Chatbot'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
 import { selectChatDelete } from '../slices/chatDeleteSlice'
+import { selectChatComplete } from "../slices/chatCompleteSlice"
 
 export default function SideBar() {
     const dispatch = useDispatch();
@@ -32,13 +32,12 @@ export default function SideBar() {
     const [currChats, setCurrChats] = useState([]);
     const [doneChats, setDoneChats] = useState([]);
 
-    const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
-
     let isInitialMount = useRef(true);
     const containerRef = useRef(null);
 
     const currPage = useSelector(selectCurrentPage);
     const chatDelete = useSelector(selectChatDelete);
+    const chatCompleteTime = useSelector(selectChatComplete);
    
     const loadDbReq = indexedDB.open("chathistory", 2);
     const delDbReq = indexedDB.open("chathistory", 2);
@@ -119,19 +118,19 @@ export default function SideBar() {
         }
 
 
-        let chatToCompleteTime = chatToComplete.getTime();
+        // let chatToCompleteTime = chatToComplete.getTime();
+        const chatToCompleteTime = Date.parse(chatCompleteTime).toString()
         let completedChat;
         let newCurrChats = [];
 
 
         for (let currChat of currChats) {
-            if (currChat.key != chatToCompleteTime) {
+            if (currChat.key !== chatToCompleteTime) {
                 newCurrChats.push(currChat);
             } else {
                 completedChat = currChat;
             }
         }
-
 
         setCurrChats(newCurrChats);
         setDoneChats(doneChats.concat([completedChat]));
@@ -197,7 +196,7 @@ export default function SideBar() {
 
     useEffect(() => {
         completeChat();
-    }, [chatToComplete]);
+    }, [chatCompleteTime]);
 
 
     useEffect(() => {
