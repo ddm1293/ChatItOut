@@ -5,13 +5,14 @@ import newchatDark from "../assets/icon_newchat_dark.png";
 import stageexp from "../assets/icon_stageexp.png";
 import stageexpDark from "../assets/icon_stageexp_dark.png";
 import ChatHistory from "./ChatHistory";
-import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatContexts';
+import { ChatCompleteContext } from '../ChatContexts';
 import ChatStage from "../ChatStage";
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 import { serverURL } from '../components/chatBot/Chatbot'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
+import { selectChatDelete } from '../slices/chatDeleteSlice'
 
 export default function SideBar() {
     const dispatch = useDispatch();
@@ -32,12 +33,12 @@ export default function SideBar() {
     const [doneChats, setDoneChats] = useState([]);
 
     const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
-    const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
 
     let isInitialMount = useRef(true);
     const containerRef = useRef(null);
 
     const currPage = useSelector(selectCurrentPage);
+    const chatDelete = useSelector(selectChatDelete);
    
     const loadDbReq = indexedDB.open("chathistory", 2);
     const delDbReq = indexedDB.open("chathistory", 2);
@@ -138,7 +139,6 @@ export default function SideBar() {
 
     const deleteSession = async (session_id) => {
         try {
-            console.log("see chatToDelete.sessionId:", session_id)
             let resp = await axios.delete(`${serverURL}/chat/${session_id}`);
             console.log("see response data: ", resp.data)
         } catch (err) {
@@ -153,21 +153,21 @@ export default function SideBar() {
             isInitialMount.current = false;
             return;
         }
-
-        let chatToDeleteTime = chatToDelete.time.getTime();
+        
+        const chatToDeleteTime = Date.parse(chatDelete.time).toString();
 
         // Update UI
         let newChats = [];
-        if (chatToDelete.stage.name === 'complete') {
+        if (chatDelete.stage === 'complete') {
             for (let doneChat of doneChats) {
-                if (doneChat.key != chatToDeleteTime) {
+                if (doneChat.key !== chatToDeleteTime) {
                     newChats.push(doneChat);
                 }
             }
             setDoneChats(newChats);
         } else {
             for (let currChat of currChats) {
-                if (currChat.key != chatToDeleteTime) {
+                if (currChat.key !== chatToDeleteTime) {
                     newChats.push(currChat);
                 }
             }
@@ -182,11 +182,10 @@ export default function SideBar() {
             }
             const tx = await db.transaction('chats', 'readwrite');
             const store = tx.objectStore('chats');
-            store.delete(chatToDelete.time);
+            store.delete(new Date(chatDelete.time));
         }
 
-        console.log('see chatToDelete', chatToDelete)
-        await deleteSession(chatToDelete.sessionId)
+        await deleteSession(chatDelete.sessionId)
     }
 
 
@@ -203,7 +202,7 @@ export default function SideBar() {
 
     useEffect(() => {
         deleteChat();
-    }, [chatToDelete]);
+    }, [chatDelete]);
 
     useEffect(() => {
         if (currPage === 'newchat') {

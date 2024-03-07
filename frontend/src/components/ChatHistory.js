@@ -12,11 +12,12 @@ import confirm from "../assets/icon_confirm.png";
 import confirmDark from "../assets/icon_confirm_dark.png";
 import cancel from "../assets/icon_cancel.png";
 import cancelDark from "../assets/icon_cancel_dark.png";
-import { ChatDeleteContext, HistoryContext } from '../ChatContexts';
+import { HistoryContext } from '../ChatContexts';
 import { jsPDF } from 'jspdf';
 import ChatStage from '../ChatStage'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
+import { setChatDelete } from '../slices/chatDeleteSlice'; 
 
 export default function ChatHistory(props) {
     const dispatch = useDispatch();
@@ -27,7 +28,6 @@ export default function ChatHistory(props) {
     const sessionId = props.startState.sessionId;
 
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
-    const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
     const currPage = useSelector(selectCurrentPage);
 
     //check if the screen width is larger than 1024px
@@ -153,7 +153,7 @@ export default function ChatHistory(props) {
 
     // Sets this chat to be deleted from SideBar.js
     const deleteChat = () => {
-        setChatToDelete({ stage: startState.stage, time: time, sessionId: sessionId });
+        dispatch(setChatDelete({ stage: props.startState.stage.name, time: time.toISOString(), sessionId: sessionId }))
         if (time.getTime() === currChatHist.time.getTime()) {
             dispatch(setCurrPage('welcome'));
         }

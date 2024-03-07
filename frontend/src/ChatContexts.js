@@ -16,14 +16,9 @@ const HistoryContext = createContext({
   setCurrChatHist: () => {}
 });
 
-const ChatDeleteContext = createContext({
-  chatToDelete: {stage: new ChatStage(), time: new Date(), sessionId: String},
-  setChatToDelete: () => {}
-});
-
 const ChatCompleteContext = createContext({
   chatToComplete: new Date(),
   setChatToComplete: () => {}
 });
 
-export { HistoryContext, ChatDeleteContext, ChatCompleteContext };
+export { HistoryContext, ChatCompleteContext };
