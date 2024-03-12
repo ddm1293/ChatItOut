@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom"
 import TitlePage from './pages/TitlePage.js';
 import HomePage from './pages/HomePage.js';
 import { openDB } from 'idb';
+import { indexedDBVersion } from './common/indexedDBVersion.js'
 
 function App() {
 
@@ -21,16 +22,13 @@ function App() {
     async function createDB() {
       try {
           // Using https://github.com/jakearchibald/idb
-          // console.log("Attempting to create or open DB");
-          const db = await openDB('chathistory', 2, { 
+          const db = await openDB("chathistory", indexedDBVersion, { 
             upgrade(db, oldVersion, newVersion, transaction) {
-              // console.log(`Upgrade triggered. Old version: ${oldVersion}, New version: ${newVersion}`);
               
               if(!db.objectStoreNames.contains('chats')) {
                   console.log("Creating 'chats' object store");
-                  const chatStore = db.createObjectStore('chats', {
-                    autoIncrement: true,
-                    keyPath: 'time'
+                  db.createObjectStore('chats', {
+                    keyPath: 'sessionId'
                   });
               } else {
                   console.log("'chats' object store already exists");
@@ -43,11 +41,10 @@ function App() {
               console.log("The database opening is blocking");
             },
             terminated() {
-              
               console.log("The database connection is terminated");
             }
           });
-          // console.log('Database opened successfully:', db);
+          console.log('Database opened successfully:', db);
       } catch (error) {
           console.error('Error occurred while opening or upgrading the database:', error);
       }

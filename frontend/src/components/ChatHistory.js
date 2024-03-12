@@ -12,12 +12,13 @@ import confirm from "../assets/icon_confirm.png";
 import confirmDark from "../assets/icon_confirm_dark.png";
 import cancel from "../assets/icon_cancel.png";
 import cancelDark from "../assets/icon_cancel_dark.png";
-import { HistoryContext } from '../ChatContexts';
 import { jsPDF } from 'jspdf';
-import ChatStage from '../ChatStage'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
-import { setChatDelete } from '../slices/chatDeleteSlice'; 
+import { selectCurrChat, setCurrChat } from '../slices/currChatSlice';
+import { indexedDBVersion } from '../common/indexedDBVersion'
+import { removeChat } from '../slices/chatSlice'
+import { deteleChatInDB } from '../slices/chatThunk'
 
 export default function ChatHistory(props) {
     const dispatch = useDispatch();
@@ -27,7 +28,7 @@ export default function ChatHistory(props) {
     const time = props.startState.time;
     const sessionId = props.startState.sessionId;
 
-    const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
+    const currChat = useSelector(selectCurrChat);
     const currPage = useSelector(selectCurrentPage);
 
     //check if the screen width is larger than 1024px
@@ -151,13 +152,28 @@ export default function ChatHistory(props) {
         document.body.removeChild(link);
     }
 
+    // const deleteSession = async (session_id) => {
+    //     try {
+    //         let resp = await axios.delete(`${serverURL}/chat/${session_id}`);
+    //         console.log("see response data: ", resp.data)
+    //     } catch (err) {
+    //         console.log(err);
+    //         return "An error occured. Please try again later."
+    //     }
+    // }
+
     // Sets this chat to be deleted from SideBar.js
     const deleteChat = () => {
-        dispatch(setChatDelete({ stage: props.startState.stage.name, time: time.toISOString(), sessionId: sessionId }))
-        if (time.getTime() === currChatHist.time.getTime()) {
+        // update UI
+        dispatch(removeChat(sessionId))
+        if (sessionId === currChat.sessionId) {
             dispatch(setCurrPage('welcome'));
         }
         setConfirmDelete(false);
+
+        // update DB
+        dispatch(deteleChatInDB(sessionId))
+        // await deleteSession(sessionId)
     }
 
     // Determines if the chat icon should be the in progress icon or the completed icon
@@ -182,7 +198,7 @@ export default function ChatHistory(props) {
 
     const loadChatFromDb = async (time) => {
         return new Promise((resolve, reject) => {
-          const openRequest = indexedDB.open("chathistory", 2);
+          const openRequest = indexedDB.open("chathistory", indexedDBVersion);
       
           openRequest.onsuccess = function (event) {
             const db = event.target.result;
@@ -208,42 +224,23 @@ export default function ChatHistory(props) {
     // Changes homepage to display this chat
     const setChat = async () => {
         console.log("let see if the switch is here", startState)
-        const chatDataFromDb = await loadChatFromDb(startState.time);
-        if (chatDataFromDb && chatDataFromDb.stage && typeof chatDataFromDb.stage === 'object') {
-            chatDataFromDb.stage = new ChatStage(chatDataFromDb.stage.name);
-        }
-        setCurrChatHist(chatDataFromDb);
+        // const chatDataFromDb = await loadChatFromDb(startState.time);
+        // if (chatDataFromDb && chatDataFromDb.stage && typeof chatDataFromDb.stage === 'object') {
+        //     chatDataFromDb.stage = new ChatStage(chatDataFromDb.stage.name);
+        // }
+        // setCurrChatHist(chatDataFromDb);
+        dispatch(setCurrChat(startState))
         if (currPage !== 'home') {
             dispatch(setCurrPage('home'));
         }
     }
 
     // Determines if this chat is currently open
-    const onChat = () => {
-        return time.getTime() === currChatHist.time.getTime() && currPage === 'home';
-    }
-
-    // Creates a new object in IndexedDB when a new chat is first created
-    useEffect(() => {
-        let dbReq = indexedDB.open("chathistory", 2);
-
-        dbReq.onsuccess = function (evt) {
-            let db = dbReq.result;
-            if (!db.objectStoreNames.contains('chats')) {
-                return;
-            }
-            const tx = db.transaction('chats', 'readwrite');
-            const store = tx.objectStore('chats');
-            store.add(startState);
-        }
-
-        setCurrChatHist(startState);
-    }, []);
-
+    const onChat = sessionId === currChat.sessionId && currPage === 'home';
 
     return (
         <>
-            <div className={`group grid grid-cols-10 items-center justify-end hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${onChat() ? 'bg-[#D9D9D9] lg:bg-[#1e1e1e]' : ''}`}>
+            <div className={`group grid grid-cols-10 items-center justify-end hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${onChat ? 'bg-[#D9D9D9] lg:bg-[#1e1e1e]' : ''}`}>
              {/* Chat history widget */}
                 <button onClick={() => setChat()} className='font-normal text-base leading-5 text-black lg:text-white font-calibri py-2 col-span-2'>
                     <div className="flex items-center z-10">
@@ -259,18 +256,18 @@ export default function ChatHistory(props) {
                 <div className='buttons grid grid-cols-3 col-span-3 col-start-8 h-11 z-40 mr-0 bg-gradient-lg'>
                     {/* Download button */}
                         <button onClick={() => downloadChatPDF()} className='justify-self-center'>
-                            <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={download} />
-                            <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={downloadDark} />
+                            <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={download} />
+                            <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={downloadDark} />
                         </button>
                         {/* Share button */}
                         <button onClick={() => sendEmail()} className='justify-self-center'>
-                        <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={email} />
-                        <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={emailDark} />
+                        <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={email} />
+                        <img className={`ml-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={emailDark} />
                         </button>
                         {/* Delete button */}
                     <button onClick={() => { setConfirmDelete(true) }} className='justify-self-center'>
-                        <img className={`mr-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={trash} />
-                        <img className={`mr-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat() ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={trashDark} />
+                        <img className={`mr-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat ? 'visible' : 'invisible'} ${isLargeScreen ? 'visible' : 'hidden'}`} src={trash} />
+                        <img className={`mr-0 w-4 opacity-70 hover:opacity-100 group-hover:visible ${onChat ? 'visible' : 'invisible'} ${isLargeScreen ? 'hidden' : 'visible'}`} src={trashDark} />
                     </button>
 
                 </div>

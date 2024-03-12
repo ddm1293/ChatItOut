@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { addChatToDB } from './chatThunk'
 
 const stages = [
   "invitation",
@@ -9,25 +10,9 @@ const stages = [
   "complete"
 ]
 
-const initialState = {
-  sessionId: "", 
-  messages: {
-    invitation: [],
-    connection: [], 
-    exchange: [], 
-    agreement: [], 
-    reflection: []
-  }, 
-  time: new Date().toISOString(), 
-  stage: "invitation", 
-  atStartRef: false,
-  messageCapCount: 0,
-  refusalCapCount: 0
-}
-
 const chatSlice = createSlice({
   name: 'chat',
-  initialState,
+  initialState: [],
   reducers: {
     addMessage: (state, action) => {
       const { targetStage, message } = action.payload
@@ -36,13 +21,30 @@ const chatSlice = createSlice({
     advanceStage: (state) => {
       const currentStageIndex = stages.findIndex(stage => stage === state.stage)
       if (currentStageIndex === -1 || currentStageIndex === stages.length - 1) {
-        console.error('Cannot advance stage');
+        console.error('Cannot advance stage')
         return;
       }
       state.stage = stages[currentStageIndex + 1]
+    },
+    setChat: (state, action) => {
+      state.push(action.payload)
+    },
+    removeChat: (state, action) => {
+      const sessionIdToRemove = action.payload;
+      return state.filter(chat => chat.sessionId !== sessionIdToRemove);
+    },
+    setChatComplete: (state, action) => {
+      
     }
+  },
+  extraReducers: builder => {
+    builder
+    .addCase(addChatToDB.fulfilled, (state, action) => {
+      console.log("addChatToDB fulfilled!")
+    })
   }
 })
 
-export const { addMessage, advanceStage } = chatSlice.actions
+export const selectChats = (state) => state.chat
+export const { addMessage, advanceStage, setChat, removeChat } = chatSlice.actions
 export default chatSlice.reducer

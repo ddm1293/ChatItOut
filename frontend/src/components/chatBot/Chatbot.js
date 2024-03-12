@@ -13,6 +13,7 @@ import InputBar from './InputBar';
 import CompulsoryJumpPopUp from './CompulsoryJumpPopUp';
 import { useSelector, useDispatch } from 'react-redux';
 import { setChatComplete } from '../../slices/chatCompleteSlice'
+import { indexedDBVersion } from '../../common/indexedDBVersion'
 
 // export const serverURL = "https://chatitout-server-26d52a60d625.herokuapp.com";
 export const serverURL = "http://127.0.0.1:5000";
@@ -36,7 +37,7 @@ export default function Chatbot() {
     ]);
     const containerRef = useRef(null);
 
-    const dbReq = indexedDB.open("chathistory", 2);
+    const dbReq = indexedDB.open("chathistory", indexedDBVersion);
 
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [chatbotLoading, setChatbotLoading] = useState(false);
@@ -163,7 +164,7 @@ export default function Chatbot() {
 
         stages[currentStageIndex].status = 'completed';
         if (stages[currentStageIndex].name === 'reflection') { 
-            dispatch(setChatComplete(currChatHist.time.toISOString()))
+            dispatch(setChatComplete(currChatHist.sessionId))
             messages.reflection.push({ type: 'newStage', message: "This is the end of this conversation."})
             return;
         } else if (stages[currentStageIndex].name === 'agreement') {

@@ -30,8 +30,11 @@ export default function Welcome() {
                         </div>
                     </div>
 
+                    {/* Spacing */}
+                    <div className="grid row-span-1 hidden sm:block" />
+
                     {/* Welcome Image, load different image based on the screen size */}
-                    <div className="row-span-2 sm:px-36 md:px-24 flex justify-center">
+                    <div className="row-span-3 sm:px-36 md:px-24 flex justify-center items-center">
                         <img className="w-4/5 h-4/5 sm:h-full" src={(window.innerWidth < 768? welcome2 : welcome1)} alt="Welcome page picture" />
                     </div>
 

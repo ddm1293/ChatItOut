@@ -24,7 +24,6 @@ export default function StageLine(props) {
 
     // The text depends on the stage of the conversation
     useEffect(() => {
-        console.log("see stageline: ", props.text)
         if (props.text === "This is the end of this conversation.") {
             setText(<>This is the end of this coaching. Back to <button className="text-[#1993D6] hover:text-[#9ADBFF] underline" onClick={() => dispatch(setCurrPage('welcome'))}>Home</button> page</>);
         } else {

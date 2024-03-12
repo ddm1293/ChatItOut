@@ -1,18 +1,19 @@
-import { useContext, useEffect, useState, useRef, createContext } from "react";
+import { useEffect, useState, useRef } from "react";
 import React from 'react';
 import newchat from "../assets/icon_newchat.png";
 import newchatDark from "../assets/icon_newchat_dark.png";
 import stageexp from "../assets/icon_stageexp.png";
 import stageexpDark from "../assets/icon_stageexp_dark.png";
 import ChatHistory from "./ChatHistory";
-import ChatStage from "../ChatStage";
-import { v4 as uuidv4 } from 'uuid';
-import axios from 'axios';
-import { serverURL } from '../components/chatBot/Chatbot'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
-import { selectChatDelete } from '../slices/chatDeleteSlice'
 import { selectChatComplete } from "../slices/chatCompleteSlice"
+import { selectChats } from '../slices/chatSlice'
+import { setCurrChat } from "../slices/currChatSlice"
+import ChatSession from "../models/ChatSession";
+import { addChatToDB, loadChatFromDB } from '../slices/chatThunk'
+import { produce } from 'immer'
+import ChatStage from '../ChatStage'
 
 export default function SideBar() {
     const dispatch = useDispatch();
@@ -36,77 +37,21 @@ export default function SideBar() {
     const containerRef = useRef(null);
 
     const currPage = useSelector(selectCurrentPage);
-    const chatDelete = useSelector(selectChatDelete);
-    const chatCompleteTime = useSelector(selectChatComplete);
-   
-    const loadDbReq = indexedDB.open("chathistory", 2);
-    const delDbReq = indexedDB.open("chathistory", 2);
-
+    const chatCompleteSessionId = useSelector(selectChatComplete);
+    const chats = useSelector(selectChats);
 
     const loadChats = () => {
-        loadDbReq.onsuccess = async function (evt) {
-            let db = loadDbReq.result;
-            if (!db.objectStoreNames.contains('chats')) {
-                return;
-            }
-
-            const tx = await db.transaction('chats', 'readonly');
-            const store = tx.objectStore('chats');
-            let dbChatsObj = await store.getAll();
-            dbChatsObj.onsuccess = () => {
-                let dbChats = dbChatsObj.result;
-                let currChatHistories = [];
-                let doneChatHistories = [];
-                for (let dbChat of dbChats) {
-                    let stage = new ChatStage(dbChat.stage.name);
-                    dbChat.stage = stage;
-                    if (stage.name === 'complete') {
-                        doneChatHistories.push(<ChatHistory key={dbChat.time.getTime()} startState={dbChat} />);
-                    } else {
-                        currChatHistories.push(<ChatHistory key={dbChat.time.getTime()} startState={dbChat} />);
-                    }
-                }
-                setCurrChats(currChats.concat(currChatHistories));
-                setDoneChats(doneChats.concat(doneChatHistories));
-            }
-            tx.oncomplete = () => {
-                db.close();
-            }
-        }
-        loadDbReq.onerror = (err) => {
-            console.log(err);
-        }
+        dispatch(loadChatFromDB())
     }
 
-
-
-    
     // Start a new chat
     const newChat = () => {
-        let today = new Date();
-        const sessionId = uuidv4();
-        let emptyStart = { 
-            sessionId: sessionId,
-            messages: {
-                invitation: [
-                    { type: 'newStage', message: 'invitation' }, 
-                    { type: 'chatbot', message: "I'm an AI conflict coach here to help you with any conflicts or issues you may be facing. How can I assist you today?" }
-                ], 
-                connection: [],
-                exchange: [], 
-                agreement: [], 
-                reflection: [] 
-            }, 
-            time: today, 
-            stage: new ChatStage(), 
-            atStartRef: false,
-            messageCapCount: 0,
-            refusalCapCount: 0
-        };
-        setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
-        if (currPage !== 'home') {
-            dispatch(setCurrPage('home'));
-        }
+        const emptyStart = new ChatSession();
+
+        dispatch(addChatToDB(emptyStart))
+
+        dispatch(setCurrChat(emptyStart));
+
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
 
@@ -117,76 +62,8 @@ export default function SideBar() {
             return;
         }
 
-
-        // let chatToCompleteTime = chatToComplete.getTime();
-        const chatToCompleteTime = Date.parse(chatCompleteTime).toString()
-        let completedChat;
-        let newCurrChats = [];
-
-
-        for (let currChat of currChats) {
-            if (currChat.key !== chatToCompleteTime) {
-                newCurrChats.push(currChat);
-            } else {
-                completedChat = currChat;
-            }
-        }
-
-        setCurrChats(newCurrChats);
-        setDoneChats(doneChats.concat([completedChat]));
+        console.log("trigger completeChat")
     }
-
-    const deleteSession = async (session_id) => {
-        try {
-            let resp = await axios.delete(`${serverURL}/chat/${session_id}`);
-            console.log("see response data: ", resp.data)
-        } catch (err) {
-            console.log(err);
-            return "An error occured. Please try again later."
-        }
-    }
-
-    // Delete chat history
-    const deleteChat = async () => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-            return;
-        }
-        
-        const chatToDeleteTime = Date.parse(chatDelete.time).toString();
-
-        // Update UI
-        let newChats = [];
-        if (chatDelete.stage === 'complete') {
-            for (let doneChat of doneChats) {
-                if (doneChat.key !== chatToDeleteTime) {
-                    newChats.push(doneChat);
-                }
-            }
-            setDoneChats(newChats);
-        } else {
-            for (let currChat of currChats) {
-                if (currChat.key !== chatToDeleteTime) {
-                    newChats.push(currChat);
-                }
-            }
-            setCurrChats(newChats);
-        }
-
-        // Update DB
-        delDbReq.onsuccess = async function (evt) {
-            let db = delDbReq.result;
-            if (!db.objectStoreNames.contains('chats')) {
-                return;
-            }
-            const tx = await db.transaction('chats', 'readwrite');
-            const store = tx.objectStore('chats');
-            store.delete(new Date(chatDelete.time));
-        }
-
-        await deleteSession(chatDelete.sessionId)
-    }
-
 
     // Load chat history in the side bar
     useEffect(() => {
@@ -196,12 +73,8 @@ export default function SideBar() {
 
     useEffect(() => {
         completeChat();
-    }, [chatCompleteTime]);
+    }, [chatCompleteSessionId]);
 
-
-    useEffect(() => {
-        deleteChat();
-    }, [chatDelete]);
 
     useEffect(() => {
         if (currPage === 'newchat') {
@@ -254,7 +127,15 @@ export default function SideBar() {
                         In Progress
                     </div>
 
-                    <div className="pt-3 max-h-[180px] overflow-y-auto custom-scrollbar" ref={containerRef}>{currChats}</div>
+                    <div className="pt-3 max-h-[180px] overflow-y-auto custom-scrollbar" ref={containerRef}>
+                        {chats.map(chat => {
+                            const chatSession = produce(chat, draft => {
+                                draft.stage = new ChatStage(draft.stage)
+                                draft.time = new Date(draft.time)
+                            })
+                            return <ChatHistory key={chatSession.time.getTime()} startState={chatSession} />
+                        })}
+                    </div>
 
 
                     {/* Completed */}
@@ -262,7 +143,17 @@ export default function SideBar() {
                         Completed
                     </div>
                     
-                    <div className="pt-3 max-h-[200px] overflow-y-auto custom-scrollbar">{doneChats}</div>
+                    <div className="pt-3 max-h-[200px] overflow-y-auto custom-scrollbar">
+                        {chats
+                            .filter(chat => chat.completed === true)
+                            .map(chat => {
+                                const chatSession = produce(chat, draft => {
+                                    draft.stage = new ChatStage(draft.stage)
+                                    draft.time = new Date(draft.time)
+                                })
+                                return <ChatHistory key={chatSession.time.getTime()} startState={chatSession} />
+                        })}
+                    </div>
                     
 
                     {/* Divider */}
