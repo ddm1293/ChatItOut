@@ -12,8 +12,6 @@ import { selectChats } from '../slices/chatSlice'
 import { setCurrChat } from "../slices/currChatSlice"
 import ChatSession from "../models/ChatSession";
 import { addChatToDB, loadChatFromDB } from '../slices/chatThunk'
-import { produce } from 'immer'
-import ChatStage from '../ChatStage'
 
 export default function SideBar() {
     const dispatch = useDispatch();
@@ -29,9 +27,6 @@ export default function SideBar() {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-    
-    const [currChats, setCurrChats] = useState([]);
-    const [doneChats, setDoneChats] = useState([]);
 
     let isInitialMount = useRef(true);
     const containerRef = useRef(null);
@@ -128,13 +123,9 @@ export default function SideBar() {
                     </div>
 
                     <div className="pt-3 max-h-[180px] overflow-y-auto custom-scrollbar" ref={containerRef}>
-                        {chats.map(chat => {
-                            const chatSession = produce(chat, draft => {
-                                draft.stage = new ChatStage(draft.stage)
-                                draft.time = new Date(draft.time)
-                            })
-                            return <ChatHistory key={chatSession.time.getTime()} startState={chatSession} />
-                        })}
+                        {chats
+                            .filter(chat => chat.completed === false)
+                            .map(chat =>  <ChatHistory key={chat.time} startState={chat} />)}
                     </div>
 
 
@@ -146,13 +137,8 @@ export default function SideBar() {
                     <div className="pt-3 max-h-[200px] overflow-y-auto custom-scrollbar">
                         {chats
                             .filter(chat => chat.completed === true)
-                            .map(chat => {
-                                const chatSession = produce(chat, draft => {
-                                    draft.stage = new ChatStage(draft.stage)
-                                    draft.time = new Date(draft.time)
-                                })
-                                return <ChatHistory key={chatSession.time.getTime()} startState={chatSession} />
-                        })}
+                            .map(chat => <ChatHistory key={chat.time} startState={chat} />
+                        )}
                     </div>
                     
 

@@ -8,6 +8,9 @@ const chatCompleteSlice = createSlice({
   reducers: {
     setChatComplete: (state, action) => {
       state.sessionId = action.payload
+    },
+    updateCurrChat: (state, action) => {
+      
     }
   }
 });

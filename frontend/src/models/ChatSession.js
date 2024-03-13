@@ -21,5 +21,27 @@ export default class ChatSession {
     this.refusalCapCount = 0;
     this.completed = false;
     this[immerable] = true;
+    this.messageCap =  {
+      invitation: {
+        msgCount: 0,
+        msgCap: 1
+      },
+      connection: {
+        msgCount: 0,
+        msgCap: 1
+      },
+      exchange: {
+        msgCount: 0,
+        msgCap: 1
+      },
+      agreement: {
+        msgCount: 0,
+        msgCap: 1
+      },
+      reflection: {
+        msgCount: 0,
+        msgCap: 1
+      }
+    }
   }
 }

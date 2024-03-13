@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import chathist from "../assets/icon_chathist.png";
 import chathistDark from "../assets/icon_chathist_dark.png";
 import email from "../assets/icon_sendemail.png";
@@ -16,9 +16,9 @@ import { jsPDF } from 'jspdf';
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
 import { selectCurrChat, setCurrChat } from '../slices/currChatSlice';
-import { indexedDBVersion } from '../common/indexedDBVersion'
 import { removeChat } from '../slices/chatSlice'
 import { deteleChatInDB } from '../slices/chatThunk'
+import { selectChats } from '../slices/chatSlice'
 
 export default function ChatHistory(props) {
     const dispatch = useDispatch();
@@ -30,6 +30,7 @@ export default function ChatHistory(props) {
 
     const currChat = useSelector(selectCurrChat);
     const currPage = useSelector(selectCurrentPage);
+    const chats = useSelector(selectChats)
 
     //check if the screen width is larger than 1024px
     const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
@@ -196,40 +197,10 @@ export default function ChatHistory(props) {
         }
     }
 
-    const loadChatFromDb = async (time) => {
-        return new Promise((resolve, reject) => {
-          const openRequest = indexedDB.open("chathistory", indexedDBVersion);
-      
-          openRequest.onsuccess = function (event) {
-            const db = event.target.result;
-            const transaction = db.transaction('chats', 'readonly');
-            const store = transaction.objectStore('chats');
-            const getRequest = store.get(time);
-      
-            getRequest.onsuccess = function () {
-              resolve(getRequest.result);
-            };
-      
-            getRequest.onerror = function () {
-              reject(getRequest.error);
-            };
-          };
-      
-          openRequest.onerror = function () {
-            reject(openRequest.error);
-          };
-        });
-      };
-
     // Changes homepage to display this chat
     const setChat = async () => {
-        console.log("let see if the switch is here", startState)
-        // const chatDataFromDb = await loadChatFromDb(startState.time);
-        // if (chatDataFromDb && chatDataFromDb.stage && typeof chatDataFromDb.stage === 'object') {
-        //     chatDataFromDb.stage = new ChatStage(chatDataFromDb.stage.name);
-        // }
-        // setCurrChatHist(chatDataFromDb);
-        dispatch(setCurrChat(startState))
+        const target = chats.find(chat => chat.sessionId === sessionId)
+        dispatch(setCurrChat(target))
         if (currPage !== 'home') {
             dispatch(setCurrPage('home'));
         }
@@ -246,7 +217,7 @@ export default function ChatHistory(props) {
                     <div className="flex items-center z-10">
                         <img className= {`ml-7 w-4 h-4 ${isLargeScreen ? 'visible' : 'hidden'}`} src={determineChatIcon()} alt="Chat History" />
                         <img className= {`ml-7 w-4 h-4 ${isLargeScreen ? 'hidden' : 'visible'}`} src={determineChatIconDark()} alt="Chat History" />
-                        <span className="px-2 whitespace-nowrap"> {getTime(time)} </span>
+                        <span className="px-2 whitespace-nowrap"> {getTime(new Date(time))} </span>
                     </div>
                 </button>
 

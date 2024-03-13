@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import axios from 'axios';
 import { HistoryContext} from '../../ChatContexts';
 import ChatStage from '../../ChatStage';
 import Loading from '../Loading';
@@ -13,14 +12,31 @@ import InputBar from './InputBar';
 import CompulsoryJumpPopUp from './CompulsoryJumpPopUp';
 import { useSelector, useDispatch } from 'react-redux';
 import { setChatComplete } from '../../slices/chatCompleteSlice'
-import { indexedDBVersion } from '../../common/indexedDBVersion'
-
-// export const serverURL = "https://chatitout-server-26d52a60d625.herokuapp.com";
-export const serverURL = "http://127.0.0.1:5000";
+import { 
+    selectCurrChat,
+    selectCurrChatMessages, 
+    selectCurrChatStage,
+    selectCurrChatAtStartRef,
+    selectCurrChatMessageCap,
+    selectCurrChatRefusalCap,
+ } from '../../slices/currChatSlice';
+ import { 
+    getAIResponse, 
+    pushMessagesSync,
+    incrementMessageCountSync,
+    saveCurrChatToDB,
+ } from '../../slices/chatThunk'
 
 export default function Chatbot() {
     const dispatch = useDispatch()
+    
     const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
+    const currChatMessages = useSelector(selectCurrChatMessages)
+    const currChatStage = useSelector(selectCurrChatStage)
+    const currChatAtStartRef = useSelector(selectCurrChatAtStartRef)
+    const currChatMessageCap = useSelector(selectCurrChatMessageCap)
+    const currChatRefusalCap = useSelector(selectCurrChatRefusalCap)
+
 
     const [messages, setMessages] = useState(currChatHist.messages);
     const globalStage = currChatHist.stage;
@@ -37,11 +53,8 @@ export default function Chatbot() {
     ]);
     const containerRef = useRef(null);
 
-    const dbReq = indexedDB.open("chathistory", indexedDBVersion);
-
     const [isOnline, setIsOnline] = useState(navigator.onLine);
     const [chatbotLoading, setChatbotLoading] = useState(false);
-    const isInitialMount = useRef(true);
 
     const [readyToShowPopup, setReadyToShowPopup] = useState(false);
     const [showMoveStagePopUp, setShowPopup] = useState(false);
@@ -73,85 +86,26 @@ export default function Chatbot() {
         };
     }, []);
 
-    // Update component when a new or different chat is opened
     useEffect(() => {
-        console.log("updating currChatHist: ", currChatHist)
-        setMessages(currChatHist.messages);
-        setAtStartRef(currChatHist.atStartRef);
-        setStageProgress(currChatHist.stage);
-        setLocalStage(currChatHist.stage);
-        setMessageNum(currChatHist.messageCapCount);
-        setRefusalCount(currChatHist.refusalCapCount)
-    }, [currChatHist])
-
-    // useEffect(() => {
-    //     console.log('see current history context: ', currChatHist);
-    //     console.log('see current currMessageNum: ', currMessageNum);
-    //     console.log("see current refusalCapCount", refusalCount)
-    // }, [currChatHist]);
-
-    // Send user input to chatbot and receive response
-    const generateResponse = async (msg) => {
-        let context = getAllMessages();
-        const sessionId = currChatHist.sessionId;
-        // console.log(`see sessionId now: ${sessionId}`);
-        let input = { sessionId: sessionId, context: context, newMsg: msg, stage: getStageNum() };
-
-        try {
-            let resp = await axios.post(`${serverURL}/home/chat`, input, {
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            });
-            return resp.data;
-        } catch (err) {
-            console.log(err);
-            return "An error occured. Please try again later."
-        }
-    }
-
+        console.log("see currChatMessages: ", currChatMessages)
+    }, [currChatMessages])
+  
     const handleUserInput = async (userInput) => {
-        if (globalStage.name === "complete" || !userInput.trim()) {
+        if (currChatStage === "complete" || !userInput.trim()) {
             return;
         }
 
-        let stageMessages = messages[globalStage.name];
-
         setChatbotLoading(true);
-        stageMessages.push({ type: 'user', message: userInput });
-        setMessageNum(prev => prev + 1);
-        setMessages({
-            ...messages,
-            [globalStage.name]: stageMessages
-        });
+        dispatch(pushMessagesSync({ type: 'user', message: userInput }))
+        
+        const aiResp = (await dispatch(getAIResponse(userInput))).payload.ai
+        dispatch(pushMessagesSync({ type: 'chatbot', message: aiResp }))
 
-        await getAIResponse(userInput.trim());
-    }
+        dispatch(incrementMessageCountSync())
 
-    const getAIResponse = async (userInput) => {
-        let stageMessages = messages[globalStage.name];
+        dispatch(saveCurrChatToDB())
 
-        // Send the user input to backend
-        const chatbotResp = await generateResponse(userInput);
-
-        // Add chatGPT response to chat messages
-        const chatbotMessage = chatbotResp.ai;
-        stageMessages.push({ type: 'chatbot', message: chatbotMessage });
-        // console.log("see stageMessages in getAIResponse: ", stageMessages)
-        setMessages({
-            ...messages,
-            [globalStage.name]: stageMessages
-        });
         setChatbotLoading(false);
-    }
-
-    // Translate UI's reprsentation of stages to chatbot's
-    const getStageNum = () => {
-        const stage = stages.find(stage => stage.name === globalStage.name);
-        if (!stage) {
-            console.error("something wrong with the getStageNum");
-        }
-        return stage ? stage.key : -1;
     }
 
     const advanceStage = () => {
@@ -188,30 +142,30 @@ export default function Chatbot() {
     }
 
 
-    const setStageProgress = (stage) => {
-        const currentStageIndex = stages.findIndex(s => s.name === stage.name);
+    // const setStageProgress = (stage) => {
+    //     const currentStageIndex = stages.findIndex(s => s.name === stage.name);
     
-        if (currentStageIndex === -1) {
-            console.error('Invalid current stage');
-            return;
-        }
+    //     if (currentStageIndex === -1) {
+    //         console.error('Invalid current stage');
+    //         return;
+    //     }
 
-        const updatedStages = stages.map((s, index) => {
-            if (index < currentStageIndex) {
-                return { ...s, status: 'completed' };
-            } else if (index === currentStageIndex) {
-                return { ...s, status: 'inProgress' };
-            } else {
-                return { ...s, status: 'notStarted' };
-            }
-        });
+    //     const updatedStages = stages.map((s, index) => {
+    //         if (index < currentStageIndex) {
+    //             return { ...s, status: 'completed' };
+    //         } else if (index === currentStageIndex) {
+    //             return { ...s, status: 'inProgress' };
+    //         } else {
+    //             return { ...s, status: 'notStarted' };
+    //         }
+    //     });
     
-        if (stage.name === 'reflection' && currChatHist.atStartRef) {
-            updatedStages[currentStageIndex].status = 'notStarted';
-        }
+    //     if (stage.name === 'reflection' && currChatHist.atStartRef) {
+    //         updatedStages[currentStageIndex].status = 'notStarted';
+    //     }
     
-        setStages(updatedStages);
-    };
+    //     setStages(updatedStages);
+    // };
     
 
     // Update the UI to show that reflection stage has started
@@ -251,55 +205,16 @@ export default function Chatbot() {
         // })
     }
 
-    // Save new messages and/or stage to IndexedDB
-    useEffect(() => {
-        if (isOnline) containerRef.current.scrollTop = containerRef.current.scrollHeight;
-
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-            return;
-        }
-
-        let updatedContext = { 
-            sessionId: currChatHist.sessionId,
-            messages: messages,
-            time: currChatHist.time,
-            stage: globalStage, 
-            atStartRef: atStartRef,
-            messageCapCount: currMessageNum,
-            refusalCapCount: refusalCount
-        }
-        // console.log("see updatedContext:", updatedContext);
-        setCurrChatHist(updatedContext);
-        
-        dbReq.onsuccess = function (evt) {
-            let db = dbReq.result;
-            if (!db.objectStoreNames.contains('chats') || (messages === currChatHist.messages && localStage === currChatHist.stage)) {
-                return;
-            }
-            const tx = db.transaction('chats', 'readwrite');
-            const store = tx.objectStore('chats');
-            store.put(updatedContext);
-        }
-    }, [messages]);
-
-    // Returns all of the messages in the current chat as an array
-    const getAllMessages = () => {
-        let arr = [];
-        let results = arr.concat(Object.values(messages));
-        return results.flat();
-    }
-
     // pop up a window if the current message number exceeds the cap
     useEffect(() => {
-        if (messages[globalStage.name]) {
-            if (globalStage.name !== 'complete' && !chatbotLoading && currMessageNum > messageCap) {
+        if (currChatStage !== 'complete' && 
+            !chatbotLoading &&
+            currChatMessageCap[currChatStage].msgCount > currChatMessageCap[currChatStage].msgCap) {
                 setReadyToShowPopup(true);
             } else {
                 setReadyToShowPopup(false);
             }
-        }
-    }, [messages, globalStage, chatbotLoading]);
+    }, [chatbotLoading, currChatMessageCap]);
 
     useEffect(() => {
         if (readyToShowPopup) {
@@ -326,26 +241,26 @@ export default function Chatbot() {
                         {/* Chatbot container */}
                         
                             <div className="custom-scrollbar w-full mb-4 h-[80%] lg:h-[85%] overflow-y-auto" ref={containerRef}>
-                                {getAllMessages().map((message, index) => (
+                                {Object.values(currChatMessages).flat().map((message, index) => (
                                     <div>
                                         {
-                                            message.type === 'newStage' ? <StageLine key={globalStage} text={message.message} /> : <Message message={message} index={index} />
+                                            message.type === 'newStage' ? <StageLine key={currChatStage} text={message.message} /> : <Message message={message} index={index} />
                                         }
                                     </div>
                                 ))}
                                 {/* Message loading animation appears while waiting for chatbot response */}
                                 {chatbotLoading ? <Loading /> : <></>}
 
-                                {showMoveStagePopUp ? <MoveStagePopUp globalStage={globalStage} advanceStage={advanceStage} setShowPopup={setShowPopup} setMessageNum={setMessageNum} setrefusalCount={setRefusalCount} /> : <></>}
+                                {showMoveStagePopUp ? <MoveStagePopUp globalStage={currChatStage} advanceStage={advanceStage} setShowPopup={setShowPopup} setMessageNum={setMessageNum} setrefusalCount={setRefusalCount} /> : <></>}
                                 {showCompusoryJump ? <CompulsoryJumpPopUp setShowCompulsoryJump={setShowCompulsoryJump} setrefusalCount={setRefusalCount} advanceStage={advanceStage} /> : <></>}
 
                                 {/* Start reflection and homepage options appear after completing Agreement stage */}
-                                {atStartRef ? <StartReflectionLine startReflection={startReflection} /> : <></>}
+                                {currChatAtStartRef ? <StartReflectionLine startReflection={startReflection} /> : <></>}
                             </div>
                            
                             
                             {/* Chat input container */}
-                            <InputBar atStartRef={atStartRef} globalStage={globalStage} handleUserInput={handleUserInput} chatbotLoading={chatbotLoading} />
+                            <InputBar atStartRef={currChatAtStartRef} globalStage={currChatStage} handleUserInput={handleUserInput} chatbotLoading={chatbotLoading} />
                         </div>
 
 

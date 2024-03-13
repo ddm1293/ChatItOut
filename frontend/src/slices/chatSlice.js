@@ -33,8 +33,31 @@ const chatSlice = createSlice({
       const sessionIdToRemove = action.payload;
       return state.filter(chat => chat.sessionId !== sessionIdToRemove);
     },
-    setChatComplete: (state, action) => {
-      
+    pushCurrChatMessage: (state, action) => {
+      const { sessionId, stage, content } = action.payload
+      const index = state.findIndex(chat => chat.sessionId === sessionId)
+      if (index !== -1) {
+        state[index].messages[stage].push(content)
+      }
+    },
+    pushCurrChatMessageCount: (state, action) => {
+      const { sessionId, stage } = action.payload
+      const index = state.findIndex(chat => chat.sessionId === sessionId)
+      if (index !== -1) {
+        state[index].messageCap[stage].msgCount++
+      }
+    },
+    setZeroCurrChatMessageCount: (state, action) => {
+      const { sessionId, stage } = action.payload
+      const index = state.findIndex(chat => chat.sessionId === sessionId)
+      if (index !== -1) {
+        state[index].messageCap[stage].msgCount = 0
+      }
+    },
+    incrementCurrChatRefusalCount: (state, action) => {
+      const sessionId = action.payload
+      const index = state.findIndex(chat => chat.sessionId === sessionId)
+      state[index].refusalCapCount++
     }
   },
   extraReducers: builder => {
@@ -46,5 +69,14 @@ const chatSlice = createSlice({
 })
 
 export const selectChats = (state) => state.chat
-export const { addMessage, advanceStage, setChat, removeChat } = chatSlice.actions
+export const { 
+  addMessage,
+  advanceStage,
+  setChat, 
+  removeChat, 
+  pushCurrChatMessage, 
+  pushCurrChatMessageCount,
+  setZeroCurrChatMessageCount,
+  incrementCurrChatRefusalCount
+} = chatSlice.actions
 export default chatSlice.reducer
