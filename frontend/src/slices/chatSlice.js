@@ -53,7 +53,7 @@ const chatSlice = createSlice({
       if (currIndex < chatStages.length - 1) {
         state[sessionIndex].stage = chatStages[currIndex + 1]
         const nextStage = state[sessionIndex].stage
-        state[sessionIndex].messages[nextStage].push({ type: 'newStage', message: state.stage })
+        state[sessionIndex].messages[nextStage].push({ type: 'newStage', message: nextStage })
       } else {
         state[sessionIndex].messages.reflection.push({ type: 'newStage', message: "This is the end of this conversation."})
         state[sessionIndex].stage = "complete"
@@ -66,15 +66,10 @@ const chatSlice = createSlice({
       state[sessionIndex].atStartRef = bool
     }
   },
-  extraReducers: builder => {
-    builder
-    .addCase(addChatToDB.fulfilled, (state, action) => {
-      console.log("addChatToDB fulfilled!")
-    })
-  }
 })
 
 export const selectChats = (state) => state.chat
+export const selectChatWithSessionId = (sessionId) => (state) => state.chat.find(session => session.sessionId === sessionId)
 export const { 
   setChat, 
   removeChat, 

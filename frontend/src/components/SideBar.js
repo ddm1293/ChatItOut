@@ -4,11 +4,10 @@ import newchat from "../assets/icon_newchat.png";
 import newchatDark from "../assets/icon_newchat_dark.png";
 import stageexp from "../assets/icon_stageexp.png";
 import stageexpDark from "../assets/icon_stageexp_dark.png";
-import ChatHistory from "./ChatHistory";
+import ChatHistory from "./chatHistory/ChatHistory";
 import { v4 as uuidv4 } from 'uuid'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
-import { selectChatComplete } from "../slices/chatCompleteSlice"
 import { selectChats } from '../slices/chatSlice'
 import { setCurrChat } from "../slices/currChatSlice"
 import ChatSession from "../models/ChatSession";
@@ -29,11 +28,9 @@ export default function SideBar() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    let isInitialMount = useRef(true);
     const containerRef = useRef(null);
 
     const currPage = useSelector(selectCurrentPage);
-    const chatCompleteSessionId = useSelector(selectChatComplete);
     const chats = useSelector(selectChats);
 
     const loadChats = () => {
@@ -51,26 +48,10 @@ export default function SideBar() {
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
 
-    // Move the chat to complete section
-    const completeChat = () => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-            return;
-        }
-
-        console.log("trigger completeChat")
-    }
-
     // Load chat history in the side bar
     useEffect(() => {
         loadChats();
     }, []);
-
-
-    useEffect(() => {
-        completeChat();
-    }, [chatCompleteSessionId]);
-
 
     useEffect(() => {
         if (currPage === 'newchat') {
@@ -126,7 +107,7 @@ export default function SideBar() {
                     <div className="pt-3 max-h-[180px] overflow-y-auto custom-scrollbar" ref={containerRef}>
                         {chats
                             .filter(chat => chat.completed === false)
-                            .map(chat =>  <ChatHistory key={chat.time} startState={chat} />)}
+                            .map(chat =>  <ChatHistory key={chat.time} sessionId={chat.sessionId} />)}
                     </div>
 
 
@@ -138,7 +119,7 @@ export default function SideBar() {
                     <div className="pt-3 max-h-[200px] overflow-y-auto custom-scrollbar">
                         {chats
                             .filter(chat => chat.completed === true)
-                            .map(chat => <ChatHistory key={chat.time} startState={chat} />
+                            .map(chat => <ChatHistory key={chat.time} sessionId={chat.sessionId} />
                         )}
                     </div>
                     

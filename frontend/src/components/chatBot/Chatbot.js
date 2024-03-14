@@ -9,9 +9,7 @@ import Message from './Message';
 import InputBar from './InputBar';
 import CompulsoryJumpPopUp from './CompulsoryJumpPopUp';
 import { useSelector, useDispatch } from 'react-redux';
-import { setChatComplete } from '../../slices/chatCompleteSlice'
 import { 
-    selectCurrChatSessionId,
     selectCurrChatMessages, 
     selectCurrChatStage,
     selectCurrChatAtStartRef,
@@ -30,7 +28,6 @@ import {
 export default function Chatbot() {
     const dispatch = useDispatch()
     
-    const currChatSessionId = useSelector(selectCurrChatSessionId)
     const currChatMessages = useSelector(selectCurrChatMessages)
     const currChatStage = useSelector(selectCurrChatStage)
     const currChatAtStartRef = useSelector(selectCurrChatAtStartRef)
@@ -87,57 +84,20 @@ export default function Chatbot() {
 
     const advanceStage = async () => {
         dispatch(advanceStageSync())
-        
     }
 
     // handle complete and start reflection logic
     useEffect(() => {
-        console.log("see currChatStage: ", currChatStage)
-        if (currChatStage === 'complete') { 
-            dispatch(setChatComplete(currChatSessionId))
-            return;
-        } else if (currChatStage === 'reflection') {
+        if (currChatStage === 'reflection') {
             dispatch(setAtStartRefSync(true))
         }
     }, [currChatStage])
 
     // Update the UI to show that reflection stage has started
-    const startReflection = () => {}
-/*     const startReflection = () => {
-        // console.log("triggering startReflection()");
-        let agrMsgs = messages.agreement.slice(0, -1);
-        let newMsgs = {
-            ...messages,
-            agreement: agrMsgs,
-      };
-
-        setMessages(newMsgs);
-
-        const updatedStages = stages.map(stage => {
-            if (stage.name === 'reflection') {
-                return {
-                    ...stage,
-                    status: 'inProgress',
-                };
-            }
-            return stage;
-        });
-        console.log("see updatedStages: ", updatedStages)
-        setStages(updatedStages);
-
-        setAtStartRef(false); 
-
-        // let refMsgs = [
-        //     { type: 'newStage', message: "reflection" }, 
-        //     { type: 'chatbot', message: "How satisfied are you with the outcomes or agreements you made in this conversation?"}
-        // ];
-        // setMessages(prevMessages => {
-        //     return {
-        //     ...prevMessages,
-        //     reflection: refMsgs
-        //     };
-        // })
-    } */
+    const startReflection = () => {
+       dispatch(pushMessagesSync({ type: 'chatbot', message: "How satisfied are you with the outcomes or agreements you made in this conversation?"}))
+       dispatch(setAtStartRefSync(false))
+    }
 
     // pop up a window if the current message number exceeds the cap
     useEffect(() => {
