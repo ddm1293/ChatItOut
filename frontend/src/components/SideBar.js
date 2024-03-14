@@ -33,10 +33,6 @@ export default function SideBar() {
     const currPage = useSelector(selectCurrentPage);
     const chats = useSelector(selectChats);
 
-    const loadChats = () => {
-        dispatch(loadChatFromDB())
-    }
-
     // Start a new chat
     const newChat = () => {
         const emptyStart = new ChatSession(uuidv4()).toPlainObject();
@@ -48,9 +44,12 @@ export default function SideBar() {
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
 
+    const showInprogressChat = chats.filter(chat => chat.completed === false).length !== 0
+    const showCompleteChat = chats.filter(chat => chat.completed === true).length !== 0
+
     // Load chat history in the side bar
     useEffect(() => {
-        loadChats();
+        dispatch(loadChatFromDB())
     }, []);
 
     useEffect(() => {
@@ -100,7 +99,7 @@ export default function SideBar() {
 
                     
                     {/* In Progress */}
-                    <div className="flex flex-col ml-6 mt-10 font-normal text-base leading-5 text-[#878787] lg:text-[#ababad] text-opacity-80 font-calibri">
+                    <div className={`${showInprogressChat ? 'visible' : 'invisible'} flex flex-col ml-6 mt-10 font-normal text-base leading-5 text-[#878787] lg:text-[#ababad] text-opacity-80 font-calibri`}>
                         In Progress
                     </div>
 
@@ -112,7 +111,7 @@ export default function SideBar() {
 
 
                     {/* Completed */}
-                    <div className="flex flex-col ml-6 mt-8 font-normal text-base leading-5 text-[#878787]  lg:text-[#ababad] text-opacity-80 font-calibri">
+                    <div className={`${showCompleteChat ? 'visible' : 'invisible'} flex flex-col ml-6 mt-8 font-normal text-base leading-5 text-[#878787]  lg:text-[#ababad] text-opacity-80 font-calibri`}>
                         Completed
                     </div>
                     

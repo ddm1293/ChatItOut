@@ -18,7 +18,7 @@ import { selectCurrChat, setCurrChat } from '../../slices/currChatSlice';
 import { removeChat } from '../../slices/chatSlice'
 import { deteleChatInDB } from '../../slices/chatThunk'
 import { selectChatWithSessionId } from '../../slices/chatSlice'
-import { downloadChatPDF, sendEmail } from './chatHistoryUtils';
+import { downloadChatPDF, sendEmail, timeString } from './chatHistoryUtils';
 
 export default function ChatHistory({ sessionId }) {
     const dispatch = useDispatch();
@@ -40,21 +40,6 @@ export default function ChatHistory({ sessionId }) {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-
-    // Returns date as a formatted string (hh:mm am/pm M DD, YYYY)
-    const getTime = (today) => {
-        let hours = today.getHours();
-        let mins = today.getMinutes();
-        let minsString = mins < 10 ? `0${mins}` : `${mins}`;
-        let timeOfDay = hours < 12 ? 'am' : 'pm';
-        hours = hours % 12 || 12;
-
-        let month = today.toLocaleString('default', { month: 'short' });
-        let day = today.getDate();
-        let year = today.getFullYear();
-
-        return `${hours}:${minsString}${timeOfDay} ${month} ${day}, ${year}`;
-    }
 
     // const deleteSession = async (session_id) => {
     //     try {
@@ -117,11 +102,15 @@ export default function ChatHistory({ sessionId }) {
              {/* Chat history widget */}
                 <button onClick={() => setChat()} className='font-normal text-base leading-5 text-black lg:text-white font-calibri py-2 col-span-2'>
                     <div className="flex items-center z-10">
-                        <img className= {`ml-7 w-4 h-4 ${isLargeScreen ? 'visible' : 'hidden'}`} src={determineChatIcon()} alt="Chat History" />
-                        <img className= {`ml-7 w-4 h-4 ${isLargeScreen ? 'hidden' : 'visible'}`} src={determineChatIconDark()} alt="Chat History" />
-                        <span className="px-2 whitespace-nowrap"> {getTime(new Date(chat.time))} </span>
+                        <img className={`ml-7 w-4 h-4 ${isLargeScreen ? 'visible' : 'hidden'}`} src={determineChatIcon()} alt="Chat Icon" />
+                        <img className={`ml-7 w-4 h-4 ${isLargeScreen ? 'hidden' : 'visible'}`} src={determineChatIconDark()} alt="Chat Icon" />
+                        <div className="flex flex-col items-start pl-2">
+                            <span className="whitespace-nowrap">{chat.sessionName}</span>
+                            <span className="text-xs text-gray-500 whitespace-nowrap">{timeString(chat.time)}</span>
+                        </div>
                     </div>
                 </button>
+
 
         
                 {!confirmDelete ?

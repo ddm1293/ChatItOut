@@ -81,3 +81,18 @@ export const sendEmail = (messages) => {
     alert("Your email client has been opened. Please attach the 'chat.pdf' file from your downloads.");
   }, 5000);
 }
+
+export const timeString = (time) => {
+  time = new Date(time)
+  let hours = time.getHours();
+  let mins = time.getMinutes();
+  let minsString = mins < 10 ? `0${mins}` : `${mins}`;
+  let timeOfDay = hours < 12 ? 'am' : 'pm';
+  hours = hours % 12 || 12;
+
+  let month = time.toLocaleString('default', { month: 'short' });
+  let day = time.getDate();
+  let year = time.getFullYear();
+
+  return `${hours}:${minsString}${timeOfDay} ${month} ${day}, ${year}`;
+}

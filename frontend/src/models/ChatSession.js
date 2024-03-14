@@ -42,6 +42,7 @@ export default class ChatSession {
         msgCap: 1
       }
     }
+    this.sessionName = 'New Chat'
   }
 
   toPlainObject() {
@@ -55,6 +56,7 @@ export default class ChatSession {
       refusalCapCount: this.refusalCapCount,
       completed: this.completed,
       messageCap: this.messageCap,
+      sessionName: this.sessionName
     };
   }
 }
