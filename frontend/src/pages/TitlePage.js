@@ -16,7 +16,7 @@ export default function TitlePage() {
     return (
         <>
 
-            <div class="flex flex-col h-screen bg-[#024DA1] justify-center items-center">
+            <div className="flex flex-col h-screen bg-[#024DA1] justify-center items-center">
 
                 <img className= "h-60 w-56 mb-4" src={logo} alt="logo" />
 

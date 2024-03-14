@@ -1,9 +1,8 @@
-import { v4 as uuidv4 } from 'uuid'
 import { immerable } from 'immer';
 
 export default class ChatSession {
-  constructor() {
-    this.sessionId = uuidv4();
+  constructor(sessionId) {
+    this.sessionId = sessionId || '';
     this.messages = {
         invitation: [
             { type: 'newStage', message: 'invitation' },
@@ -17,7 +16,7 @@ export default class ChatSession {
     this.time = new Date().toISOString();
     this.stage = "invitation"
     this.atStartRef = false;
-    this.messageCapCount = 0;
+    this.refusalCap = 0;
     this.refusalCapCount = 0;
     this.completed = false;
     this[immerable] = true;
@@ -43,5 +42,19 @@ export default class ChatSession {
         msgCap: 1
       }
     }
+  }
+
+  toPlainObject() {
+    return {
+      sessionId: this.sessionId,
+      messages: this.messages,
+      time: this.time,
+      stage: this.stage,
+      atStartRef: this.atStartRef,
+      refusalCap: this.refusalCap,
+      refusalCapCount: this.refusalCapCount,
+      completed: this.completed,
+      messageCap: this.messageCap,
+    };
   }
 }

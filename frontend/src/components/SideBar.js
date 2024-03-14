@@ -5,6 +5,7 @@ import newchatDark from "../assets/icon_newchat_dark.png";
 import stageexp from "../assets/icon_stageexp.png";
 import stageexpDark from "../assets/icon_stageexp_dark.png";
 import ChatHistory from "./ChatHistory";
+import { v4 as uuidv4 } from 'uuid'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
 import { selectChatComplete } from "../slices/chatCompleteSlice"
@@ -41,7 +42,7 @@ export default function SideBar() {
 
     // Start a new chat
     const newChat = () => {
-        const emptyStart = new ChatSession();
+        const emptyStart = new ChatSession(uuidv4()).toPlainObject();
 
         dispatch(addChatToDB(emptyStart))
 

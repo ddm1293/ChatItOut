@@ -8,12 +8,18 @@ import {
     pushCurrChatMessageCount,
     setZeroCurrChatMessageCount,
     incrementCurrChatRefusalCount,
+    advanceCurrChatStage,
+    setCurrChatAtStartRef,
+    setZeroCurrChatRefusalCount,
  } from './chatSlice'
 import { 
     pushMessage, 
     addMessageCount,
     setZeroMessageCount,
     incrementRefusalCount,
+    advanceStage,
+    setAtStartRef,
+    setZeroRefusalCount,
  } from './currChatSlice'
 
 export const addChatToDB = createAsyncThunk('chat/addChatToDB', async (arg, { dispatch, getState }) => {
@@ -39,7 +45,7 @@ export const addChatToDB = createAsyncThunk('chat/addChatToDB', async (arg, { di
   }
 })
 
-export const loadChatFromDB = createAsyncThunk('chat/loadChatFromDB', async (arg, { dispatch }) => {
+export const loadChatFromDB = createAsyncThunk('chat/loadChatFromDB', async (_, { dispatch }) => {
   const loadDbReq = indexedDB.open("chathistory", indexedDBVersion);
   loadDbReq.onsuccess = async function (evt) {
     const db = loadDbReq.result;
@@ -51,8 +57,7 @@ export const loadChatFromDB = createAsyncThunk('chat/loadChatFromDB', async (arg
     const store = tx.objectStore('chats');
     const dbChatsObj = await store.getAll();
     dbChatsObj.onsuccess = () => {
-        let dbChats = dbChatsObj.result;
-        console.log("see dbChats: ", dbChats)
+        const dbChats = dbChatsObj.result;
         for (const dbChat of dbChats) {
             dispatch(setChat(dbChat));
         }
@@ -121,9 +126,10 @@ export const getAIResponse = createAsyncThunk('chat/getAIResponse', async (userI
 
 export const pushMessagesSync = createAsyncThunk('chat/pushMessagesSync', async (content, { dispatch, getState }) => {
     const currChatStage = getState().currChat.stage
-    const sessionId =  getState().currChat.sessionId
+    const sessionId = getState().currChat.sessionId
     dispatch(pushMessage({ stage: currChatStage, content }))
     dispatch(pushCurrChatMessage({ sessionId, stage: currChatStage, content }))
+    dispatch(saveCurrChatToDB())
 })
 
 export const incrementMessageCountSync = createAsyncThunk('chat/incrementMessageCountSync', async (_, { dispatch, getState }) => {
@@ -131,6 +137,7 @@ export const incrementMessageCountSync = createAsyncThunk('chat/incrementMessage
     const sessionId =  getState().currChat.sessionId
     dispatch(addMessageCount(stage))
     dispatch(pushCurrChatMessageCount({ sessionId, stage }))
+    dispatch(saveCurrChatToDB())
 })
 
 export const setZeroMessageCountSync = createAsyncThunk('chat/setZeroMessageCountSync', async (_, { dispatch, getState }) => {
@@ -138,12 +145,35 @@ export const setZeroMessageCountSync = createAsyncThunk('chat/setZeroMessageCoun
     const sessionId =  getState().currChat.sessionId
     dispatch(setZeroMessageCount(stage))
     dispatch(setZeroCurrChatMessageCount({ sessionId, stage }))
+    dispatch(saveCurrChatToDB())
 })
 
 export const incrementRefusalCountSync = createAsyncThunk('chat/incrementRefusalCountSync', async (_, { dispatch, getState }) => {
     const sessionId =  getState().currChat.sessionId
     dispatch(incrementRefusalCount())
     dispatch(incrementCurrChatRefusalCount(sessionId))
+    dispatch(saveCurrChatToDB())
+})
+
+export const setZeroRefusalCountSync = createAsyncThunk('chat/setZeroRefusalCountSync', async (_, { dispatch, getState }) => {
+    const sessionId =  getState().currChat.sessionId
+    dispatch(setZeroRefusalCount())
+    dispatch(setZeroCurrChatRefusalCount(sessionId))
+    dispatch(saveCurrChatToDB())
+})
+
+export const advanceStageSync = createAsyncThunk('chat/advanceStageSync', async(_, { dispatch, getState }) => {
+    const sessionId = getState().currChat.sessionId
+    dispatch(advanceStage())
+    dispatch(advanceCurrChatStage(sessionId))
+    dispatch(saveCurrChatToDB())
+})
+
+export const setAtStartRefSync = createAsyncThunk('chat/setAtStartRefSync', async(bool, { dispatch, getState }) => {
+    const sessionId = getState().currChat.sessionId
+    dispatch(setAtStartRef(bool))
+    dispatch(setCurrChatAtStartRef({ sessionId, bool }))
+    dispatch(saveCurrChatToDB())
 })
 
 export const saveCurrChatToDB = createAsyncThunk('chat/saveToDB', async (_, { getState }) => {

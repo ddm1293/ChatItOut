@@ -44,7 +44,6 @@ function App() {
               console.log("The database connection is terminated");
             }
           });
-          console.log('Database opened successfully:', db);
       } catch (error) {
           console.error('Error occurred while opening or upgrading the database:', error);
       }

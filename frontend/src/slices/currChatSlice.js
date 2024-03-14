@@ -1,50 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit'
-
-const initialState = {
-  sessionId: '',
-  messages: {
-    invitation: [
-        { type: 'newStage', message: 'invitation' },
-        { type: 'chatbot', message: "I'm an AI conflict coach here to help you with any conflicts or issues you may be facing. How can I assist you today?" }
-    ],
-    connection: [],
-    exchange: [],
-    agreement: [],
-    reflection: []
-  },
-  time: new Date().toISOString(),
-  stage: 'invitation',
-  atStartRef: false,
-  messageCapCount: 0,
-  refusalCapCount: 0,
-  completed: false,
-  messageCap: {
-    invitation: {
-      msgCount: 0,
-      msgCap: 1
-    },
-    connection: {
-      msgCount: 0,
-      msgCap: 1
-    },
-    exchange: {
-      msgCount: 0,
-      msgCap: 1
-    },
-    agreement: {
-      msgCount: 0,
-      msgCap: 1
-    },
-    reflection: {
-      msgCount: 0,
-      msgCap: 1
-    }
-  }
-}
+import { chatStages } from '../models/ChatStages';
+import ChatSession from '../models/ChatSession';
 
 const currChatSlice = createSlice({
   name: 'currChat',
-  initialState,
+  initialState: new ChatSession().toPlainObject(),
   reducers: {
     setCurrChat: (state, action) => {
       return action.payload
@@ -67,21 +27,44 @@ const currChatSlice = createSlice({
     },
     incrementRefusalCount: (state) => {
       state.refusalCapCount++
+    },
+    setZeroRefusalCount: (state) => {
+      state.refusalCapCount = 0
+    },
+    advanceStage: (state) => {
+      const currIndex = chatStages.findIndex(stage => stage === state.stage)
+      if (currIndex < chatStages.length - 1) {
+        state.stage = chatStages[currIndex + 1]
+        const nextStage = state.stage
+        state.messages[state.stage].push({ type: 'newStage', message: nextStage })
+      } else {
+        state.messages.reflection.push({ type: 'newStage', message: "This is the end of this conversation."})
+        state.stage = "complete"
+        state.completed = true
+      }
+    },
+    setAtStartRef: (state, action) => {
+      state.atStartRef = action.payload
     }
   }
 });
 
 export const selectCurrChat = (state) => state.currChat
+export const selectCurrChatSessionId = (state) => state.sessionId
 export const selectCurrChatMessages = (state) => state.currChat.messages
 export const selectCurrChatStage = (state) => state.currChat.stage
 export const selectCurrChatAtStartRef = (state) => state.currChat.atStartRef
 export const selectCurrChatMessageCap = (state) => state.currChat.messageCap
-export const selectCurrChatRefusalCap = (state) => state.currChat.refusalCapCount
+export const selectCurrChatRefusalCount = (state) => state.currChat.refusalCapCount
+export const selectCurrChatRefusalCap = (state) => state.currChat.refusalCap
 export const { 
   setCurrChat, 
   pushMessage, 
   addMessageCount, 
   setMessageCap,
   setZeroMessageCount,
-  incrementRefusalCount, } = currChatSlice.actions
+  incrementRefusalCount,
+  advanceStage,
+  setAtStartRef,
+  setZeroRefusalCount } = currChatSlice.actions
 export default currChatSlice.reducer
