@@ -1,10 +1,11 @@
-import { useEffect, useState, useContext } from "react";
-import { SideBarContext } from '../components/PageRoute';
+import { useEffect, useState } from "react";
+import { useDispatch } from 'react-redux'
+import { setCurrPage } from '../slices/sideBarSlice'
 
 export default function StageLine(props) {
+    const dispatch = useDispatch();
     const [text, setText] = useState();
     const [guideText, setGuideText] = useState('');
-    const { currentPage, setCurrentPage } = useContext(SideBarContext);
 
     const stageGuide = {
         "invitation": `In the Invitation stage, try to firstly discuss with the chatbot about the conflict;
@@ -23,10 +24,8 @@ export default function StageLine(props) {
 
     // The text depends on the stage of the conversation
     useEffect(() => {
-        if (props.text.length > 10) {
-            setText(props.text);
-        } else if (props.text === "complete") {
-            setText(<>This is the end of this coaching. Back to <button className="text-[#1993D6] hover:text-[#9ADBFF] underline" onClick={() => setCurrentPage('welcome')}>Home</button> page</>);
+        if (props.text === "This is the end of this conversation.") {
+            setText(<>This is the end of this coaching. Back to <button className="text-[#1993D6] hover:text-[#9ADBFF] underline" onClick={() => dispatch(setCurrPage('welcome'))}>Home</button> page</>);
         } else {
             setText(`Below is ${props.text.charAt(0).toUpperCase() + props.text.slice(1)} Stage`);
             setGuideText(stageGuide[props.text]);

@@ -1,18 +1,21 @@
-import { useContext, useEffect, useState, useRef, createContext } from "react";
+import { useEffect, useState, useRef } from "react";
 import React from 'react';
 import newchat from "../assets/icon_newchat.png";
 import newchatDark from "../assets/icon_newchat_dark.png";
 import stageexp from "../assets/icon_stageexp.png";
 import stageexpDark from "../assets/icon_stageexp_dark.png";
-import ChatHistory from "./ChatHistory";
-import { HistoryContext, ChatCompleteContext, ChatDeleteContext } from '../ChatContexts';
-import ChatStage from "../ChatStage";
-import { SideBarContext } from '../components/PageRoute';
-import { v4 as uuidv4 } from 'uuid';
-import axios from 'axios';
-import { serverURL } from '../components/chatBot/Chatbot'
+import ChatHistory from "./chatHistory/ChatHistory";
+import { v4 as uuidv4 } from 'uuid'
+import { useSelector, useDispatch } from 'react-redux'
+import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
+import { selectChats } from '../slices/chatSlice'
+import { setCurrChat } from "../slices/currChatSlice"
+import ChatSession from "../models/ChatSession";
+import { addChatToDB, loadChatFromDB } from '../slices/chatThunk'
 
 export default function SideBar() {
+    const dispatch = useDispatch();
+
     //check if the screen width is larger than 1024px
     const [isLargeScreen, setIsLargeScreen] = useState(window.innerWidth >= 1024);
 
@@ -24,193 +27,36 @@ export default function SideBar() {
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
-    
-    const [currChats, setCurrChats] = useState([]);
-    const [doneChats, setDoneChats] = useState([]);
-    const { currChatHist, setCurrChatHist } = useContext(HistoryContext);
-    const currChatHistValue = { currChatHist, setCurrChatHist };
 
-
-    const { chatToComplete, setChatToComplete } = useContext(ChatCompleteContext);
-    const { chatToDelete, setChatToDelete } = useContext(ChatDeleteContext);
-
-    let isInitialMount = useRef(true);
     const containerRef = useRef(null);
 
-    const { currentPage, setCurrentPage } = useContext(SideBarContext);
-    const currentPageValue = { currentPage, setCurrentPage };
-   
-    const loadDbReq = indexedDB.open("chathistory", 2);
-    const delDbReq = indexedDB.open("chathistory", 2);
+    const currPage = useSelector(selectCurrentPage);
+    const chats = useSelector(selectChats);
 
-
-    const loadChats = () => {
-        loadDbReq.onsuccess = async function (evt) {
-            let db = loadDbReq.result;
-            if (!db.objectStoreNames.contains('chats')) {
-                return;
-            }
-
-            const tx = await db.transaction('chats', 'readonly');
-            const store = tx.objectStore('chats');
-            let dbChatsObj = await store.getAll();
-            dbChatsObj.onsuccess = () => {
-                let dbChats = dbChatsObj.result;
-                let currChatHistories = [];
-                let doneChatHistories = [];
-                for (let dbChat of dbChats) {
-                    let stage = new ChatStage(dbChat.stage.name);
-                    dbChat.stage = stage;
-                    if (stage.name === 'complete') {
-                        doneChatHistories.push(<ChatHistory key={dbChat.time.getTime()} startState={dbChat} />);
-                    } else {
-                        currChatHistories.push(<ChatHistory key={dbChat.time.getTime()} startState={dbChat} />);
-                    }
-                }
-                setCurrChats(currChats.concat(currChatHistories));
-                setDoneChats(doneChats.concat(doneChatHistories));
-            }
-            tx.oncomplete = () => {
-                db.close();
-            }
-        }
-        loadDbReq.onerror = (err) => {
-            console.log(err);
-        }
-    }
-
-
-
-    
     // Start a new chat
     const newChat = () => {
-        let today = new Date();
-        const sessionId = uuidv4();
-        let emptyStart = { 
-            sessionId: sessionId,
-            messages: {
-                invitation: [
-                    { type: 'newStage', message: 'invitation' }, 
-                    { type: 'chatbot', message: "I'm an AI conflict coach here to help you with any conflicts or issues you may be facing. How can I assist you today?" }
-                ], 
-                connection: [],
-                exchange: [], 
-                agreement: [], 
-                reflection: [] 
-            }, 
-            time: today, 
-            stage: new ChatStage(), 
-            atStartRef: false,
-            messageCapCount: 0,
-            refusalCapCount: 0
-        };
-        setCurrChats(currChats.concat([<ChatHistory key={today.getTime()} startState={emptyStart} />]));
-        if (currentPage !== 'home') {
-            setCurrentPage('home');
-        }
+        const emptyStart = new ChatSession(uuidv4()).toPlainObject();
+
+        dispatch(addChatToDB(emptyStart))
+
+        dispatch(setCurrChat(emptyStart));
+
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
 
-    // Move the chat to complete section
-    const completeChat = () => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-            return;
-        }
-
-
-        let chatToCompleteTime = chatToComplete.getTime();
-        let completedChat;
-        let newCurrChats = [];
-
-
-        for (let currChat of currChats) {
-            if (currChat.key != chatToCompleteTime) {
-                newCurrChats.push(currChat);
-            } else {
-                completedChat = currChat;
-            }
-        }
-
-
-        setCurrChats(newCurrChats);
-        setDoneChats(doneChats.concat([completedChat]));
-    }
-
-    const deleteSession = async (session_id) => {
-        try {
-            console.log("see chatToDelete.sessionId:", session_id)
-            let resp = await axios.delete(`${serverURL}/chat/${session_id}`);
-            console.log("see response data: ", resp.data)
-        } catch (err) {
-            console.log(err);
-            return "An error occured. Please try again later."
-        }
-    }
-
-    // Delete chat history
-    const deleteChat = async () => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-            return;
-        }
-
-        let chatToDeleteTime = chatToDelete.time.getTime();
-
-        // Update UI
-        let newChats = [];
-        if (chatToDelete.stage.name === 'complete') {
-            for (let doneChat of doneChats) {
-                if (doneChat.key != chatToDeleteTime) {
-                    newChats.push(doneChat);
-                }
-            }
-            setDoneChats(newChats);
-        } else {
-            for (let currChat of currChats) {
-                if (currChat.key != chatToDeleteTime) {
-                    newChats.push(currChat);
-                }
-            }
-            setCurrChats(newChats);
-        }
-
-        // Update DB
-        delDbReq.onsuccess = async function (evt) {
-            let db = delDbReq.result;
-            if (!db.objectStoreNames.contains('chats')) {
-                return;
-            }
-            const tx = await db.transaction('chats', 'readwrite');
-            const store = tx.objectStore('chats');
-            store.delete(chatToDelete.time);
-        }
-
-        console.log('see chatToDelete', chatToDelete)
-        await deleteSession(chatToDelete.sessionId)
-    }
-
+    const showInprogressChat = chats.filter(chat => chat.completed === false).length !== 0
+    const showCompleteChat = chats.filter(chat => chat.completed === true).length !== 0
 
     // Load chat history in the side bar
     useEffect(() => {
-        loadChats();
+        dispatch(loadChatFromDB())
     }, []);
 
-
     useEffect(() => {
-        completeChat();
-    }, [chatToComplete]);
-
-
-    useEffect(() => {
-        deleteChat();
-    }, [chatToDelete]);
-
-    useEffect(() => {
-        if (currentPage === 'newchat') {
+        if (currPage === 'newchat') {
             newChat();
         }
-    }, [currentPage]);
+    }, [currPage]);
 
 
     return (
@@ -219,7 +65,7 @@ export default function SideBar() {
                 {/* Title */}
                 
                     <div>
-                        <button onClick={() => setCurrentPage('welcome')} className="m-6 font-bold text-2xl hidden lg:block text-white font-calibri">
+                        <button onClick={() => dispatch(setCurrPage('welcome'))} className="m-6 font-bold text-2xl hidden lg:block text-white font-calibri">
                             Chat IT Out
                         </button>
                     </div>
@@ -240,10 +86,10 @@ export default function SideBar() {
 
                         {/* What are 5 stages? */}
                         <div
-                            className={`flex w-full h-fit p-1.5 mt-2 py-2 hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "stageexp") ? 'lg:bg-[#1e1e1e] bg-[#D9D9D9] rounded-lg' : ''
+                            className={`flex w-full h-fit p-1.5 mt-2 py-2 hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${(currPage === "stageexp") ? 'lg:bg-[#1e1e1e] bg-[#D9D9D9] rounded-lg' : ''
                                 }`}
                         >
-                            <button onClick={() => setCurrentPage('stageexp')} className="flex items-center ml-5 font-normal text-base text-black lg:text-white font-calibri">
+                            <button onClick={() => dispatch(setCurrPage('stageexp'))} className="flex items-center ml-5 font-normal text-base text-black lg:text-white font-calibri">
                                 <img src={stageexp} className={`square-full mr-3 w-4 h-4 ${isLargeScreen ? 'visible' : 'hidden'}`} alt="Stage Icon" />
                                 <img src={stageexpDark} className={`square-full mr-3 w-4 h-4 ${isLargeScreen ? 'hidden' : 'visible'}`} alt="Stage Icon" />
                                 <span>What are the 5 stages?</span>
@@ -253,19 +99,28 @@ export default function SideBar() {
 
                     
                     {/* In Progress */}
-                    <div className="flex flex-col ml-6 mt-10 font-normal text-base leading-5 text-[#878787] lg:text-[#ababad] text-opacity-80 font-calibri">
+                    <div className={`${showInprogressChat ? 'visible' : 'invisible'} flex flex-col ml-6 mt-10 font-normal text-base leading-5 text-[#878787] lg:text-[#ababad] text-opacity-80 font-calibri`}>
                         In Progress
                     </div>
 
-                    <div className="pt-3 max-h-[180px] overflow-y-auto custom-scrollbar" ref={containerRef}>{currChats}</div>
+                    <div className="pt-3 max-h-[180px] overflow-y-auto custom-scrollbar" ref={containerRef}>
+                        {chats
+                            .filter(chat => chat.completed === false)
+                            .map(chat =>  <ChatHistory key={chat.time} sessionId={chat.sessionId} />)}
+                    </div>
 
 
                     {/* Completed */}
-                    <div className="flex flex-col ml-6 mt-8 font-normal text-base leading-5 text-[#878787]  lg:text-[#ababad] text-opacity-80 font-calibri">
+                    <div className={`${showCompleteChat ? 'visible' : 'invisible'} flex flex-col ml-6 mt-8 font-normal text-base leading-5 text-[#878787]  lg:text-[#ababad] text-opacity-80 font-calibri`}>
                         Completed
                     </div>
                     
-                    <div className="pt-3 max-h-[200px] overflow-y-auto custom-scrollbar">{doneChats}</div>
+                    <div className="pt-3 max-h-[200px] overflow-y-auto custom-scrollbar">
+                        {chats
+                            .filter(chat => chat.completed === true)
+                            .map(chat => <ChatHistory key={chat.time} sessionId={chat.sessionId} />
+                        )}
+                    </div>
                     
 
                     {/* Divider */}
@@ -273,10 +128,10 @@ export default function SideBar() {
 
                     {/* Menu items */}
                     <div
-                        className={`flex absolute bottom-7 w-full h-fit p-2 hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${(currentPage === "useterms") ? 'lg:bg-[#1e1e1e] bg-[#D9D9D9] rounded-lg pr-28 p1-6 pt-1' : ''
+                        className={`flex absolute bottom-7 w-full h-fit p-2 hover:bg-[#D9D9D9] lg:hover:bg-[#1e1e1e] rounded-lg ${(currPage === "useterms") ? 'lg:bg-[#1e1e1e] bg-[#D9D9D9] rounded-lg pr-28 p1-6 pt-1' : ''
                             }`}
                     >
-                        <button onClick={() => setCurrentPage('useterms')} className="ml-5 font-normal text-base leading-7 text-black lg:text-white font-calibri">
+                        <button onClick={() => dispatch(setCurrPage('useterms'))} className="ml-5 font-normal text-base leading-7 text-black lg:text-white font-calibri">
                             Terms of use
                         </button>
                     </div>

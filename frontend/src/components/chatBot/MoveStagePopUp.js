@@ -1,6 +1,9 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { setZeroMessageCountSync, incrementRefusalCountSync } from '../../slices/chatThunk'
 
-export default function MoveStagePopUp({ globalStage, advanceStage, setShowPopup, setMessageNum, setrefusalCount }) {
+export default function MoveStagePopUp({ globalStage, advanceStage, setShowPopup }) {
+    const dispatch = useDispatch()
     const text = globalStage.name === "reflection" ? "We've had a substantial conversation in the Reflecion stage. Would you want to end this conversation?" 
     : "We've had a substantial conversation in this stage. Would you like to proceed to the next stage to continue the discussion?"
     return (
@@ -12,6 +15,7 @@ export default function MoveStagePopUp({ globalStage, advanceStage, setShowPopup
         <div className="flex justify-between">
             <button 
             onClick={() => {
+                dispatch(setZeroMessageCountSync())
                 advanceStage();
                 setShowPopup(false);
             }}
@@ -21,9 +25,10 @@ export default function MoveStagePopUp({ globalStage, advanceStage, setShowPopup
             </button>
             <button 
             onClick={() => {
+                console.log("see movestage pop up here")
+                dispatch(incrementRefusalCountSync())
+                dispatch(setZeroMessageCountSync())
                 setShowPopup(false);
-                setrefusalCount(prev => prev + 1);
-                setMessageNum(0);
             }}
             className="px-6 py-2 bg-[#1e1e1e] text-white border border-white rounded-lg hover:bg-[#444] focus:outline-none focus:border-[#555]"
             >

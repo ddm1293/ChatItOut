@@ -4,26 +4,15 @@ import Chatbot from "../components/chatBot/Chatbot"
 import Welcome from "../components/Welcome"
 import StageExp from "../components/StageExplanation";
 import TermsOfUse from "../components/TermsOfUse"
-import { ChatDeleteContext, HistoryContext, ChatCompleteContext } from '../ChatContexts';
-import ChatStage from '../ChatStage';
 import ham from '../assets/icon_hamburgermenu.png';
 import close from "../assets/icon_close.png";
-import { SideBarContext  } from '../components/PageRoute';
+import { useSelector, useDispatch } from 'react-redux'
+import { selectCurrentPage, setCurrPage } from '../slices/sideBarSlice'
 
 export default function HomePage() {
-    const [currChatHist, setCurrChatHist] = useState({messages: {invitation: [], connection: [], exchange: [], agreement: [], reflection: []}, time: new Date(), stage: new ChatStage(), atStartRef: false});
-    const historyContextValue = {currChatHist, setCurrChatHist};
-
-    const [chatToDelete, setChatToDelete] = useState({stage: new ChatStage(), time: new Date()});
-    const chatToDeleteValue = {chatToDelete, setChatToDelete};
-
-    const [chatToComplete, setChatToComplete] = useState(new Date());
-    const chatToCompleteValue = {chatToComplete, setChatToComplete};
-
+    const dispatch = useDispatch();
+    const currPage = useSelector(selectCurrentPage);
     const [hamOpen, setHamOpen] = useState(false);
-
-    const [currentPage, setCurrentPage] = useState('welcome');
-    const currentPageValue = {currentPage, setCurrentPage};
     
     const handleButtonOpen= () => {
         setHamOpen(true);
@@ -35,53 +24,43 @@ export default function HomePage() {
 
     return (
         <>
-        <SideBarContext.Provider value={currentPageValue}>
-            <HistoryContext.Provider value={historyContextValue}>
-                <ChatDeleteContext.Provider value={chatToDeleteValue}>
-                    <ChatCompleteContext.Provider value={chatToCompleteValue}>
+            <div className="bg-[#1e1e1e] flex h-screen overflow-hidden">
+                <div className="lg:hidden absolute top-0 w-full h-16 z-10 bg-black">
+                    <button onClick={() => dispatch(setCurrPage('welcome'))} className="absolute top-0 left-0 m-4 font-bold text-2xl sm:block text-white font-calibri">
+                            Chat IT Out
+                    </button>   
+                </div>
 
-                        <div className="bg-[#1e1e1e] flex h-screen overflow-hidden">
-                                <div className="lg:hidden absolute top-0 w-full h-16 z-10 bg-black">
-                                    <button onClick={() => setCurrentPage('welcome')} className="absolute top-0 left-0 m-4 font-bold text-2xl sm:block text-white font-calibri">
-                                            Chat IT Out
-                                    </button>   
-                                </div>
+                <div>
 
-                                <div>
+                <button onClick={() => handleButtonOpen()} className={"block lg:hidden"}>
+                    <img src={ham} className="z-10 absolute top-0 right-0 mt-6 mr-10 h-5" alt="Hamburger menu bar"/>
+                </button>
 
-                                <button onClick={() => handleButtonOpen()} className={"block lg:hidden"}>
-                                    <img src={ham} className="z-10 absolute top-0 right-0 mt-6 mr-10 h-5" alt="Hamburger menu bar"/>
-                                </button>
+                <div className={`lg:block z-20 ${(hamOpen === true? "visible" : "hidden")}`}>
+                    <SideBar />
 
-                                <div className={`lg:block z-20 ${(hamOpen === true? "visible" : "hidden")}`}>
-                                    <SideBar />
+                    <button onClick={() => handleButtonClose()} className={`${(hamOpen == true? "block" : "hidden")}`}>
+                        <img src={close} className="lg:hidden absolute z-10 right-0 -top-4 m-10 w-5"/>
+                    </button>
+                </div>
 
-                                    <button onClick={() => handleButtonClose()} className={`${(hamOpen == true? "block" : "hidden")}`}>
-                                        <img src={close} className="lg:hidden absolute z-10 right-0 -top-4 m-10 w-5"/>
-                                    </button>
-                                </div>
+                <div className= {`${currPage === 'home' || currPage === 'newchat' ? "block" : "hidden"}`}>
+                    <Chatbot />
+                </div>
 
-                                <div className= {`${currentPage === 'home' || currentPage === 'newchat' ? "block" : "hidden"}`}>
-                                    <Chatbot />
-                                </div>
+                <div className= {`${currPage === 'welcome'? "block" : "hidden"}`}>
+                    <Welcome />
+                </div>
+                <div className= {`${currPage === 'useterms'? "block" : "hidden"}`}>
+                    <TermsOfUse />
+                </div>
 
-                                <div className= {`${currentPage === 'welcome'? "block" : "hidden"}`}>
-                                    <Welcome />
-                                </div>
-                                <div className= {`${currentPage === 'useterms'? "block" : "hidden"}`}>
-                                    <TermsOfUse />
-                                </div>
-
-                                <div className= {` ${currentPage === 'stageexp'? "visible" : "hidden"}`}>
-                                    <StageExp />
-                                </div>
-                                </div>
-                        </div>
-                    </ChatCompleteContext.Provider>
-                </ChatDeleteContext.Provider>
-            </HistoryContext.Provider>
-            </SideBarContext.Provider>
-        
+                <div className= {` ${currPage === 'stageexp'? "visible" : "hidden"}`}>
+                    <StageExp />
+                </div>
+                </div>
+            </div>
         </>
     )
 }
